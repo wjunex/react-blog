@@ -5,7 +5,6 @@ export const metadata: Metadata = {
   description: "About this blog",
 };
 
-
 export default function AboutPage() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -23,18 +22,11 @@ export default function AboutPage() {
             This project was bootstrapped with{" "}
             <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm font-mono text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
               create-next-app
-            </code>
-            {" "}and serves as a clean starting point for a personal blog or
+            </code>{" "}
+            and serves as a clean starting point for a personal blog or
             content-driven site.
           </p>
         </div>
-
-        <a
-          className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 text-base font-medium transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-          href="/"
-        >
-          ← Back home
-        </a>
       </main>
     </div>
   );

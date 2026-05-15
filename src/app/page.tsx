@@ -1,3 +1,9 @@
-export default function Home() {
-  return <div>这里是首页</div>;
+import List from "@/components/List/List";
+
+export default async function Home() {
+  return (
+    <>
+      <List />
+    </>
+  );
 }

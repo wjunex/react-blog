@@ -12,7 +12,9 @@ export default function NavBar() {
   return (
     <header className="h-12.5  py-0! flex items-center ">
       <div className="text-[26px] select-none cursor-pointer mr-4 flex-1">
-        <div>𝑾𝑱𝑼𝑵</div>
+        <Link href={"/"}>
+          <div>𝑾𝑱𝑼𝑵</div>
+        </Link>
       </div>
       <div className="flex items-center gap-2">
         {list.map((item, index) => {
