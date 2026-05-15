@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "GuanKiapTsingKhai";
+  src: url("/fonts/GuanKiapTsingKhai.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background: #eeeceb;
+  font-family: "GuanKiapTsingKhai", sans-serif;
+}
