@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[#d8dee4] bg-[#f6f8fa]/70 px-5 py-6 text-xs text-[#656d76] sm:px-8 lg:px-14">
+    <footer className="border-t border-[var(--border)] bg-[var(--surface-muted-alpha)] px-5 py-6 text-xs text-[var(--text-muted)] sm:px-8 lg:px-14">
       <div className="mx-auto flex max-w-3xl flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <span>© 2024-2026 wjun.me · Built by Jun Wang</span>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
@@ -10,7 +10,7 @@ export default function Footer() {
             href="https://beian.mps.gov.cn/#/query/webSearch?code=52230102000488"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 transition-colors hover:text-[#0969da]"
+            className="inline-flex items-center gap-1 transition-colors hover:text-[var(--accent)]"
           >
             <Image
               src="https://img.wjun.me/upload-1747114767780-1336.png"
@@ -24,7 +24,7 @@ export default function Footer() {
             href="https://beian.miit.gov.cn/"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-[#0969da]"
+            className="transition-colors hover:text-[var(--accent)]"
           >
             黔ICP备2024042286号-2
           </a>

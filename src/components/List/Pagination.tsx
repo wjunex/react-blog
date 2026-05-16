@@ -60,10 +60,10 @@ export default function Pagination({
 
   return (
     <nav
-      className="flex flex-col gap-4 border-t border-[#d8dee4] pt-6 sm:flex-row sm:items-center sm:justify-between"
+      className="flex flex-col gap-4 border-t border-[var(--border)] pt-6 sm:flex-row sm:items-center sm:justify-between"
       aria-label="Pagination"
     >
-      <div className="text-sm text-[#656d76]">
+      <div className="text-sm text-[var(--text-muted)]">
         第 {firstItem}-{lastItem} 篇，共 {total} 篇
       </div>
       <div className="flex flex-col gap-3 sm:items-end">
@@ -71,14 +71,17 @@ export default function Pagination({
           <Link
             href={getPageHref(Math.max(safeCurrent - 1, 1), pageSize)}
             aria-disabled={safeCurrent === 1}
-            className="rounded-md border border-[#d0d7de] px-3 py-1.5 text-sm font-medium text-[#57606a] transition-colors hover:bg-[#f6f8fa] aria-disabled:pointer-events-none aria-disabled:opacity-50"
+            className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
             上一页
           </Link>
           {pageItems.map((item, index) => {
             if (item === "ellipsis") {
               return (
-                <span key={`ellipsis-${index}`} className="px-2 text-[#656d76]">
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 text-[var(--text-muted)]"
+                >
                   ...
                 </span>
               );
@@ -91,7 +94,7 @@ export default function Pagination({
                 key={item}
                 href={getPageHref(item, pageSize)}
                 aria-current={isCurrent ? "page" : undefined}
-                className="rounded-md border border-[#d0d7de] px-3 py-1.5 text-sm font-medium text-[#57606a] transition-colors hover:bg-[#f6f8fa] aria-current:border-[#0969da] aria-current:bg-[#0969da] aria-current:text-white"
+                className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-current:border-[var(--accent)] aria-current:bg-[var(--accent)] aria-current:text-white"
               >
                 {item}
               </Link>
@@ -100,19 +103,19 @@ export default function Pagination({
           <Link
             href={getPageHref(Math.min(safeCurrent + 1, pages), pageSize)}
             aria-disabled={safeCurrent === pages}
-            className="rounded-md border border-[#d0d7de] px-3 py-1.5 text-sm font-medium text-[#57606a] transition-colors hover:bg-[#f6f8fa] aria-disabled:pointer-events-none aria-disabled:opacity-50"
+            className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
             下一页
           </Link>
         </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm text-[#656d76]">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
           <span>每页</span>
           {pageSizeOptions.map((option) => (
             <Link
               key={option}
               href={getPageHref(1, option)}
               aria-current={option === pageSize ? "true" : undefined}
-              className="rounded-md px-2 py-1 text-[#57606a] transition-colors hover:bg-[#f6f8fa] aria-current:bg-[#f6f8fa] aria-current:text-[#0969da]"
+              className="rounded-md px-2 py-1 text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-current:bg-[var(--surface-muted)] aria-current:text-[var(--accent)]"
             >
               {option}
             </Link>

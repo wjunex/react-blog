@@ -17,16 +17,18 @@ export default async function List({ pageNum, pageSize }: ListProps) {
 
   return (
     <section className="space-y-6">
-      <div className="border-b border-[#d8dee4] pb-6">
-        <p className="text-sm font-medium text-[#0969da]">Latest Posts</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#1f2328]">
+      <div className="border-b border-[var(--border)] pb-6">
+        <p className="text-sm font-medium text-[var(--accent)]">
+          Latest Posts
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[var(--text)]">
           文章
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#656d76]">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
           记录技术、生活和一些阶段性的想法。
         </p>
       </div>
-      <div className="divide-y divide-[#d8dee4]">
+      <div className="divide-y divide-[var(--border)]">
         {records.map((item) => {
           return <ListItem key={item.id} item={item} />;
         })}
