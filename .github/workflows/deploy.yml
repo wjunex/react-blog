@@ -1,0 +1,39 @@
+name: Next Blog CI and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 🚀 Deploy to Server
+    - name: Deploy to Server
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        echo "$SSH_PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+
+        ssh -i private_key.pem -o StrictHostKeyChecking=no root@47.109.69.204 << 'EOF'
+
+          echo "🚀 Start deploying Next.js blog"
+
+          cd /srv/docker-app/web/wjun-blog-react
+
+          # 1️⃣ 拉取最新代码
+          git pull
+
+          cd /srv/docker-app
+
+          # 2️⃣ 构建 + 重启容器
+          docker compose up -d --build wjun-blog-react
+
+          echo "✅ Deploy success"
+
+        EOF
