@@ -2,38 +2,55 @@ name: Next Blog CI and Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 🚀 Deploy to Server
-    - name: Deploy to Server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      run: |
-        echo "$SSH_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
+      - name: Deploy to Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
 
-        ssh -i private_key.pem -o StrictHostKeyChecking=no root@47.109.69.204 << 'EOF'
+          ssh -i private_key.pem -o StrictHostKeyChecking=no root@47.109.69.204 << 'EOF'
 
-          echo "🚀 Start deploying Next.js blog"
+            echo "🚀 Start deploying Next.js blog"
 
-          cd /srv/docker-app/web/wjun-blog-react
+            cd /srv/docker-app/web/wjun-blog-react
 
-          # 1️⃣ 拉取最新代码
-          git pull
+            # 1️⃣ 拉最新代码
+            git pull
 
-          cd /srv/docker-app
+            # 2️⃣ 生成版本号（关键）
+            VERSION=$(date +%Y%m%d-%H%M%S)
 
-          # 2️⃣ 构建 + 重启容器
-          docker compose up -d --build wjun-blog-react
+            echo "Building version: $VERSION"
 
-          echo "✅ Deploy success"
+            cd /srv/docker-app
 
-        EOF
+            # 3️⃣ 构建镜像（版本 + latest）
+            docker build \
+              -t wjun-blog-react:$VERSION \
+              -t wjun-blog-react:latest \
+              ./web/wjun-blog-react
+
+            # 4️⃣ 重启服务
+            docker compose up -d wjun-blog-react
+
+            # 5️⃣ 清理旧镜像（保留3个）
+            docker images wjun-blog-react --format "{{.Repository}}:{{.Tag}}" \
+            | grep -v latest \
+            | sort -r \
+            | awk 'NR>3 {print $1}' \
+            | xargs -r docker rmi
+
+            echo "✅ Deploy success"
+
+          EOF
