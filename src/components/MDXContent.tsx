@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypeHighlight from "rehype-highlight";
 import type { ComponentPropsWithoutRef } from "react";
 import type { MDXComponents } from "mdx/types";
+import CopyablePre from "./CopyablePre";
 
 type MDXContentProps = {
   source: string;
@@ -28,6 +30,7 @@ const components: MDXComponents = {
       </a>
     );
   },
+  pre: CopyablePre,
 };
 
 export default function MDXContent({ source }: MDXContentProps) {
@@ -39,6 +42,7 @@ export default function MDXContent({ source }: MDXContentProps) {
         options={{
           mdxOptions: {
             format: "md",
+            rehypePlugins: [rehypeHighlight],
           },
         }}
       />

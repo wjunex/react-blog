@@ -15,7 +15,6 @@ export default async function BlogDetail({ params }: Props) {
 
   return (
     <div>
-      <h1 className="mb-6 text-3xl font-bold">{data.title}</h1>
       <MDXContent source={data.content} />
     </div>
   );
