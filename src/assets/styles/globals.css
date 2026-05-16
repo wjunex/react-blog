@@ -20,3 +20,90 @@ body {
   background: #eeeceb;
   font-family: "GuanKiapTsingKhai", sans-serif;
 }
+
+.mdx-content {
+  color: #222;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.mdx-content > * + * {
+  margin-top: 1rem;
+}
+
+.mdx-content h1,
+.mdx-content h2,
+.mdx-content h3,
+.mdx-content h4 {
+  color: #111;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.mdx-content h1 {
+  font-size: 2rem;
+}
+
+.mdx-content h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+}
+
+.mdx-content h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.mdx-content a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.mdx-content ul,
+.mdx-content ol {
+  padding-left: 1.5rem;
+}
+
+.mdx-content ul {
+  list-style: disc;
+}
+
+.mdx-content ol {
+  list-style: decimal;
+}
+
+.mdx-content blockquote {
+  border-left: 4px solid #d4d4d4;
+  color: #555;
+  padding-left: 1rem;
+}
+
+.mdx-content code {
+  background: #f4f4f5;
+  border-radius: 0.25rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.9em;
+  padding: 0.15rem 0.35rem;
+}
+
+.mdx-content pre {
+  background: #18181b;
+  border-radius: 0.5rem;
+  color: #f4f4f5;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+.mdx-content pre code {
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  padding: 0;
+}
+
+.mdx-content img {
+  border-radius: 0.5rem;
+  height: auto;
+  max-width: 100%;
+}

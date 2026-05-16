@@ -1,9 +1,10 @@
 import { getBlogDetails } from "@/api";
+import MDXContent from "@/components/MDXContent";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function BlogDetail({ params }: Props) {
@@ -12,7 +13,10 @@ export default async function BlogDetail({ params }: Props) {
     id,
   });
 
-  console.log(data);
-
-  return <div>{data.content}</div>;
+  return (
+    <div>
+      <h1 className="mb-6 text-3xl font-bold">{data.title}</h1>
+      <MDXContent source={data.content} />
+    </div>
+  );
 }
