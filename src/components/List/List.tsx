@@ -1,10 +1,19 @@
 import { getBlogList } from "@/api";
 import ListItem from "./ListItem";
+import Pagination from "./Pagination";
 
-export default async function List() {
-  const { records } = await getBlogList({
-    pageSize: 1000,
+type ListProps = {
+  pageNum: number;
+  pageSize: number;
+};
+
+export default async function List({ pageNum, pageSize }: ListProps) {
+  const result = await getBlogList({
+    pageNum,
+    pageSize,
   });
+  const { records, total, current = pageNum, size = pageSize } = result;
+  const pages = result.pages ?? Math.ceil(total / size);
 
   return (
     <section className="space-y-6">
@@ -18,10 +27,16 @@ export default async function List() {
         </p>
       </div>
       <div className="divide-y divide-[#d8dee4]">
-      {records.map((item) => {
-        return <ListItem key={item.id} item={item} />;
-      })}
+        {records.map((item) => {
+          return <ListItem key={item.id} item={item} />;
+        })}
       </div>
+      <Pagination
+        current={current}
+        pageSize={size}
+        total={total}
+        pages={pages}
+      />
     </section>
   );
 }

@@ -3,6 +3,7 @@ export type PageResult<T> = {
   total: number;
   current?: number;
   size?: number;
+  pages?: number;
 };
 
 export interface BlogListQueryParams {
