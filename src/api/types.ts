@@ -29,8 +29,12 @@ export interface BlogListQueryParams {
 }
 
 export interface BlogItem {
-  id: number;
+  id: number | string;
   title: string;
   summary: string;
   content: string;
+  categoryName?: string;
+  createdTime?: string;
+  textCount?: number;
+  views?: number;
 }

@@ -7,27 +7,21 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center gap-8 py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h1 className="text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-          About
+    <section className="space-y-6">
+      <div className="border-b border-[#d8dee4] pb-6">
+        <p className="text-sm font-medium text-[#0969da]">About</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#1f2328]">
+          关于这个博客
         </h1>
-
-        <div className="flex flex-col gap-4 text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-          <p>
-            Welcome to this blog — a place to write, share, and explore ideas.
-            Built with Next.js and Tailwind CSS.
-          </p>
-          <p>
-            This project was bootstrapped with{" "}
-            <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-sm font-mono text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
-              create-next-app
-            </code>{" "}
-            and serves as a clean starting point for a personal blog or
-            content-driven site.
-          </p>
-        </div>
-      </main>
-    </div>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#656d76]">
+          这里收集一些技术笔记、生活记录和阶段性的想法。
+        </p>
+      </div>
+      <div className="rounded-xl border border-[#d8dee4] bg-[#f6f8fa] p-5 text-sm leading-7 text-[#57606a]">
+        <p>
+          希望它保持轻巧、清晰，也足够安静。文章页会优先服务阅读体验，列表页则尽量让内容本身成为视觉重心。
+        </p>
+      </div>
+    </section>
   );
 }

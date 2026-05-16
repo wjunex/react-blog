@@ -3,32 +3,35 @@ import Link from "next/link";
 export default function NavBar() {
   const list = [
     { title: "首页", path: "/" },
-    { title: "文章", path: "/list" },
-    { title: "动态", path: "/moments" },
-    { title: "归档", path: "/archives" },
     { title: "关于", path: "/about" },
   ];
 
   return (
-    <header className="h-12.5  py-0! flex items-center ">
-      <div className="text-[26px] select-none cursor-pointer mr-4 flex-1">
-        <Link href={"/"}>
-          <div>𝑾𝑱𝑼𝑵</div>
+    <header className="flex items-center border-b border-[#d8dee4] bg-[#f6f8fa]/80 px-5 py-4 backdrop-blur sm:px-8 lg:px-14">
+      <div className="mr-4 flex-1 select-none">
+        <Link
+          href="/"
+          className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-[#1f2328] transition-colors hover:text-[#0969da]"
+        >
+          <span>𝑾𝑱𝑼𝑵</span>
+          <span className="hidden text-sm font-normal text-[#656d76] sm:inline">
+            blog
+          </span>
         </Link>
       </div>
-      <div className="flex items-center gap-2">
-        {list.map((item, index) => {
+      <nav className="flex items-center gap-1" aria-label="Primary">
+        {list.map((item) => {
           return (
             <Link
-              key={index}
-              className="cursor-pointer select-none text-[#999] transition-all duration-300"
+              key={item.path}
+              className="rounded-md px-3 py-2 text-sm font-medium text-[#57606a] transition-colors hover:bg-white hover:text-[#0969da]"
               href={item.path}
             >
               {item.title}
             </Link>
           );
         })}
-      </div>
+      </nav>
     </header>
   );
 }
