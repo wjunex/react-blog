@@ -9,7 +9,7 @@ export function getBlogList(data: BlogListQueryParams) {
   });
 }
 
-export function getBlogDetails(data: { id: string }) {
+export function getBlogDetails(data: { slug: string }) {
   return request<BlogItem>("/api/public/getDetails", {
     method: "POST",
     body: data,

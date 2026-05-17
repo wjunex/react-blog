@@ -3,7 +3,7 @@ import MDXContent from "@/components/MDXContent";
 
 type Props = {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 };
 
@@ -26,9 +26,9 @@ function formatDate(value?: string) {
 }
 
 export default async function BlogDetail({ params }: Props) {
-  const { id } = await params;
+  const { slug } = await params;
   const data = await getBlogDetails({
-    id,
+    slug,
   });
 
   return (

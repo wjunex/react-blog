@@ -21,7 +21,7 @@ function formatDate(value?: string) {
 
 export default function ListItem({ item }: { item: BlogItem }) {
   const date = formatDate(item.createdTime);
-  const href = `/blog/${item.id}`;
+  const href = `/blog/${item.slug}`;
 
   return (
     <article className="group py-6 first:pt-0 last:pb-0">

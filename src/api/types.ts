@@ -8,6 +8,7 @@ export type PageResult<T> = {
 
 export interface BlogListQueryParams {
   id?: number;
+  slug?: string;
   title?: string;
   image?: string;
   summary?: string;
@@ -32,6 +33,7 @@ export interface BlogListQueryParams {
 export interface BlogItem {
   id: number | string;
   title: string;
+  slug: string;
   summary: string;
   content: string;
   categoryName?: string;
