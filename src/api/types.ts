@@ -41,3 +41,43 @@ export interface BlogItem {
   textCount?: number;
   views?: number;
 }
+
+export interface BlogComment {
+  id?: string;
+  slug: string;
+  noteId?: string;
+  parentId?: string;
+  rootId?: string;
+
+  replyUserId?: string;
+  userId?: string;
+
+  nickname?: string;
+  email?: string;
+  website?: string;
+  avatar?: string;
+
+  content: string;
+
+  ipLocation?: string;
+
+  /**
+   * 回复目标用户昵称
+   */
+  replyNickname?: string;
+
+  /**
+   * 0-待审核 1-正常显示 3-隐藏
+   */
+  status?: number;
+
+  likeCount?: number;
+  replyCount?: number;
+
+  createdTime?: string;
+
+  /**
+   * 子评论列表
+   */
+  children?: BlogComment[];
+}
