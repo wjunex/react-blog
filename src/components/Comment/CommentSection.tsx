@@ -1,5 +1,6 @@
 import { getBlogCommentTree } from "@/api";
 import CommentList from "./CommentList";
+import { BlogComment } from "@/api/types";
 
 // ---------- types ----------
 
@@ -10,7 +11,7 @@ type CommentSectionProps = {
 // ---------- component ----------
 
 export default async function CommentSection({ slug }: CommentSectionProps) {
-  let initialComments;
+  let initialComments: BlogComment[];
 
   try {
     initialComments = await getBlogCommentTree({ slug });
