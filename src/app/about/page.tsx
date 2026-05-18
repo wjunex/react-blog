@@ -11,7 +11,7 @@ export default function AboutPage() {
       <div className="border-b border-[var(--border)] pb-6">
         <p className="text-sm font-medium text-[var(--accent)]">About</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[var(--text)]">
-          关于这个博客
+          关于
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
           这里收集一些技术笔记、生活记录和阶段性的想法。

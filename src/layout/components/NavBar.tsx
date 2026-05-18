@@ -4,6 +4,7 @@ import ThemeToggle from "./ThemeToggle";
 export default function NavBar() {
   const list = [
     { title: "首页", path: "/" },
+    { title: "动态", path: "/moments" },
     { title: "关于", path: "/about" },
   ];
 

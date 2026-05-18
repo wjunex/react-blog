@@ -9,7 +9,8 @@ import CommentItem from "./CommentItem";
 // ---------- types ----------
 
 type CommentListProps = {
-  slug: string;
+  slug?: string;
+  id?: string;
   initialComments: BlogComment[];
 };
 
@@ -25,18 +26,21 @@ function countAll(comments: BlogComment[]): number {
 
 export default function CommentList({
   slug,
+  id,
   initialComments,
 }: CommentListProps) {
   const [comments, setComments] = useState(initialComments);
 
   const refresh = useCallback(async () => {
     try {
-      const fresh = await getBlogCommentTree({ slug });
+      const fresh = await getBlogCommentTree(
+        id !== undefined ? { id } : { slug: slug! },
+      );
       setComments(fresh);
     } catch {
       // 静默失败 —— 刷新失败不破坏已有 UI
     }
-  }, [slug]);
+  }, [slug, id]);
 
   const total = countAll(comments);
 
@@ -44,13 +48,8 @@ export default function CommentList({
     <section className="comment-section">
       <div className="comment-section__header">
         <h2 className="comment-section__title">评论</h2>
-        {total > 0 && (
-          <span className="comment-section__count">{total}</span>
-        )}
+        {total > 0 && <span className="comment-section__count">{total}</span>}
       </div>
-
-      {/* 一级评论表单 */}
-      <CommentForm slug={slug} onSuccess={refresh} />
 
       {/* 评论树 */}
       {comments.length > 0 && (
@@ -60,10 +59,16 @@ export default function CommentList({
               key={comment.id}
               comment={comment}
               slug={slug}
+              id={id}
               onRefresh={refresh}
             />
           ))}
         </div>
+      )}
+
+      {/* 一级评论表单 */}
+      {(slug || id !== undefined) && (
+        <CommentForm slug={slug} id={id} onSuccess={refresh} />
       )}
     </section>
   );

@@ -5,17 +5,18 @@ type PaginationProps = {
   pageSize: number;
   total: number;
   pages: number;
+  basePath?: string;
 };
 
 const pageSizeOptions = [5, 10, 20, 50];
 
-function getPageHref(pageNum: number, pageSize: number) {
+function getPageHref(pageNum: number, pageSize: number, basePath: string) {
   const query = new URLSearchParams({
     pageNum: String(pageNum),
     pageSize: String(pageSize),
   });
 
-  return `/?${query.toString()}`;
+  return `${basePath}?${query.toString()}`;
 }
 
 function getPageItems(current: number, pages: number) {
@@ -48,6 +49,7 @@ export default function Pagination({
   pageSize,
   total,
   pages,
+  basePath = "/",
 }: PaginationProps) {
   if (pages <= 1 && total <= pageSize) {
     return null;
@@ -69,7 +71,7 @@ export default function Pagination({
       <div className="flex flex-col gap-3 sm:items-end">
         <div className="flex flex-wrap items-center gap-1">
           <Link
-            href={getPageHref(Math.max(safeCurrent - 1, 1), pageSize)}
+            href={getPageHref(Math.max(safeCurrent - 1, 1), pageSize, basePath)}
             aria-disabled={safeCurrent === 1}
             className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
@@ -92,7 +94,7 @@ export default function Pagination({
             return (
               <Link
                 key={item}
-                href={getPageHref(item, pageSize)}
+                href={getPageHref(item, pageSize, basePath)}
                 aria-current={isCurrent ? "page" : undefined}
                 className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-current:border-[var(--accent)] aria-current:bg-[var(--accent)] aria-current:text-white"
               >
@@ -101,7 +103,7 @@ export default function Pagination({
             );
           })}
           <Link
-            href={getPageHref(Math.min(safeCurrent + 1, pages), pageSize)}
+            href={getPageHref(Math.min(safeCurrent + 1, pages), pageSize, basePath)}
             aria-disabled={safeCurrent === pages}
             className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
@@ -113,7 +115,7 @@ export default function Pagination({
           {pageSizeOptions.map((option) => (
             <Link
               key={option}
-              href={getPageHref(1, option)}
+              href={getPageHref(1, option, basePath)}
               aria-current={option === pageSize ? "true" : undefined}
               className="rounded-md px-2 py-1 text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-current:bg-[var(--surface-muted)] aria-current:text-[var(--accent)]"
             >

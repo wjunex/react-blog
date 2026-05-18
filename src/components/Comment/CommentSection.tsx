@@ -5,19 +5,24 @@ import { BlogComment } from "@/api/types";
 // ---------- types ----------
 
 type CommentSectionProps = {
-  slug: string;
+  slug?: string;
+  id?: string;
 };
 
 // ---------- component ----------
 
-export default async function CommentSection({ slug }: CommentSectionProps) {
+export default async function CommentSection({ slug, id }: CommentSectionProps) {
   let initialComments: BlogComment[];
 
   try {
-    initialComments = await getBlogCommentTree({ slug });
+    initialComments = await getBlogCommentTree(
+      id !== undefined ? { id } : { slug: slug! },
+    );
   } catch {
     initialComments = [];
   }
 
-  return <CommentList slug={slug} initialComments={initialComments} />;
+  return (
+    <CommentList slug={slug} id={id} initialComments={initialComments} />
+  );
 }

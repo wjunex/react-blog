@@ -8,7 +8,9 @@ import { useState, useTransition, type FormEvent } from "react";
 
 type CommentFormProps = {
   /** 文章 slug */
-  slug: string;
+  slug?: string;
+  /** 动态 id */
+  id?: string;
   /** 回复时传入父评论信息 */
   parent?: Pick<BlogComment, "id" | "rootId" | "nickname">;
   /** 提交成功后回调 */
@@ -31,6 +33,7 @@ function isUrl(value: string) {
 
 export default function CommentForm({
   slug,
+  id,
   parent,
   onSuccess,
   onCancel,
@@ -77,12 +80,16 @@ export default function CommentForm({
     }
 
     const comment: BlogComment = {
-      slug,
+      slug: slug || (id !== undefined ? id : ""),
       content,
       nickname,
       email,
       website: website || undefined,
     };
+
+    if (id !== undefined) {
+      comment.noteId = id;
+    }
 
     if (isReply) {
       comment.parentId = parent.id;

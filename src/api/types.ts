@@ -7,7 +7,7 @@ export type PageResult<T> = {
 };
 
 export interface BlogListQueryParams {
-  id?: number;
+  id?: string;
   slug?: string;
   title?: string;
   image?: string;

@@ -8,7 +8,8 @@ import CommentForm from "./CommentForm";
 
 type CommentItemProps = {
   comment: BlogComment;
-  slug: string;
+  slug?: string;
+  id?: string;
   onRefresh: () => void;
 };
 
@@ -39,6 +40,7 @@ function avatarFallback(nickname?: string) {
 export default function CommentItem({
   comment,
   slug,
+  id,
   onRefresh,
 }: CommentItemProps) {
   const [showReply, setShowReply] = useState(false);
@@ -46,7 +48,7 @@ export default function CommentItem({
 
   const avatar = comment.avatar
     ? comment.avatar
-    : `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(comment.nickname ?? "?")}`;
+    : `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(comment.nickname?.slice(0, 1) ?? "?")}`;
 
   return (
     <div className="comment-item">
@@ -131,6 +133,7 @@ export default function CommentItem({
             <div className="comment-item__reply-form">
               <CommentForm
                 slug={slug}
+                id={id}
                 parent={{
                   id: comment.id,
                   rootId: comment.rootId,
@@ -155,6 +158,7 @@ export default function CommentItem({
               key={child.id}
               comment={child}
               slug={slug}
+              id={id}
               onRefresh={onRefresh}
             />
           ))}
