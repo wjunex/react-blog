@@ -1,4 +1,4 @@
-import { API_BASE } from "./config";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 
