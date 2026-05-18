@@ -1,6 +1,7 @@
 import { getBlogDetails } from "@/api";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
+import { removeFirstH1 } from "@/utils";
 
 type Props = {
   params: Promise<{
@@ -32,11 +33,13 @@ export default async function BlogDetail({ params }: Props) {
     slug,
   });
 
+  data.content = removeFirstH1(data.content);
+
   return (
     <>
       <article>
         <header className="border-b border-[var(--border)] pb-6 mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-[var(--text)]">
+          <h1 className="text-4xl font-semibold tracking-tight text-[var(--text)]">
             {data.title}
           </h1>
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[var(--text-muted)]">
