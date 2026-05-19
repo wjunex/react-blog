@@ -9,14 +9,14 @@ export default function NavBar() {
   ];
 
   return (
-    <header className="flex items-center border-b border-[var(--border)] bg-[var(--surface-muted-alpha)] px-5 py-4 backdrop-blur sm:px-8 lg:px-14">
+    <header className="flex items-center border-b border-(--border) bg-(--surface-muted-alpha) px-5 py-4 backdrop-blur sm:px-8 lg:px-14">
       <div className="mr-4 flex-1 select-none">
         <Link
           href="/"
-          className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-[var(--text)] transition-colors hover:text-[var(--accent)]"
+          className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-(--text) transition-colors hover:text-(--accent)"
         >
           <span>𝑾𝑱𝑼𝑵</span>
-          <span className="hidden text-sm font-normal text-[var(--text-muted)] sm:inline">
+          <span className="hidden text-sm font-normal text-(--text-muted) sm:inline">
             blog
           </span>
         </Link>
@@ -26,7 +26,7 @@ export default function NavBar() {
           return (
             <Link
               key={item.path}
-              className="rounded-md px-3 py-2 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--accent)]"
+              className="rounded-md px-3 py-2 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
               href={item.path}
             >
               {item.title}
