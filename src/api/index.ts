@@ -4,6 +4,8 @@ import {
   BlogItem,
   BlogListQueryParams,
   PageResult,
+  CategoryItem,
+  TagItem,
 } from "./types";
 
 export function getBlogList(data: BlogListQueryParams) {
@@ -50,6 +52,30 @@ export function addBlogComment(data: BlogComment) {
   return request<BlogComment>("/api/public/comment/add", {
     method: "POST",
     body: data,
+    cache: "no-store",
+  });
+}
+
+export function getCategoryList() {
+  return request<CategoryItem[]>("/api/public/getCategoryList", {
+    method: "POST",
+    body: {},
+    cache: "no-store",
+  });
+}
+
+export function getTagList() {
+  return request<TagItem[]>("/api/public/getTagList", {
+    method: "POST",
+    body: {},
+    cache: "no-store",
+  });
+}
+
+export function getListByYear() {
+  return request<{ [year: number]: BlogItem[] }>("/api/public/getListByYear", {
+    method: "POST",
+    body: {},
     cache: "no-store",
   });
 }

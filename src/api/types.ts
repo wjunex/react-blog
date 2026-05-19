@@ -37,7 +37,7 @@ export interface BlogItem {
   summary: string;
   content: string;
   categoryName?: string;
-  createdTime?: string;
+  createdTime: string;
   textCount?: number;
   views?: number;
 }
@@ -80,4 +80,17 @@ export interface BlogComment {
    * 子评论列表
    */
   children?: BlogComment[];
+}
+
+export interface TagItem {
+  id: number | string;
+  name: string;
+}
+
+export interface CategoryItem {
+  id: number | string;
+  name: string;
+  type?: string;
+  createdTime?: string;
+  description?: string;
 }

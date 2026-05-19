@@ -6,6 +6,7 @@ export default function NavBar() {
     { title: "首页", path: "/" },
     { title: "文章", path: "/blog" },
     { title: "动态", path: "/moments" },
+    { title: "归档", path: "/archives" },
     { title: "关于", path: "/about" },
   ];
 
