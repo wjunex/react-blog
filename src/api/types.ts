@@ -40,6 +40,8 @@ export interface BlogItem {
   createdTime: string;
   textCount?: number;
   views?: number;
+  commentCount?: number;
+  likes?: number;
 }
 
 export interface BlogComment {

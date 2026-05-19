@@ -1,5 +1,7 @@
 import { BlogItem as BlogItemType } from "@/api/types";
 import Link from "next/link";
+import Comments from "@/assets/icons/comments.svg";
+import Likes from "@/assets/icons/likes.svg";
 
 function formatDate(value?: string) {
   if (!value) {
@@ -34,6 +36,18 @@ export default function BlogItem({ item }: { item: BlogItemType }) {
         ) : null}
         {item.textCount ? <span>{item.textCount} 字</span> : null}
         {item.views ? <span>{item.views} 阅读</span> : null}
+        {item.commentCount != null && item.commentCount > 0 && (
+          <span className="inline-flex items-center gap-1">
+            <Comments className="size-3.5" />
+            <span>{item.commentCount}</span>
+          </span>
+        )}
+        {item.likes != null && item.likes > 0 && (
+          <span className="inline-flex items-center gap-1">
+            <Likes className="size-3.5" />
+            <span>{item.likes}</span>
+          </span>
+        )}
       </div>
       <h2 className="mt-3 text-xl font-semibold leading-snug tracking-tight text-[var(--text)]">
         <Link

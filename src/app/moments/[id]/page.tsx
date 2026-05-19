@@ -50,9 +50,7 @@ export default async function MomentDetail({ params }: Props) {
             {data.views != null && <span>{data.views} 阅读</span>}
           </div>
         </header>
-        <div className="text-sm leading-7 text-[var(--text-soft)] whitespace-pre-wrap">
-          {data.content}
-        </div>
+        <div className="leading-7 text-[--text-soft]">{data.content}</div>
       </article>
       <CommentSection id={id} />
     </>
