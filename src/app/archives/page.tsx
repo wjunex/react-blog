@@ -118,13 +118,13 @@ export default async function Archives() {
                       <li key={blog.id} className="flex items-baseline gap-3">
                         <time
                           dateTime={blog.createdTime?.slice(0, 10)}
-                          className="shrink-0 text-xs tabular-nums text-(--text-muted)"
+                          className="shrink-0 tabular-nums text-(--text-muted)"
                         >
-                          {formatDate(blog.createdTime)}
+                          {blog.createdTime?.slice(5, 10)}
                         </time>
                         <Link
                           href={`/blog/${blog.slug}`}
-                          className="truncate text-sm font-medium text-(--text) transition-colors hover:text-(--accent)"
+                          className="truncate text-sm font-normal text-(--text) transition-colors hover:text-(--accent)"
                         >
                           {blog.title}
                         </Link>
