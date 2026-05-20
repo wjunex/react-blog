@@ -1,4 +1,4 @@
-import { getBlogDetails } from "@/api";
+import { getBlogDetails, getMomentList } from "@/api";
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME } from "@/utils";
 
@@ -7,6 +7,26 @@ type Props = {
     id: string;
   }>;
 };
+
+/** 预生成所有已发布动态的静态页面 */
+export async function generateStaticParams() {
+  const ids: { id: string }[] = [];
+  let pageNum = 1;
+  const pageSize = 100;
+
+  while (true) {
+    const result = await getMomentList({ pageNum, pageSize });
+    for (const item of result.records) {
+      if (item.id) {
+        ids.push({ id: String(item.id) });
+      }
+    }
+    if (ids.length >= result.total) break;
+    pageNum++;
+  }
+
+  return ids;
+}
 
 /** 增量静态再生成：新动态发布后最多 10 分钟自动更新 */
 export const revalidate = 600;

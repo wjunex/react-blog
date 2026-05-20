@@ -7,7 +7,6 @@ export interface RequestOptions {
   headers?: Record<string, string>;
   body?: unknown;
   cache?: RequestCache;
-  revalidate?: number;
   next?: { revalidate?: number };
 }
 
@@ -20,7 +19,6 @@ export async function request<T>(
     headers = {},
     body = {},
     cache,
-    revalidate,
     next,
   } = options;
 
@@ -31,10 +29,7 @@ export async function request<T>(
       ...headers,
     },
     body: body ? JSON.stringify(body) : undefined,
-
-    // Next.js 专用缓存策略
-    cache,
-    next: next ? { revalidate: next.revalidate } : revalidate ? { revalidate } : undefined,
+    ...(next ? { next } : cache ? { cache } : {}),
   });
 
   if (!res.ok) {

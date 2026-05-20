@@ -2,6 +2,7 @@ import { getBlogDetails, getListByYear } from "@/api";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
 import BackToTop from "@/components/BackToTop";
+import { CommentIcon } from "@/components/Icons";
 import { formatDate, removeFirstH1 } from "@/utils";
 
 type Props = {
@@ -62,10 +63,7 @@ export default async function BlogDetail({ params }: Props) {
                 href="#comments"
                 className="inline-flex items-center gap-1 transition-colors hover:text-(--accent)"
               >
-                {/* 对话气泡图标 */}
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="size-3.5">
-                  <path d="M8 2C4.686 2 2 4.24 2 7c0 1.526.723 2.91 1.89 3.86L3 14l2.84-1.417c.696.268 1.45.417 2.16.417 3.314 0 6-2.24 6-5s-2.686-5-6-5z" />
-                </svg>
+                <CommentIcon />
                 <span>{data.commentCount}</span>
               </a>
             )}
