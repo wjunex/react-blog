@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
+import { HamburgerIcon, CloseIcon } from "@/components/Icons";
 
 const NAV_LIST = [
   { title: "首页", path: "/" },
@@ -20,27 +21,6 @@ function isActive(path: string, currentPathname: string) {
 
   return (
     currentPathname === path || currentPathname.startsWith(path + "/")
-  );
-}
-
-/** 三横线汉堡图标 */
-function HamburgerIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="size-5">
-      <path d="M3 5h14" />
-      <path d="M3 10h14" />
-      <path d="M3 15h14" />
-    </svg>
-  );
-}
-
-/** 关闭 X 图标 */
-function CloseIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="size-5">
-      <path d="M5 5l10 10" />
-      <path d="M15 5l-10 10" />
-    </svg>
   );
 }
 
