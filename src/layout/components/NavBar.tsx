@@ -1,15 +1,15 @@
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
-export default function NavBar() {
-  const list = [
-    { title: "首页", path: "/" },
-    { title: "文章", path: "/blog" },
-    { title: "动态", path: "/moments" },
-    { title: "归档", path: "/archives" },
-    { title: "关于", path: "/about" },
-  ];
+const NAV_LIST = [
+  { title: "首页", path: "/" },
+  { title: "文章", path: "/blog" },
+  { title: "动态", path: "/moments" },
+  { title: "归档", path: "/archives" },
+  { title: "关于", path: "/about" },
+] as const;
 
+export default function NavBar() {
   return (
     <header className="flex items-center border-b border-(--border) bg-(--surface-muted-alpha) px-5 py-4 backdrop-blur sm:px-8 lg:px-14">
       <div className="mr-4 flex-1 select-none">
@@ -24,7 +24,7 @@ export default function NavBar() {
         </Link>
       </div>
       <nav className="flex items-center gap-1" aria-label="Primary">
-        {list.map((item) => {
+        {NAV_LIST.map((item) => {
           return (
             <Link
               key={item.path}

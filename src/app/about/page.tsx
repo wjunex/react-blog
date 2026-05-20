@@ -37,7 +37,7 @@ const socialLinks = [
       </svg>
     ),
   },
-];
+] as const;
 
 export default function AboutPage() {
   return (

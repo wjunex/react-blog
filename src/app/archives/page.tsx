@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getListByYear, getCategoryList, getTagList } from "@/api";
+import { formatDate } from "@/utils";
 import { BlogItem, CategoryItem, TagItem } from "@/api/types";
 
 // ── helpers ──────────────────────────────────────────────
@@ -7,11 +8,6 @@ const CATEGORY_TYPES = [
   { key: "life", label: "生活" },
   { key: "tech", label: "技术" },
 ] as const;
-
-const formatDate = (date?: string) => {
-  if (!date || date.length < 10) return "";
-  return date.slice(5, 10);
-};
 
 // ── page ─────────────────────────────────────────────────
 export default async function Archives() {

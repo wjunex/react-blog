@@ -3,6 +3,7 @@
 import type { BlogComment } from "@/api/types";
 import { useState } from "react";
 import CommentForm from "./CommentForm";
+import { formatDate, DATE_TIME } from "@/utils";
 
 // ---------- types ----------
 
@@ -12,28 +13,6 @@ type CommentItemProps = {
   id?: string;
   onRefresh: () => void;
 };
-
-// ---------- helpers ----------
-
-function formatDate(value?: string) {
-  if (!value) return "";
-
-  const date = new Date(value.replace(" ", "T"));
-  if (Number.isNaN(date.getTime())) return value;
-
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
-function avatarFallback(nickname?: string) {
-  if (!nickname) return "?";
-  return nickname.charAt(0).toUpperCase();
-}
 
 // ---------- component ----------
 
@@ -103,7 +82,7 @@ export default function CommentItem({
                 className="comment-item__time"
                 dateTime={comment.createdTime}
               >
-                {formatDate(comment.createdTime)}
+                {formatDate(comment.createdTime, DATE_TIME)}
               </time>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import List from "@/components/List/List";
+import { getQueryNumber } from "@/utils";
 
 type HomeProps = {
   searchParams: Promise<{
@@ -6,20 +7,6 @@ type HomeProps = {
     pageSize?: string | string[];
   }>;
 };
-
-function getQueryNumber(
-  value: string | string[] | undefined,
-  fallback: number,
-) {
-  const rawValue = Array.isArray(value) ? value[0] : value;
-  const parsedValue = Number(rawValue);
-
-  if (!Number.isInteger(parsedValue) || parsedValue < 1) {
-    return fallback;
-  }
-
-  return parsedValue;
-}
 
 export default async function Home({ searchParams }: HomeProps) {
   const query = await searchParams;

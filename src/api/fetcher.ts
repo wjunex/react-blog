@@ -2,12 +2,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 
-interface RequestOptions {
+export interface RequestOptions {
   method?: Method;
   headers?: Record<string, string>;
   body?: unknown;
   cache?: RequestCache;
   revalidate?: number;
+  next?: { revalidate?: number };
 }
 
 export async function request<T>(
@@ -18,8 +19,9 @@ export async function request<T>(
     method = "GET",
     headers = {},
     body = {},
-    cache = "no-store",
+    cache,
     revalidate,
+    next,
   } = options;
 
   const res = await fetch(`${API_BASE}${url}`, {
@@ -32,7 +34,7 @@ export async function request<T>(
 
     // Next.js 专用缓存策略
     cache,
-    next: revalidate ? { revalidate } : undefined,
+    next: next ? { revalidate: next.revalidate } : revalidate ? { revalidate } : undefined,
   });
 
   if (!res.ok) {

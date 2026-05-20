@@ -1,31 +1,13 @@
 import { getBlogDetails } from "@/api";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
-import { removeFirstH1 } from "@/utils";
+import { formatDate, removeFirstH1 } from "@/utils";
 
 type Props = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-function formatDate(value?: string) {
-  if (!value) {
-    return null;
-  }
-
-  const date = new Date(value.replace(" ", "T"));
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
 
 export default async function BlogDetail({ params }: Props) {
   const { slug } = await params;

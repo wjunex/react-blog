@@ -8,7 +8,7 @@ type PaginationProps = {
   basePath?: string;
 };
 
-const pageSizeOptions = [5, 10, 20, 50];
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;
 
 function getPageHref(pageNum: number, pageSize: number, basePath: string) {
   const query = new URLSearchParams({
@@ -62,10 +62,10 @@ export default function Pagination({
 
   return (
     <nav
-      className="flex flex-col gap-4 border-t border-[var(--border)] pt-6 sm:flex-row sm:items-center sm:justify-between"
+      className="flex flex-col gap-4 border-t border-(--border) pt-6 sm:flex-row sm:items-center sm:justify-between"
       aria-label="Pagination"
     >
-      <div className="text-sm text-[var(--text-muted)]">
+      <div className="text-sm text-(--text-muted)">
         第 {firstItem}-{lastItem} 篇，共 {total} 篇
       </div>
       <div className="flex flex-col gap-3 sm:items-end">
@@ -73,7 +73,7 @@ export default function Pagination({
           <Link
             href={getPageHref(Math.max(safeCurrent - 1, 1), pageSize, basePath)}
             aria-disabled={safeCurrent === 1}
-            className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-disabled:pointer-events-none aria-disabled:opacity-50"
+            className="rounded-md border border-(--border-strong) px-3 py-1.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
             上一页
           </Link>
@@ -82,7 +82,7 @@ export default function Pagination({
               return (
                 <span
                   key={`ellipsis-${index}`}
-                  className="px-2 text-[var(--text-muted)]"
+                  className="px-2 text-(--text-muted)"
                 >
                   ...
                 </span>
@@ -96,7 +96,7 @@ export default function Pagination({
                 key={item}
                 href={getPageHref(item, pageSize, basePath)}
                 aria-current={isCurrent ? "page" : undefined}
-                className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-current:border-[var(--accent)] aria-current:bg-[var(--accent)] aria-current:text-white"
+                className="rounded-md border border-(--border-strong) px-3 py-1.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-current:border-(--accent) aria-current:bg-(--accent) aria-current:text-white"
               >
                 {item}
               </Link>
@@ -105,19 +105,19 @@ export default function Pagination({
           <Link
             href={getPageHref(Math.min(safeCurrent + 1, pages), pageSize, basePath)}
             aria-disabled={safeCurrent === pages}
-            className="rounded-md border border-[var(--border-strong)] px-3 py-1.5 text-sm font-medium text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-disabled:pointer-events-none aria-disabled:opacity-50"
+            className="rounded-md border border-(--border-strong) px-3 py-1.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
             下一页
           </Link>
         </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-(--text-muted)">
           <span>每页</span>
-          {pageSizeOptions.map((option) => (
+          {PAGE_SIZE_OPTIONS.map((option) => (
             <Link
               key={option}
               href={getPageHref(1, option, basePath)}
               aria-current={option === pageSize ? "true" : undefined}
-              className="rounded-md px-2 py-1 text-[var(--text-soft)] transition-colors hover:bg-[var(--surface-muted)] aria-current:bg-[var(--surface-muted)] aria-current:text-[var(--accent)]"
+              className="rounded-md px-2 py-1 text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-current:bg-(--surface-muted) aria-current:text-(--accent)"
             >
               {option}
             </Link>

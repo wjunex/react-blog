@@ -21,14 +21,12 @@ export default async function List({
       ? await getMomentList({ pageNum, pageSize })
       : await getBlogList({ pageNum, pageSize });
 
-  console.log(result);
-
   const { records, total, current = pageNum, size = pageSize } = result;
   const pages = result.pages ?? Math.ceil(total / size);
 
   return (
     <>
-      <div className="divide-y divide-[var(--border)]">
+      <div className="divide-y divide-(--border)">
         {records.map((item) => {
           if (type === 2) {
             return <MomentItem key={item.id} item={item} />;

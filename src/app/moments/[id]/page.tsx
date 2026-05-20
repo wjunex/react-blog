@@ -1,5 +1,6 @@
-import { getBlogDetails, getMomentsDetails } from "@/api";
+import { getMomentsDetails } from "@/api";
 import CommentSection from "@/components/Comment/CommentSection";
+import { formatDate, DATE_TIME } from "@/utils";
 
 type Props = {
   params: Promise<{
@@ -7,30 +8,9 @@ type Props = {
   }>;
 };
 
-function formatDate(value?: string) {
-  if (!value) {
-    return null;
-  }
-
-  const date = new Date(value.replace(" ", "T"));
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
 export default async function MomentDetail({ params }: Props) {
   const { id } = await params;
-  const data = await getBlogDetails({ id });
-  console.log(data);
+  const data = await getMomentsDetails({ id });
 
   return (
     <>
@@ -44,7 +24,7 @@ export default async function MomentDetail({ params }: Props) {
             )}
             {data.createdTime && (
               <time dateTime={data.createdTime}>
-                {formatDate(data.createdTime)}
+                {formatDate(data.createdTime, DATE_TIME)}
               </time>
             )}
             {data.views != null && <span>{data.views} 阅读</span>}
