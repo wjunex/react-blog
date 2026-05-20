@@ -60,14 +60,6 @@ export function getBlogDetails(data: { slug?: string; id?: string }) {
   });
 }
 
-export function getMomentsDetails(data: { id: string }) {
-  return request<BlogItem>("/api/public/getMomentsDetails", {
-    method: "POST",
-    body: data,
-    next: { revalidate: 600 },
-  });
-}
-
 // ── 评论类数据（实时性要求高，不缓存） ──
 
 export function getBlogCommentTree(data: { slug?: string; id?: string }) {

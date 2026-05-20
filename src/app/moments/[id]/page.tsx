@@ -1,4 +1,4 @@
-import { getMomentsDetails } from "@/api";
+import { getBlogDetails } from "@/api";
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME } from "@/utils";
 
@@ -13,7 +13,7 @@ export const revalidate = 600;
 
 export default async function MomentDetail({ params }: Props) {
   const { id } = await params;
-  const data = await getMomentsDetails({ id });
+  const data = await getBlogDetails({ id });
 
   return (
     <>
