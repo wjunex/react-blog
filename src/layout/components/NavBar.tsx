@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 
 const NAV_LIST = [
@@ -9,7 +12,19 @@ const NAV_LIST = [
   { title: "关于", path: "/about" },
 ] as const;
 
+function isActive(path: string, currentPathname: string) {
+  if (path === "/") {
+    return currentPathname === "/";
+  }
+
+  return (
+    currentPathname === path || currentPathname.startsWith(path + "/")
+  );
+}
+
 export default function NavBar() {
+  const pathname = usePathname();
+
   return (
     <header className="flex items-center border-b border-(--border) bg-(--surface-muted-alpha) px-5 py-4 backdrop-blur sm:px-8 lg:px-14">
       <div className="mr-4 flex-1 select-none">
@@ -25,7 +40,16 @@ export default function NavBar() {
       </div>
       <nav className="flex items-center gap-1" aria-label="Primary">
         {NAV_LIST.map((item) => {
-          return (
+          const active = isActive(item.path, pathname);
+
+          return active ? (
+            <span
+              key={item.path}
+              className="pointer-events-none rounded-md px-3 py-2 text-sm font-medium text-(--accent)"
+            >
+              {item.title}
+            </span>
+          ) : (
             <Link
               key={item.path}
               className="rounded-md px-3 py-2 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
