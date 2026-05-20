@@ -18,7 +18,7 @@ const socialLinks = [
   },
   {
     label: "Email",
-    href: "mailto:i@wjun.me",
+    href: "mailto:hi@wjun.me",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4">
         <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -115,10 +115,10 @@ export default function AboutPage() {
             <li className="flex items-center gap-2">
               <span className="text-(--text-muted)">📧</span>
               <a
-                href="mailto:i@wjun.me"
+                href="mailto:hi@wjun.me"
                 className="transition-colors hover:text-(--accent)"
               >
-                i@wjun.me
+                hi@wjun.me
               </a>
             </li>
             <li className="flex items-center gap-2">
