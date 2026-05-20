@@ -15,8 +15,8 @@ type CommentFormProps = {
   id?: string;
   /** 回复时传入父评论信息 */
   parent?: Pick<BlogComment, "id" | "rootId" | "nickname">;
-  /** 提交成功后回调 */
-  onSuccess?: () => void;
+  /** 提交成功后回调，传入 API 返回的评论数据 */
+  onSuccess?: (comment: BlogComment) => void;
   /** 取消回复 */
   onCancel?: () => void;
 };
@@ -105,10 +105,10 @@ export default function CommentForm({
 
     startTransition(async () => {
       try {
-        await addBlogComment(comment);
+        const result = await addBlogComment(comment);
         setSuccess(true);
         form.reset();
-        onSuccess?.();
+        onSuccess?.(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "提交失败，请稍后重试");
       }
@@ -118,7 +118,7 @@ export default function CommentForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`comment-form ${isReply ? "comment-form--reply" : ""}`}
+      className={`mt-4 comment-form ${isReply ? "comment-form--reply" : ""}`}
     >
       {isReply && (
         <div className="mb-3 flex items-center justify-between text-sm text-[var(--text-muted)]">

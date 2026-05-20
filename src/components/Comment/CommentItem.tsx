@@ -1,7 +1,7 @@
 "use client";
 
 import type { BlogComment } from "@/api/types";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import { formatDate, DATE_TIME } from "@/utils";
 
@@ -22,8 +22,65 @@ export default function CommentItem({
   id,
   onRefresh,
 }: CommentItemProps) {
+  const replyStorageKey = `pending-replies-${comment.id}`;
+
   const [showReply, setShowReply] = useState(false);
-  const hasChildren = comment.children && comment.children.length > 0;
+  const [pendingReplies, setPendingReplies] = useState<BlogComment[]>([]);
+  const [ready, setReady] = useState(false);
+
+  // 仅在客户端挂载后从 localStorage 恢复
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem(replyStorageKey);
+      if (raw) {
+        const stored = JSON.parse(raw) as BlogComment[];
+        const filtered = stored.filter(
+          (pr) => !(comment.children || []).some((c) => c.id === pr.id),
+        );
+        // eslint-disable-next-line
+        setPendingReplies(filtered);
+        if (filtered.length !== stored.length) {
+          if (filtered.length > 0) {
+            localStorage.setItem(replyStorageKey, JSON.stringify(filtered));
+          } else {
+            localStorage.removeItem(replyStorageKey);
+          }
+        }
+      }
+    } catch {}
+    setReady(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 同步到 localStorage
+  useEffect(() => {
+    if (!ready || typeof window === "undefined") return;
+    try {
+      if (pendingReplies.length > 0) {
+        localStorage.setItem(replyStorageKey, JSON.stringify(pendingReplies));
+      } else {
+        localStorage.removeItem(replyStorageKey);
+      }
+    } catch {}
+  }, [ready, pendingReplies, replyStorageKey]);
+
+  const isPending = comment.status !== 1;
+
+  // 过滤掉已审核通过（出现在服务端 children 中）的本地待审核回复
+  const displayPendingReplies = useMemo(
+    () =>
+      ready
+        ? pendingReplies.filter(
+            (pr) => !(comment.children || []).some((c) => c.id === pr.id),
+          )
+        : [],
+    [ready, pendingReplies, comment.children],
+  );
+
+  const hasChildren =
+    (comment.children && comment.children.length > 0) ||
+    (ready && displayPendingReplies.length > 0);
 
   const avatar = comment.avatar
     ? comment.avatar
@@ -84,6 +141,10 @@ export default function CommentItem({
               >
                 {formatDate(comment.createdTime, DATE_TIME)}
               </time>
+
+              {isPending && (
+                <span className="comment-item__pending-badge">审核中</span>
+              )}
             </div>
           </div>
 
@@ -118,8 +179,9 @@ export default function CommentItem({
                   rootId: comment.rootId,
                   nickname: comment.nickname,
                 }}
-                onSuccess={() => {
+                onSuccess={(newComment) => {
                   setShowReply(false);
+                  setPendingReplies((prev) => [...prev, newComment]);
                   onRefresh();
                 }}
                 onCancel={() => setShowReply(false)}
@@ -132,9 +194,18 @@ export default function CommentItem({
       {/* 子评论 */}
       {hasChildren && (
         <div className="comment-item__children">
-          {comment.children!.map((child) => (
+          {(comment.children || []).map((child) => (
             <CommentItem
               key={child.id}
+              comment={child}
+              slug={slug}
+              id={id}
+              onRefresh={onRefresh}
+            />
+          ))}
+          {displayPendingReplies.map((child) => (
+            <CommentItem
+              key={`pending-${child.id}`}
               comment={child}
               slug={slug}
               id={id}
