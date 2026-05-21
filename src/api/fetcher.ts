@@ -35,6 +35,16 @@ export async function request<T>(
   } = options;
 
   const authHeader = await getAuthHeader();
+  const isAuthed = "Authorization" in authHeader;
+
+  let cacheOption: object = {};
+  if (isAuthed) {
+    cacheOption = { cache: "no-store" };
+  } else if (next) {
+    cacheOption = { next };
+  } else if (cache) {
+    cacheOption = { cache };
+  }
 
   const res = await fetch(`${API_BASE}${url}`, {
     method,
@@ -44,7 +54,7 @@ export async function request<T>(
       ...headers,
     } as Record<string, string>,
     body: body ? JSON.stringify(body) : undefined,
-    ...(next ? { next } : cache ? { cache } : {}),
+    ...cacheOption,
   });
 
   if (!res.ok) {
