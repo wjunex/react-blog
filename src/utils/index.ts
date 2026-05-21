@@ -35,6 +35,13 @@ export const DATE_TIME: Intl.DateTimeFormatOptions = {
   minute: "2-digit",
 };
 
+/** 年月日+时分+星期格式 */
+export const DATE_TIME_WEEKDAY: Intl.DateTimeFormatOptions = {
+  hour: "2-digit",
+  minute: "2-digit",
+  weekday: "short",
+};
+
 /**
  * 解析 searchParams 中的数字参数
  */

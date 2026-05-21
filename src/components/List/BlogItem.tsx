@@ -18,13 +18,13 @@ export default function BlogItem({ item }: { item: BlogItemType }) {
         ) : null}
         {item.textCount ? <span>{item.textCount} 字</span> : null}
         {item.views ? <span>{item.views} 阅读</span> : null}
-        {item.commentCount != null && (
+        {item.commentCount != null && item.commentCount > 0 && (
           <span className="inline-flex items-center gap-1">
             <CommentIcon />
             <span>{item.commentCount}</span>
           </span>
         )}
-        {item.likes != null && (
+        {item.likes != null && item.likes > 0 && (
           <span className="inline-flex items-center gap-1">
             <LikeIcon />
             <span>{item.likes}</span>
