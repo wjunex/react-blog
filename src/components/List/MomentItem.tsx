@@ -1,10 +1,12 @@
 import { BlogItem as BlogItemType } from "@/api/types";
+import { getBloggerInfo } from "@/api";
 import Link from "next/link";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";
 import Image from "next/image";
 
-export default function MomentItem({ item }: { item: BlogItemType }) {
+export default async function MomentItem({ item }: { item: BlogItemType }) {
+  const blogger = await getBloggerInfo();
   const date = formatDate(item.createdTime, DATE_TIME_WEEKDAY);
   const href = `/moments/${item.id}`;
 
@@ -13,8 +15,8 @@ export default function MomentItem({ item }: { item: BlogItemType }) {
       <Link href={href}>
         <div className="flex items-start gap-3">
           <Image
-            src="https://img.wjun.me/upload-1770694894225-9783.jpg"
-            alt="WJUN"
+            src={blogger.avatar}
+            alt={blogger.username}
             width={40}
             height={40}
             className="shrink-0 rounded-full border-2 border-(--border-strong)"
@@ -22,7 +24,9 @@ export default function MomentItem({ item }: { item: BlogItemType }) {
           />
 
           <div className="min-w-0">
-            <span className="text-sm font-semibold text-(--text)">WJUN</span>
+            <span className="text-sm font-semibold text-(--text)">
+              {blogger.username}
+            </span>
             <div className="mt-2 line-clamp-3 leading-7 text-(--text-soft)">
               {item.content}
             </div>

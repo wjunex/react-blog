@@ -6,6 +6,7 @@ import {
   PageResult,
   CategoryItem,
   TagItem,
+  BloggerInfo,
 } from "./types";
 
 // ── 列表类数据（变更频率低，使用缓存 + 增量更新） ──
@@ -47,6 +48,16 @@ export function getListByYear() {
     method: "POST",
     body: {},
     next: { revalidate: 600 }, // 10 分钟（归档数据几乎不变）
+  });
+}
+
+// ── 博主信息（全局复用，ISR 缓存） ──
+
+export function getBloggerInfo() {
+  return request<BloggerInfo>("/api/public/getUserInfo", {
+    method: "POST",
+    body: {},
+    next: { revalidate: 600 },
   });
 }
 

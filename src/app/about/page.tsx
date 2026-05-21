@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import { getBloggerInfo } from "@/api";
 import { GitHubIcon, MailIcon, GlobeIcon } from "@/components/Icons";
 
 export const metadata: Metadata = {
@@ -25,7 +26,9 @@ const socialLinks = [
   },
 ] as const;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const blogger = await getBloggerInfo();
+
   return (
     <section className="space-y-8">
       {/* ── 页面头部 ── */}
@@ -44,8 +47,8 @@ export default function AboutPage() {
         {/* 头像 */}
         <div className="shrink-0">
           <Image
-            src="https://img.wjun.me/upload-1770694894225-9783.jpg"
-            alt="WJUN"
+            src={blogger.avatar}
+            alt={blogger.username}
             width={100}
             height={100}
             className="rounded-full border-2 border-(--border-strong)"
@@ -55,13 +58,15 @@ export default function AboutPage() {
 
         {/* 信息 */}
         <div className="min-w-0 text-center sm:text-left">
-          <h2 className="text-2xl font-semibold text-(--text)">Jun Wang</h2>
-          <p className="mt-1 text-sm text-(--text-muted)">@wjunex</p>
-          <p className="mt-3 text-sm leading-7 text-(--text-soft)">
-            一个喜欢写代码、记录想法的开发者。
-            专注于 Web 开发，偶尔折腾一些有趣的小项目。
-            希望通过这个博客，把学到的东西沉淀下来，也分享给需要的朋友。
-          </p>
+          <h2 className="text-2xl font-semibold text-(--text)">
+            {blogger.username}
+          </h2>
+          <p className="mt-1 text-sm text-(--text-muted)">@WangJun</p>
+          {blogger.signature && (
+            <p className="mt-3 text-sm leading-7 text-(--text-soft)">
+              {blogger.signature}
+            </p>
+          )}
 
           {/* 社交链接 */}
           <div className="mt-5 flex flex-wrap justify-center gap-3 sm:justify-start">
@@ -82,16 +87,12 @@ export default function AboutPage() {
       </div>
 
       {/* ── 博客介绍 ── */}
-      <div className="rounded-xl border border-(--border) bg-(--surface-muted) p-6 text-sm leading-7 text-(--text-soft)">
-        <p>
-          希望它保持轻巧、清晰，也足够安静。文章页会优先服务阅读体验，列表页则尽量让内容本身成为视觉重心。
-        </p>
-        <p className="mt-4">
-          技术文章主要涉及前端开发（React、TypeScript、Next.js
-          等），偶尔也会记录一些后端、运维相关的内容。
-          生活类的内容则更随意一些，可能是读书笔记、旅行记录或者一些随想。
-        </p>
-      </div>
+      {blogger.intro && (
+        <div
+          className="rounded-xl border border-(--border) bg-(--surface-muted) p-6 text-sm leading-7 text-(--text-soft) flex flex-col gap-4"
+          dangerouslySetInnerHTML={{ __html: blogger.intro }}
+        />
+      )}
 
       {/* ── 联系与站点信息 ── */}
       <div className="grid gap-4 sm:grid-cols-2">

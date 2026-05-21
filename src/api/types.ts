@@ -96,3 +96,10 @@ export interface CategoryItem {
   createdTime?: string;
   description?: string;
 }
+
+export interface BloggerInfo {
+  username: string;
+  avatar: string;
+  signature?: string;
+  intro?: string;  // html
+}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getBlogList, getMomentList } from "@/api";
+import { getBlogList, getMomentList, getBloggerInfo } from "@/api";
 import BlogItem from "@/components/List/BlogItem";
 import MomentItem from "@/components/List/MomentItem";
 
@@ -8,6 +8,8 @@ export default async function Home() {
     getBlogList({ pageNum: 1, pageSize: 5 }),
     getMomentList({ pageNum: 1, pageSize: 5 }),
   ]);
+
+  const blogger = await getBloggerInfo();
 
   const recentPosts =
     blogResult.status === "fulfilled" ? blogResult.value.records : [];
@@ -20,7 +22,7 @@ export default async function Home() {
       <div className="border-b border-(--border) pb-8">
         <p className="text-sm font-medium text-(--accent)">Welcome</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight text-(--text)">
-          你好，我是 <span className="text-(--accent)">WJUN</span>
+          你好，我是 <span className="text-(--accent)">{blogger.username}</span>
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-(--text-soft)">
           这里是我的个人博客，记录技术笔记、生活思考和阶段性的想法。

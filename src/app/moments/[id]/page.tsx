@@ -1,4 +1,4 @@
-import { getBlogDetails, getMomentList } from "@/api";
+import { getBlogDetails, getMomentList, getBloggerInfo } from "@/api";
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import Image from "next/image";
@@ -34,7 +34,10 @@ export const revalidate = 600;
 
 export default async function MomentDetail({ params }: Props) {
   const { id } = await params;
-  const data = await getBlogDetails({ id });
+  const [data, blogger] = await Promise.all([
+    getBlogDetails({ id }),
+    getBloggerInfo(),
+  ]);
 
   return (
     <>
@@ -42,15 +45,17 @@ export default async function MomentDetail({ params }: Props) {
         <header className="border-b border-(--border) pb-8 mb-8">
           <div className="flex items-center gap-4">
             <Image
-              src="https://img.wjun.me/upload-1770694894225-9783.jpg"
-              alt="WJUN"
+              src={blogger.avatar}
+              alt={blogger.username}
               width={48}
               height={48}
               className="shrink-0 rounded-full border-2 border-(--border-strong)"
               priority
             />
             <div className="min-w-0">
-              <span className="text-lg font-semibold text-(--text)">WJUN</span>
+              <span className="text-lg font-semibold text-(--text)">
+                {blogger.username}
+              </span>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-(--text-muted)">
                 {data.createdTime && (
                   <time dateTime={data.createdTime}>
