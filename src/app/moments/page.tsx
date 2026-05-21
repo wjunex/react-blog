@@ -1,5 +1,7 @@
+import Link from "next/link";
 import List from "@/components/List/List";
 import { getQueryNumber } from "@/utils";
+import { getToken } from "@/lib/auth";
 
 type MomentsProps = {
   searchParams: Promise<{
@@ -12,6 +14,7 @@ export default async function Moments({ searchParams }: MomentsProps) {
   const query = await searchParams;
   const pageNum = getQueryNumber(query.pageNum, 1);
   const pageSize = getQueryNumber(query.pageSize, 10);
+  const isLoggedIn = !!(await getToken());
 
   return (
     <section className="space-y-6">
@@ -23,6 +26,14 @@ export default async function Moments({ searchParams }: MomentsProps) {
         <p className="mt-3 max-w-2xl text-sm leading-6 text-(--text-muted)">
           一些零碎的、即时的想法和记录。
         </p>
+        {isLoggedIn && (
+          <Link
+            href="/moments/new"
+            className="mt-4 inline-block rounded-lg bg-(--accent) px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            发布动态
+          </Link>
+        )}
       </div>
       <List
         pageNum={pageNum}

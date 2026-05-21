@@ -81,6 +81,16 @@ export function login(data: { phone: string; password: string }) {
   });
 }
 
+// ── 发布类（需登录，不缓存） ──
+
+export function saveNote(data: { content: string }) {
+  return request<null>("/api/note/save", {
+    method: "POST",
+    body: { ...data, type: 2, isPublish: true },
+    cache: "no-store",
+  });
+}
+
 // ── 评论类数据（实时性要求高，不缓存） ──
 
 export function getBlogCommentTree(data: { slug?: string; id?: string }) {

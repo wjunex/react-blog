@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { login as loginAPI } from "@/api";
+import { login as loginAPI, saveNote } from "@/api";
 
 type LoginState = { success?: boolean; error?: string } | null;
 
@@ -39,4 +39,22 @@ export async function logout() {
 export async function getToken() {
   const cookieStore = await cookies();
   return cookieStore.get("token")?.value;
+}
+
+type PublishState = { success?: boolean; error?: string } | null;
+
+export async function publishMoment(prevState: PublishState, formData: FormData) {
+  const content = formData.get("content") as string;
+
+  if (!content || !content.trim()) {
+    return { success: false, error: "请输入内容" };
+  }
+
+  try {
+    await saveNote({ content: content.trim() });
+    return { success: true };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "发布失败";
+    return { success: false, error: message };
+  }
 }
