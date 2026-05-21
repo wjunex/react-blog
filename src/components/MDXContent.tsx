@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import type { ComponentPropsWithoutRef } from "react";
 import type { MDXComponents } from "mdx/types";
@@ -42,6 +43,7 @@ export default function MDXContent({ source }: MDXContentProps) {
         options={{
           mdxOptions: {
             format: "md",
+            remarkPlugins: [remarkGfm],
             rehypePlugins: [rehypeHighlight],
           },
         }}
