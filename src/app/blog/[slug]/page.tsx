@@ -1,7 +1,6 @@
 import { getBlogDetails, getListByYear } from "@/api";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
-import BackToTop from "@/components/BackToTop";
 import { CommentIcon } from "@/components/Icons";
 import { formatDate, removeFirstH1 } from "@/utils";
 
@@ -77,7 +76,6 @@ export default async function BlogDetail({ params }: Props) {
         <CommentSection slug={slug} />
       </section>
 
-      <BackToTop />
     </>
   );
 }

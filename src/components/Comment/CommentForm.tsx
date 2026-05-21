@@ -3,6 +3,8 @@
 import { addBlogComment } from "@/api";
 import type { BlogComment } from "@/api/types";
 import { useState, useTransition, type FormEvent } from "react";
+import Tooltip from "@/components/Tooltip";
+import { HelpCircleIcon } from "@/components/Icons";
 
 // ---------- types ----------
 
@@ -13,8 +15,8 @@ type CommentFormProps = {
   id?: string;
   /** 回复时传入父评论信息 */
   parent?: Pick<BlogComment, "id" | "rootId" | "nickname">;
-  /** 提交成功后回调 */
-  onSuccess?: () => void;
+  /** 提交成功后回调，传入 API 返回的评论数据 */
+  onSuccess?: (comment: BlogComment) => void;
   /** 取消回复 */
   onCancel?: () => void;
 };
@@ -44,6 +46,10 @@ export default function CommentForm({
 
   const isReply = !!parent;
 
+  const rules = `<p>1. 评论提交后需经过审核，审核通过后才会公开显示，请遵守相关法律法规。</p>
+               <p>2. 邮箱不会对外公开，仅用于接收回复通知；如需收到博主回复，请填写有效邮箱。</p>
+               <p>3. 如需展示个人网站链接，请填写有效的网址，方便他人访问。</p>`;
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
@@ -62,14 +68,14 @@ export default function CommentForm({
       setError("昵称不能为空");
       return;
     }
-    if (!email) {
-      setError("邮箱不能为空");
-      return;
-    }
-    if (!isEmail(email)) {
-      setError("邮箱格式不正确");
-      return;
-    }
+    // if (!email) {
+    //   setError("邮箱不能为空");
+    //   return;
+    // }
+    // if (!isEmail(email)) {
+    //   setError("邮箱格式不正确");
+    //   return;
+    // }
     if (website && !isUrl(website)) {
       setError("网站地址格式不正确");
       return;
@@ -99,10 +105,10 @@ export default function CommentForm({
 
     startTransition(async () => {
       try {
-        await addBlogComment(comment);
+        const result = await addBlogComment(comment);
         setSuccess(true);
         form.reset();
-        onSuccess?.();
+        onSuccess?.(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "提交失败，请稍后重试");
       }
@@ -112,7 +118,7 @@ export default function CommentForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`comment-form ${isReply ? "comment-form--reply" : ""}`}
+      className={`mt-4 comment-form ${isReply ? "comment-form--reply" : ""}`}
     >
       {isReply && (
         <div className="mb-3 flex items-center justify-between text-sm text-[var(--text-muted)]">
@@ -131,7 +137,14 @@ export default function CommentForm({
       )}
 
       {!isReply && (
-        <h3 className="comment-form__title">发表评论</h3>
+        <div className="flex items-center gap-1 comment-form__title">
+          <h3 className="">发表评论</h3>
+          <Tooltip text={rules} position="right">
+            <span className="inline-flex text-(--text-muted) cursor-pointer">
+              <HelpCircleIcon />
+            </span>
+          </Tooltip>
+        </div>
       )}
 
       <div className="comment-form__fields">
@@ -152,7 +165,7 @@ export default function CommentForm({
 
         <div className="comment-form__field">
           <label htmlFor="email" className="comment-form__label">
-            邮箱 <span className="comment-form__required">*</span>
+            邮箱
           </label>
           <input
             id="email"
@@ -161,7 +174,7 @@ export default function CommentForm({
             className="comment-form__input"
             placeholder="your@email.com"
             maxLength={128}
-            required
+            // required
           />
         </div>
 
@@ -207,16 +220,8 @@ export default function CommentForm({
         </p>
       )}
 
-      <button
-        type="submit"
-        className="comment-form__submit"
-        disabled={pending}
-      >
-        {pending
-          ? "提交中…"
-          : isReply
-            ? "提交回复"
-            : "提交评论"}
+      <button type="submit" className="comment-form__submit" disabled={pending}>
+        {pending ? "提交中…" : isReply ? "提交回复" : "提交评论"}
       </button>
     </form>
   );

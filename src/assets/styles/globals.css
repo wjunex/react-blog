@@ -632,6 +632,16 @@ a.comment-item__nickname:hover {
   font-size: 12px;
 }
 
+.comment-item__pending-badge {
+  display: inline-block;
+  color: var(--accent);
+  font-size: 11px;
+  padding: 1px 6px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
 .comment-item__content {
   color: var(--text-soft);
   font-size: 14px;

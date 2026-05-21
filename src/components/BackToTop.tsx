@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ArrowUpIcon } from "@/components/Icons";
 
 const SCROLL_THRESHOLD = 300;
 
@@ -31,18 +32,7 @@ export default function BackToTop() {
           : "pointer-events-none translate-y-4 opacity-0"
       }`}
     >
-      <svg
-        viewBox="0 0 16 16"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="size-4"
-      >
-        <path d="M8 14V3" />
-        <path d="M3 7l5-5 5 5" />
-      </svg>
+      <ArrowUpIcon />
     </button>
   );
 }
