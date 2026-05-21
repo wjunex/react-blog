@@ -71,6 +71,16 @@ export function getBlogDetails(data: { slug?: string; id?: string }) {
   });
 }
 
+// ── 认证相关（不缓存） ──
+
+export function login(data: { phone: string; password: string }) {
+  return request<string>("/api/auth/login", {
+    method: "POST",
+    body: data,
+    cache: "no-store",
+  });
+}
+
 // ── 评论类数据（实时性要求高，不缓存） ──
 
 export function getBlogCommentTree(data: { slug?: string; id?: string }) {

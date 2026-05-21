@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { HamburgerIcon, CloseIcon } from "@/components/Icons";
+import { logout } from "@/lib/auth";
 
 const NAV_LIST = [
   { title: "首页", path: "/" },
@@ -24,12 +25,18 @@ function isActive(path: string, currentPathname: string) {
   );
 }
 
-export default function NavBar() {
+export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+  async function handleLogout() {
+    await logout();
+    router.refresh();
   }
 
   return (
@@ -72,8 +79,17 @@ export default function NavBar() {
           })}
         </nav>
 
-        {/* 右侧：主题切换 + 汉堡按钮 */}
+        {/* 右侧：登出 + 主题切换 + 汉堡按钮 */}
         <div className="flex items-center gap-2">
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-md px-3 py-2 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
+            >
+              退出
+            </button>
+          )}
           <ThemeToggle />
           <button
             type="button"

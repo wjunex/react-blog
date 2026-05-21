@@ -10,6 +10,18 @@ export interface RequestOptions {
   next?: { revalidate?: number };
 }
 
+async function getAuthHeader() {
+  try {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    if (token) return { Authorization: `Bearer ${token}` };
+  } catch {
+    // cookies() unavailable outside server context (e.g. generateStaticParams)
+  }
+  return {};
+}
+
 export async function request<T>(
   url: string,
   options: RequestOptions = {},
@@ -22,12 +34,15 @@ export async function request<T>(
     next,
   } = options;
 
+  const authHeader = await getAuthHeader();
+
   const res = await fetch(`${API_BASE}${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
+      ...authHeader,
       ...headers,
-    },
+    } as Record<string, string>,
     body: body ? JSON.stringify(body) : undefined,
     ...(next ? { next } : cache ? { cache } : {}),
   });
