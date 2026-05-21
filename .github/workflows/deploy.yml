@@ -4,14 +4,52 @@ on:
   push:
     branches: ["main"]
 
+env:
+  REGISTRY: crpi-nn9nq55uadvw3j9x.cn-chengdu.personal.cr.aliyuncs.com
+  NAMESPACE: rauxo
+  REPOSITORY: wjun-blog-next
+
 jobs:
-  build:
+  # =========================
+  # 1️⃣ 构建并推送镜像
+  # =========================
+  docker:
     runs-on: ubuntu-latest
 
     steps:
+      # 拉代码
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 登录 ACR
+      - name: Login to ACR
+        run: |
+          docker login \
+            --username=${{ secrets.ACR_USERNAME }} \
+            --password=${{ secrets.ACR_PASSWORD }} \
+            $REGISTRY
+
+      # 构建镜像（只用 latest）
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t $REGISTRY/$NAMESPACE/$REPOSITORY:latest \
+            .
+
+      # 推送镜像
+      - name: Push Docker Image
+        run: |
+          docker push $REGISTRY/$NAMESPACE/$REPOSITORY:latest
+
+  # =========================
+  # 2️⃣ 部署服务器
+  # =========================
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: docker
+
+    steps:
       - name: Deploy to Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -21,35 +59,25 @@ jobs:
 
           ssh -i private_key.pem -o StrictHostKeyChecking=no root@47.109.69.204 << 'EOF'
 
-            echo "🚀 Start deploying Next.js blog"
+            set -e
 
-            cd /srv/docker-app/web/wjun-blog-react
+            echo "🚀 Start deploying latest version"
 
-            # 1️⃣ 拉最新代码
-            git pull
-
-            # 2️⃣ 生成版本号（关键）
-            VERSION=$(date +%Y%m%d-%H%M%S)
-
-            echo "Building version: $VERSION"
+            docker login \
+              --username=${{ secrets.ACR_USERNAME }} \
+              --password=${{ secrets.ACR_PASSWORD }} \
+              $REGISTRY
 
             cd /srv/docker-app
 
-            # 3️⃣ 构建镜像（版本 + latest）
-            docker build \
-              -t wjun-blog-react:$VERSION \
-              -t wjun-blog-react:latest \
-              ./web/wjun-blog-react
+            # 拉最新镜像
+            docker compose pull wjun-blog-next
 
-            # 4️⃣ 重启服务
-            docker compose up -d wjun-blog-react
+            # 重启服务
+            docker compose up -d wjun-blog-next
 
-            # 5️⃣ 清理旧镜像（保留3个）
-            docker images wjun-blog-react --format "{{.Repository}}:{{.Tag}}" \
-            | grep -v latest \
-            | sort -r \
-            | awk 'NR>3 {print $1}' \
-            | xargs -r docker rmi
+            # 清理旧镜像
+            docker image prune -af
 
             echo "✅ Deploy success"
 
