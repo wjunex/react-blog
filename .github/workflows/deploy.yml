@@ -63,10 +63,12 @@ jobs:
 
             echo "🚀 Start deploying latest version"
 
-            docker login \
-              --username=${{ secrets.ACR_USERNAME }} \
-              --password=${{ secrets.ACR_PASSWORD }} \
-              $REGISTRY
+            REGISTRY="crpi-nn9nq55uadvw3j9x.cn-chengdu.personal.cr.aliyuncs.com"
+
+            echo "${{ secrets.ACR_PASSWORD }}" | docker login \
+              --username="${{ secrets.ACR_USERNAME }}" \
+              --password-stdin \
+              "$REGISTRY"
 
             echo "docker login success"
 
