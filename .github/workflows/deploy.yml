@@ -68,10 +68,16 @@ jobs:
               --password=${{ secrets.ACR_PASSWORD }} \
               $REGISTRY
 
+            echo "docker login success"
+
             cd /srv/docker-app
+
+            echo "Pulling latest image..."
 
             # 拉最新镜像
             docker compose pull wjun-blog-next
+
+            echo "Latest image pulled"
 
             # 重启服务
             docker compose up -d wjun-blog-next
