@@ -6,7 +6,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm config set registry https://registry.npmjs.org/ && npm ci --fetch-retries=5
+RUN npm ci
 
 COPY . .
 
