@@ -3,13 +3,15 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { login } from "@/lib/auth";
+import { setTokens } from "@/lib/token";
 
 export default function LoginPage() {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(login, null);
 
   useEffect(() => {
-    if (state?.success) {
+    if (state?.success && state.accessToken && state.refreshToken) {
+      setTokens(state.accessToken, state.refreshToken);
       router.push("/");
       router.refresh();
     }

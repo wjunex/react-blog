@@ -104,3 +104,8 @@ export interface BloggerInfo {
   signature?: string;
   intro?: string;  // html
 }
+
+export interface TokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}

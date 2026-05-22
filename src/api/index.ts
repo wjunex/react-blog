@@ -7,6 +7,7 @@ import {
   CategoryItem,
   TagItem,
   BloggerInfo,
+  TokenResponse,
 } from "./types";
 
 // ── 列表类数据（变更频率低，使用缓存 + 增量更新） ──
@@ -74,7 +75,23 @@ export function getBlogDetails(data: { slug?: string; id?: string }) {
 // ── 认证相关（不缓存） ──
 
 export function login(data: { phone: string; password: string }) {
-  return request<string>("/api/auth/login", {
+  return request<TokenResponse>("/api/auth/login", {
+    method: "POST",
+    body: data,
+    cache: "no-store",
+  });
+}
+
+export function refreshToken(data: { refreshToken: string }) {
+  return request<TokenResponse>("/api/auth/refresh", {
+    method: "POST",
+    body: data,
+    cache: "no-store",
+  });
+}
+
+export function logoutFromServer(data: { refreshToken: string }) {
+  return request<null>("/api/auth/logout", {
     method: "POST",
     body: data,
     cache: "no-store",

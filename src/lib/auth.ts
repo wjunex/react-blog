@@ -1,9 +1,14 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { login as loginAPI, saveNote } from "@/api";
+import { login as loginAPI, logoutFromServer, saveNote } from "@/api";
 
-type LoginState = { success?: boolean; error?: string } | null;
+type LoginState = {
+  success?: boolean;
+  error?: string;
+  accessToken?: string;
+  refreshToken?: string;
+} | null;
 
 export async function login(prevState: LoginState, formData: FormData) {
   const phone = formData.get("phone") as string;
@@ -14,31 +19,59 @@ export async function login(prevState: LoginState, formData: FormData) {
   }
 
   try {
-    const token = await loginAPI({ phone, password });
+    const tokens = await loginAPI({ phone, password });
     const cookieStore = await cookies();
-    cookieStore.set("token", token, {
+
+    // 清除旧版单 token（迁移兼容）
+    cookieStore.delete("token");
+
+    cookieStore.set("accessToken", tokens.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 15, // 15 minutes
       path: "/",
     });
-    return { success: true };
+
+    cookieStore.set("refreshToken", tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
+    });
+
+    return {
+      success: true,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
   } catch (e) {
     const message = e instanceof Error ? e.message : "登录失败";
     return { success: false, error: message };
   }
 }
 
-export async function logout() {
+export async function logout(refreshToken?: string) {
+  // 通知后端登出（不关心结果）
+  if (refreshToken) {
+    try {
+      await logoutFromServer({ refreshToken });
+    } catch {
+      // 即使后端失败也继续清除本地状态
+    }
+  }
+
   const cookieStore = await cookies();
-  cookieStore.delete("token");
+  cookieStore.delete("accessToken");
+  cookieStore.delete("refreshToken");
+  cookieStore.delete("token"); // 旧版兼容
   return { success: true };
 }
 
 export async function getToken() {
   const cookieStore = await cookies();
-  return cookieStore.get("token")?.value;
+  return cookieStore.get("accessToken")?.value;
 }
 
 type PublishState = { success?: boolean; error?: string } | null;

@@ -6,6 +6,7 @@ import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { HamburgerIcon, CloseIcon } from "@/components/Icons";
 import { logout } from "@/lib/auth";
+import { getRefreshToken, clearTokens } from "@/lib/token";
 
 const NAV_LIST = [
   { title: "首页", path: "/" },
@@ -35,7 +36,9 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
   }
 
   async function handleLogout() {
-    await logout();
+    const token = getRefreshToken();
+    await logout(token ?? undefined);
+    clearTokens();
     router.refresh();
   }
 
