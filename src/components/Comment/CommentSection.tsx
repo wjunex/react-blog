@@ -1,6 +1,7 @@
-import { getBlogCommentTree } from "@/api";
+import { getBlogCommentTree, getBloggerInfo } from "@/api";
+import { getToken } from "@/lib/auth";
 import CommentList from "./CommentList";
-import { BlogComment } from "@/api/types";
+import type { BlogComment, BloggerInfo } from "@/api/types";
 
 // ---------- types ----------
 
@@ -22,7 +23,23 @@ export default async function CommentSection({ slug, id }: CommentSectionProps) 
     initialComments = [];
   }
 
+  let bloggerInfo: BloggerInfo | null = null;
+  try {
+    bloggerInfo = await getBloggerInfo();
+  } catch {
+    // 获取博主信息失败时不阻塞评论展示
+  }
+
+  const token = await getToken();
+  const isLoggedIn = !!token;
+
   return (
-    <CommentList slug={slug} id={id} initialComments={initialComments} />
+    <CommentList
+      slug={slug}
+      id={id}
+      initialComments={initialComments}
+      bloggerInfo={bloggerInfo}
+      isLoggedIn={isLoggedIn}
+    />
   );
 }

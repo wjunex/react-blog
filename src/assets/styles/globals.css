@@ -642,6 +642,17 @@ a.comment-item__nickname:hover {
   opacity: 0.7;
 }
 
+.comment-item__blogger-label {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
 .comment-item__content {
   color: var(--text-soft);
   font-size: 14px;

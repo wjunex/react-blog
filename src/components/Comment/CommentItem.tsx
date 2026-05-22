@@ -1,6 +1,6 @@
 "use client";
 
-import type { BlogComment } from "@/api/types";
+import type { BlogComment, BloggerInfo } from "@/api/types";
 import { useState, useMemo, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import { formatDate, DATE_TIME } from "@/utils";
@@ -12,6 +12,8 @@ type CommentItemProps = {
   slug?: string;
   id?: string;
   onRefresh: () => void;
+  bloggerInfo?: BloggerInfo | null;
+  isLoggedIn?: boolean;
 };
 
 // ---------- component ----------
@@ -21,6 +23,8 @@ export default function CommentItem({
   slug,
   id,
   onRefresh,
+  bloggerInfo,
+  isLoggedIn,
 }: CommentItemProps) {
   const replyStorageKey = `pending-replies-${comment.id}`;
 
@@ -66,6 +70,11 @@ export default function CommentItem({
   }, [ready, pendingReplies, replyStorageKey]);
 
   const isPending = comment.status !== 1;
+  const isBlogger = !!(
+    bloggerInfo &&
+    comment.userId &&
+    comment.userId === bloggerInfo.id
+  );
 
   // 过滤掉已审核通过（出现在服务端 children 中）的本地待审核回复
   const displayPendingReplies = useMemo(
@@ -82,9 +91,12 @@ export default function CommentItem({
     (comment.children && comment.children.length > 0) ||
     (ready && displayPendingReplies.length > 0);
 
-  const avatar = comment.avatar
-    ? comment.avatar
-    : `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(comment.nickname?.slice(0, 1) ?? "?")}`;
+  const displayName = isBlogger ? bloggerInfo!.username : comment.nickname;
+  const avatar = isBlogger
+    ? bloggerInfo!.avatar
+    : comment.avatar
+      ? comment.avatar
+      : `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(comment.nickname?.slice(0, 1) ?? "?")}`;
 
   return (
     <div className="comment-item">
@@ -105,19 +117,22 @@ export default function CommentItem({
           {/* 头部信息 */}
           <div className="comment-item__header">
             <div className="comment-item__meta">
-              {comment.website ? (
+              {comment.website && !isBlogger ? (
                 <a
                   href={comment.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="comment-item__nickname"
                 >
-                  {comment.nickname}
+                  {displayName}
                 </a>
               ) : (
                 <span className="comment-item__nickname">
-                  {comment.nickname}
+                  {displayName}
                 </span>
+              )}
+              {isBlogger && (
+                <span className="comment-item__blogger-label">博主</span>
               )}
 
               {comment.replyNickname && (
@@ -185,6 +200,8 @@ export default function CommentItem({
                   onRefresh();
                 }}
                 onCancel={() => setShowReply(false)}
+                bloggerInfo={bloggerInfo}
+                isLoggedIn={isLoggedIn}
               />
             </div>
           )}
@@ -201,6 +218,8 @@ export default function CommentItem({
               slug={slug}
               id={id}
               onRefresh={onRefresh}
+              bloggerInfo={bloggerInfo}
+              isLoggedIn={isLoggedIn}
             />
           ))}
           {displayPendingReplies.map((child) => (
@@ -210,6 +229,8 @@ export default function CommentItem({
               slug={slug}
               id={id}
               onRefresh={onRefresh}
+              bloggerInfo={bloggerInfo}
+              isLoggedIn={isLoggedIn}
             />
           ))}
         </div>

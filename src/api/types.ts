@@ -98,6 +98,7 @@ export interface CategoryItem {
 }
 
 export interface BloggerInfo {
+  id: string;
   username: string;
   avatar: string;
   signature?: string;

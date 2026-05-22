@@ -1,7 +1,7 @@
 "use client";
 
 import { addBlogComment } from "@/api";
-import type { BlogComment } from "@/api/types";
+import type { BlogComment, BloggerInfo } from "@/api/types";
 import { useState, useTransition, type FormEvent } from "react";
 import Tooltip from "@/components/Tooltip";
 import { HelpCircleIcon } from "@/components/Icons";
@@ -19,6 +19,10 @@ type CommentFormProps = {
   onSuccess?: (comment: BlogComment) => void;
   /** 取消回复 */
   onCancel?: () => void;
+  /** 博主信息（服务端获取） */
+  bloggerInfo?: BloggerInfo | null;
+  /** 是否已登录 */
+  isLoggedIn?: boolean;
 };
 
 // ---------- helpers ----------
@@ -39,6 +43,8 @@ export default function CommentForm({
   parent,
   onSuccess,
   onCancel,
+  bloggerInfo,
+  isLoggedIn,
 }: CommentFormProps) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
@@ -58,13 +64,13 @@ export default function CommentForm({
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const nickname = (data.get("nickname") as string).trim();
-    const email = (data.get("email") as string).trim();
-    const website = (data.get("website") as string).trim();
+    const nickname = (data.get("nickname") as string)?.trim() || "";
+    const email = (data.get("email") as string)?.trim() || "";
+    const website = (data.get("website") as string)?.trim() || "";
     const content = (data.get("content") as string).trim();
 
     // 验证
-    if (!nickname) {
+    if (!isLoggedIn && !nickname) {
       setError("昵称不能为空");
       return;
     }
@@ -101,6 +107,12 @@ export default function CommentForm({
       comment.parentId = parent.id;
       comment.rootId = parent.rootId ?? parent.id;
       comment.replyNickname = parent.nickname;
+    }
+
+    if (isLoggedIn && bloggerInfo) {
+      comment.userId = bloggerInfo.id;
+      comment.nickname = bloggerInfo.username;
+      comment.avatar = bloggerInfo.avatar;
     }
 
     startTransition(async () => {
@@ -147,50 +159,63 @@ export default function CommentForm({
         </div>
       )}
 
+      {isLoggedIn && bloggerInfo && (
+        <p className="text-sm text-[var(--text-muted)]">
+          已登录，将以{" "}
+          <strong className="text-[var(--text)]">{bloggerInfo.username}</strong>{" "}
+          身份评论
+        </p>
+      )}
+
       <div className="comment-form__fields">
-        <div className="comment-form__field">
-          <label htmlFor="nickname" className="comment-form__label">
-            昵称 <span className="comment-form__required">*</span>
-          </label>
-          <input
-            id="nickname"
-            name="nickname"
-            type="text"
-            className="comment-form__input"
-            placeholder="你的昵称"
-            maxLength={32}
-            required
-          />
-        </div>
+        {!isLoggedIn && (
+          <div className="comment-form__field">
+            <label htmlFor="nickname" className="comment-form__label">
+              昵称 <span className="comment-form__required">*</span>
+            </label>
+            <input
+              id="nickname"
+              name="nickname"
+              type="text"
+              className="comment-form__input"
+              placeholder="你的昵称"
+              maxLength={32}
+              required
+            />
+          </div>
+        )}
 
-        <div className="comment-form__field">
-          <label htmlFor="email" className="comment-form__label">
-            邮箱
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            className="comment-form__input"
-            placeholder="your@email.com"
-            maxLength={128}
-            // required
-          />
-        </div>
+        {!isLoggedIn && (
+          <div className="comment-form__field">
+            <label htmlFor="email" className="comment-form__label">
+              邮箱
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              className="comment-form__input"
+              placeholder="your@email.com"
+              maxLength={128}
+            />
+          </div>
+        )}
 
-        <div className="comment-form__field">
-          <label htmlFor="website" className="comment-form__label">
-            网站
-          </label>
-          <input
-            id="website"
-            name="website"
-            type="url"
-            className="comment-form__input"
-            placeholder="https://"
-            maxLength={256}
-          />
-        </div>
+        {!isLoggedIn && (
+          <div className="comment-form__field">
+            <label htmlFor="website" className="comment-form__label">
+              网站
+            </label>
+            <input
+              id="website"
+              name="website"
+              type="url"
+              className="comment-form__input"
+              placeholder="https://"
+              maxLength={256}
+            />
+          </div>
+        )}
       </div>
 
       <div className="comment-form__field">

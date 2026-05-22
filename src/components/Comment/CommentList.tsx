@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { getBlogCommentTree } from "@/api";
-import type { BlogComment } from "@/api/types";
+import type { BlogComment, BloggerInfo } from "@/api/types";
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
 
@@ -35,6 +35,8 @@ type CommentListProps = {
   slug?: string;
   id?: string;
   initialComments: BlogComment[];
+  bloggerInfo: BloggerInfo | null;
+  isLoggedIn: boolean;
 };
 
 // ---------- helpers ----------
@@ -60,6 +62,8 @@ export default function CommentList({
   slug,
   id,
   initialComments,
+  bloggerInfo,
+  isLoggedIn,
 }: CommentListProps) {
   const storageKey = `pending-comments-${slug || id}`;
   const [comments, setComments] = useState(initialComments);
@@ -125,6 +129,8 @@ export default function CommentList({
               slug={slug}
               id={id}
               onRefresh={refresh}
+              bloggerInfo={bloggerInfo}
+              isLoggedIn={isLoggedIn}
             />
           ))}
           {ready &&
@@ -135,6 +141,8 @@ export default function CommentList({
                 slug={slug}
                 id={id}
                 onRefresh={refresh}
+                bloggerInfo={bloggerInfo}
+                isLoggedIn={isLoggedIn}
               />
             ))}
         </div>
@@ -142,7 +150,13 @@ export default function CommentList({
 
       {/* 一级评论表单 */}
       {(slug || id !== undefined) && (
-        <CommentForm slug={slug} id={id} onSuccess={handleNewComment} />
+        <CommentForm
+          slug={slug}
+          id={id}
+          onSuccess={handleNewComment}
+          bloggerInfo={bloggerInfo}
+          isLoggedIn={isLoggedIn}
+        />
       )}
     </section>
   );
