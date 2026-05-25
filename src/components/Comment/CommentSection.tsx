@@ -1,7 +1,7 @@
-import { getBlogCommentTree, getBloggerInfo } from "@/api";
+import { apiPublicCommentTree, apiPublicUserInfo } from "@/api/generated";
 import { getToken } from "@/lib/auth";
 import CommentList from "./CommentList";
-import type { BlogComment, BloggerInfo } from "@/api/types";
+import type { NoteCommentVO, UserVO } from "@/api/generated/models";
 
 // ---------- types ----------
 
@@ -13,19 +13,19 @@ type CommentSectionProps = {
 // ---------- component ----------
 
 export default async function CommentSection({ slug, id }: CommentSectionProps) {
-  let initialComments: BlogComment[];
+  let initialComments: NoteCommentVO[];
 
   try {
-    initialComments = await getBlogCommentTree(
+    initialComments = await apiPublicCommentTree(
       id !== undefined ? { id } : { slug: slug! },
     );
   } catch {
     initialComments = [];
   }
 
-  let bloggerInfo: BloggerInfo | null = null;
+  let bloggerInfo: UserVO | null = null;
   try {
-    bloggerInfo = await getBloggerInfo();
+    bloggerInfo = await apiPublicUserInfo();
   } catch {
     // 获取博主信息失败时不阻塞评论展示
   }

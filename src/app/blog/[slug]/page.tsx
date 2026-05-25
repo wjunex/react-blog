@@ -1,4 +1,4 @@
-import { getBlogDetails, getListByYear } from "@/api";
+import { apiPublicDetail, apiPublicListByYear } from "@/api/generated";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
 import { CommentIcon } from "@/components/Icons";
@@ -12,11 +12,11 @@ type Props = {
 
 /** 预生成所有已发布文章的静态页面 */
 export async function generateStaticParams() {
-  const archives = await getListByYear();
+  const archives = await apiPublicListByYear({});
   const slugs: { slug: string }[] = [];
 
-  for (const list of Object.values(archives || {})) {
-    for (const item of list || []) {
+  for (const group of archives || []) {
+    for (const item of group.notes || []) {
       if (item.slug) {
         slugs.push({ slug: item.slug });
       }
@@ -31,11 +31,9 @@ export const revalidate = 600;
 
 export default async function BlogDetail({ params }: Props) {
   const { slug } = await params;
-  const data = await getBlogDetails({
-    slug,
-  });
+  const data = await apiPublicDetail({ slug });
 
-  data.content = removeFirstH1(data.content);
+  data.content = removeFirstH1(data.content!);
 
   return (
     <>

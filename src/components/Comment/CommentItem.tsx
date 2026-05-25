@@ -1,6 +1,6 @@
 "use client";
 
-import type { BlogComment, BloggerInfo } from "@/api/types";
+import type { NoteCommentVO, UserVO } from "@/api/generated/models";
 import { useState, useMemo, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import { formatDate, DATE_TIME } from "@/utils";
@@ -8,11 +8,11 @@ import { formatDate, DATE_TIME } from "@/utils";
 // ---------- types ----------
 
 type CommentItemProps = {
-  comment: BlogComment;
+  comment: NoteCommentVO;
   slug?: string;
   id?: string;
   onRefresh: () => void;
-  bloggerInfo?: BloggerInfo | null;
+  bloggerInfo?: UserVO | null;
   isLoggedIn?: boolean;
 };
 
@@ -29,7 +29,7 @@ export default function CommentItem({
   const replyStorageKey = `pending-replies-${comment.id}`;
 
   const [showReply, setShowReply] = useState(false);
-  const [pendingReplies, setPendingReplies] = useState<BlogComment[]>([]);
+  const [pendingReplies, setPendingReplies] = useState<NoteCommentVO[]>([]);
   const [ready, setReady] = useState(false);
 
   // 仅在客户端挂载后从 localStorage 恢复
@@ -38,7 +38,7 @@ export default function CommentItem({
     try {
       const raw = localStorage.getItem(replyStorageKey);
       if (raw) {
-        const stored = JSON.parse(raw) as BlogComment[];
+        const stored = JSON.parse(raw) as NoteCommentVO[];
         const filtered = stored.filter(
           (pr) => !(comment.children || []).some((c) => c.id === pr.id),
         );

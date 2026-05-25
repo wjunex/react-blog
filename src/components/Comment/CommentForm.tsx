@@ -1,7 +1,7 @@
 "use client";
 
-import { addBlogComment } from "@/api";
-import type { BlogComment, BloggerInfo } from "@/api/types";
+import { apiPublicCommentSave } from "@/api/generated";
+import type { NoteCommentVO, UserVO, PublicCommentAddDTO } from "@/api/generated/models";
 import { useState, useTransition, type FormEvent } from "react";
 import Tooltip from "@/components/Tooltip";
 import { HelpCircleIcon } from "@/components/Icons";
@@ -14,13 +14,13 @@ type CommentFormProps = {
   /** 动态 id */
   id?: string;
   /** 回复时传入父评论信息 */
-  parent?: Pick<BlogComment, "id" | "rootId" | "nickname">;
+  parent?: Pick<NoteCommentVO, "id" | "rootId" | "nickname">;
   /** 提交成功后回调，传入 API 返回的评论数据 */
-  onSuccess?: (comment: BlogComment) => void;
+  onSuccess?: (comment: NoteCommentVO) => void;
   /** 取消回复 */
   onCancel?: () => void;
   /** 博主信息（服务端获取） */
-  bloggerInfo?: BloggerInfo | null;
+  bloggerInfo?: UserVO | null;
   /** 是否已登录 */
   isLoggedIn?: boolean;
 };
@@ -91,11 +91,11 @@ export default function CommentForm({
       return;
     }
 
-    const comment: BlogComment = {
-      slug: slug || (id !== undefined ? id : ""),
+    const comment: Record<string, unknown> = {
+      slug: slug || "",
       content,
       nickname,
-      email,
+      email: email || undefined,
       website: website || undefined,
     };
 
@@ -110,17 +110,16 @@ export default function CommentForm({
     }
 
     if (isLoggedIn && bloggerInfo) {
-      comment.userId = bloggerInfo.id;
       comment.nickname = bloggerInfo.username;
       comment.avatar = bloggerInfo.avatar;
     }
 
     startTransition(async () => {
       try {
-        const result = await addBlogComment(comment);
+        const result = await apiPublicCommentSave(comment as unknown as PublicCommentAddDTO);
         setSuccess(true);
         form.reset();
-        onSuccess?.(result);
+        onSuccess?.(result as unknown as NoteCommentVO);
       } catch (err) {
         setError(err instanceof Error ? err.message : "提交失败，请稍后重试");
       }

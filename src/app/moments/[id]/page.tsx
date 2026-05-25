@@ -1,4 +1,4 @@
-import { getBlogDetails, getMomentList, getBloggerInfo } from "@/api";
+import { apiPublicDetail, apiPublicMomentList, apiPublicUserInfo } from "@/api/generated";
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import Image from "next/image";
@@ -16,13 +16,13 @@ export async function generateStaticParams() {
   const pageSize = 100;
 
   while (true) {
-    const result = await getMomentList({ pageNum, pageSize });
-    for (const item of result.records) {
+    const result = await apiPublicMomentList({ pageNum, pageSize });
+    for (const item of result.records!) {
       if (item.id) {
         ids.push({ id: String(item.id) });
       }
     }
-    if (ids.length >= result.total) break;
+    if (ids.length >= result.total!) break;
     pageNum++;
   }
 
@@ -35,8 +35,8 @@ export const revalidate = 600;
 export default async function MomentDetail({ params }: Props) {
   const { id } = await params;
   const [data, blogger] = await Promise.all([
-    getBlogDetails({ id }),
-    getBloggerInfo(),
+    apiPublicDetail({ id }),
+    apiPublicUserInfo(),
   ]);
 
   return (
@@ -45,8 +45,8 @@ export default async function MomentDetail({ params }: Props) {
         <header className="border-b border-(--border) pb-8 mb-8">
           <div className="flex items-center gap-4">
             <Image
-              src={blogger.avatar}
-              alt={blogger.username}
+              src={blogger.avatar!}
+              alt={blogger.username!}
               width={48}
               height={48}
               className="shrink-0 rounded-full border-2 border-(--border-strong)"

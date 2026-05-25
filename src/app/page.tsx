@@ -1,20 +1,20 @@
 import Link from "next/link";
-import { getBlogList, getMomentList, getBloggerInfo } from "@/api";
+import { apiPublicList, apiPublicMomentList, apiPublicUserInfo } from "@/api/generated";
 import BlogItem from "@/components/List/BlogItem";
 import MomentItem from "@/components/List/MomentItem";
 
 export default async function Home() {
   const [blogResult, momentResult] = await Promise.allSettled([
-    getBlogList({ pageNum: 1, pageSize: 5 }),
-    getMomentList({ pageNum: 1, pageSize: 5 }),
+    apiPublicList({ pageNum: 1, pageSize: 5 }),
+    apiPublicMomentList({ pageNum: 1, pageSize: 5 }),
   ]);
 
-  const blogger = await getBloggerInfo();
+  const blogger = await apiPublicUserInfo();
 
   const recentPosts =
-    blogResult.status === "fulfilled" ? blogResult.value.records : [];
+    blogResult.status === "fulfilled" ? (blogResult.value.records ?? []) : [];
   const recentMoments =
-    momentResult.status === "fulfilled" ? momentResult.value.records : [];
+    momentResult.status === "fulfilled" ? (momentResult.value.records ?? []) : [];
 
   return (
     <section className="space-y-12">

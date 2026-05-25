@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { login as loginAPI, logoutFromServer, saveNote } from "@/api";
+import { apiAuthLogin, apiAuthLogout, apiNoteSave } from "@/api/generated";
 
 type LoginState = {
   success?: boolean;
@@ -19,13 +19,13 @@ export async function login(prevState: LoginState, formData: FormData) {
   }
 
   try {
-    const tokens = await loginAPI({ phone, password });
+    const tokens = await apiAuthLogin({ phone, password });
     const cookieStore = await cookies();
 
     // 清除旧版单 token（迁移兼容）
     cookieStore.delete("token");
 
-    cookieStore.set("accessToken", tokens.accessToken, {
+    cookieStore.set("accessToken", tokens.accessToken!, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
@@ -33,7 +33,7 @@ export async function login(prevState: LoginState, formData: FormData) {
       path: "/",
     });
 
-    cookieStore.set("refreshToken", tokens.refreshToken, {
+    cookieStore.set("refreshToken", tokens.refreshToken!, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
@@ -56,7 +56,7 @@ export async function logout(refreshToken?: string) {
   // 通知后端登出（不关心结果）
   if (refreshToken) {
     try {
-      await logoutFromServer({ refreshToken });
+      await apiAuthLogout({ refreshToken });
     } catch {
       // 即使后端失败也继续清除本地状态
     }
@@ -84,7 +84,7 @@ export async function publishMoment(prevState: PublishState, formData: FormData)
   }
 
   try {
-    await saveNote({ content: content.trim() });
+    await apiNoteSave({ content: content.trim(), type: 2, isPublish: true });
     return { success: true };
   } catch (e) {
     const message = e instanceof Error ? e.message : "发布失败";

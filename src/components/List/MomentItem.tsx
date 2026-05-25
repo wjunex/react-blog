@@ -1,12 +1,13 @@
-import { BlogItem as BlogItemType } from "@/api/types";
-import { getBloggerInfo } from "@/api";
+import type { NoteListVO } from "@/api/generated/models";
+type BlogItemType = NoteListVO;
+import { apiPublicUserInfo } from "@/api/generated";
 import Link from "next/link";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";
 import Image from "next/image";
 
 export default async function MomentItem({ item }: { item: BlogItemType }) {
-  const blogger = await getBloggerInfo();
+  const blogger = await apiPublicUserInfo();
   const date = formatDate(item.createdTime, DATE_TIME_WEEKDAY);
   const href = `/moments/${item.id}`;
 
@@ -15,8 +16,8 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
       <Link href={href}>
         <div className="flex items-start gap-3">
           <Image
-            src={blogger.avatar}
-            alt={blogger.username}
+            src={blogger.avatar!}
+            alt={blogger.username!}
             width={40}
             height={40}
             className="shrink-0 rounded-full border-2 border-(--border-strong)"

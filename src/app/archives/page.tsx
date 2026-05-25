@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { getListByYear, getCategoryList, getTagList } from "@/api";
+import { apiPublicListByYear, apiPublicCategoryList, apiPublicTagList } from "@/api/generated";
 import { formatDate } from "@/utils";
-import { BlogItem, CategoryItem, TagItem } from "@/api/types";
+import type { NoteListVO, Category, Tag } from "@/api/generated/models";
 
 // ── helpers ──────────────────────────────────────────────
 const CATEGORY_TYPES = [
@@ -12,15 +12,15 @@ const CATEGORY_TYPES = [
 // ── page ─────────────────────────────────────────────────
 export default async function Archives() {
   const [archives, categoryList, tagList] = await Promise.all([
-    getListByYear(),
-    getCategoryList(),
-    getTagList(),
+    apiPublicListByYear({}),
+    apiPublicCategoryList(),
+    apiPublicTagList(),
   ]);
 
-  const archivesList = Object.entries(archives || {})
-    .map(([year, list]) => ({
-      year: Number(year),
-      children: (list || []) as BlogItem[],
+  const archivesList = (archives || [])
+    .map((group) => ({
+      year: group.year ?? 0,
+      children: group.notes || [],
     }))
     .sort((a, b) => b.year - a.year);
 
@@ -28,7 +28,7 @@ export default async function Archives() {
   const groupedCategories = CATEGORY_TYPES.map((type) => ({
     ...type,
     items: (categoryList || []).filter(
-      (c: CategoryItem) => c.type === type.key,
+      (c) => c.type === type.key,
     ),
   })).filter((g) => g.items.length > 0);
 
@@ -60,7 +60,7 @@ export default async function Archives() {
                   {group.label}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {group.items.map((cat: CategoryItem) => (
+                  {group.items.map((cat) => (
                     <span
                       key={cat.id}
                       className="inline-flex items-center rounded-full border border-(--border) px-2.5 py-0.5 text-xs text-(--text-soft) transition-colors hover:border-(--accent) hover:text-(--accent)"
@@ -78,7 +78,7 @@ export default async function Archives() {
                 标签
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {tagList?.map((tag: TagItem) => (
+                {tagList?.map((tag) => (
                   <span
                     key={tag.id}
                     className="inline-flex items-center rounded-full border border-(--border) px-2.5 py-0.5 text-xs text-(--text-soft) transition-colors hover:border-(--accent) hover:text-(--accent)"
@@ -114,7 +114,7 @@ export default async function Archives() {
                 {/* 文章列表 */}
                 <ul className="mt-3 space-y-2">
                   {item.children.length > 0 ? (
-                    item.children.map((blog: BlogItem) => (
+                    item.children.map((blog) => (
                       <li key={blog.id} className="flex items-baseline gap-3">
                         <time
                           dateTime={blog.createdTime?.slice(0, 10)}

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import { getBloggerInfo } from "@/api";
+import { apiPublicUserInfo } from "@/api/generated";
 import { GitHubIcon, MailIcon, GlobeIcon } from "@/components/Icons";
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ const socialLinks = [
 ] as const;
 
 export default async function AboutPage() {
-  const blogger = await getBloggerInfo();
+  const blogger = await apiPublicUserInfo();
 
   return (
     <section className="space-y-8">
@@ -47,8 +47,8 @@ export default async function AboutPage() {
         {/* 头像 */}
         <div className="shrink-0">
           <Image
-            src={blogger.avatar}
-            alt={blogger.username}
+            src={blogger.avatar!}
+            alt={blogger.username!}
             width={100}
             height={100}
             className="rounded-full border-2 border-(--border-strong)"

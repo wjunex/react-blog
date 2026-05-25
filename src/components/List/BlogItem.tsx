@@ -1,4 +1,5 @@
-import { BlogItem as BlogItemType } from "@/api/types";
+import type { NoteListVO } from "@/api/generated/models";
+type BlogItemType = NoteListVO;
 import Link from "next/link";
 import { formatDate } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";

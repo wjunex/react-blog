@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { getBlogCommentTree } from "@/api";
-import type { BlogComment, BloggerInfo } from "@/api/types";
+import { apiPublicCommentTree } from "@/api/generated";
+import type { NoteCommentVO, UserVO } from "@/api/generated/models";
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
 
 // ---------- localStorage helpers ----------
 
-function loadPending(key: string): BlogComment[] {
+function loadPending(key: string): NoteCommentVO[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(key);
@@ -18,7 +18,7 @@ function loadPending(key: string): BlogComment[] {
   }
 }
 
-function savePending(key: string, list: BlogComment[]) {
+function savePending(key: string, list: NoteCommentVO[]) {
   if (typeof window === "undefined") return;
   try {
     if (list.length > 0) {
@@ -34,20 +34,20 @@ function savePending(key: string, list: BlogComment[]) {
 type CommentListProps = {
   slug?: string;
   id?: string;
-  initialComments: BlogComment[];
-  bloggerInfo: BloggerInfo | null;
+  initialComments: NoteCommentVO[];
+  bloggerInfo: UserVO | null;
   isLoggedIn: boolean;
 };
 
 // ---------- helpers ----------
 
-function countAll(comments: BlogComment[]): number {
+function countAll(comments: NoteCommentVO[]): number {
   return comments.reduce((sum, c) => {
     return sum + 1 + (c.children ? countAll(c.children) : 0);
   }, 0);
 }
 
-function findCommentById(comments: BlogComment[], id?: string): boolean {
+function findCommentById(comments: NoteCommentVO[], id?: string): boolean {
   if (!id) return false;
   for (const c of comments) {
     if (c.id === id) return true;
@@ -67,7 +67,7 @@ export default function CommentList({
 }: CommentListProps) {
   const storageKey = `pending-comments-${slug || id}`;
   const [comments, setComments] = useState(initialComments);
-  const [pendingComments, setPendingComments] = useState<BlogComment[]>([]);
+  const [pendingComments, setPendingComments] = useState<NoteCommentVO[]>([]);
   const [ready, setReady] = useState(false);
 
   // 仅在客户端挂载后从 localStorage 恢复，确保 hydration 时与服务端一致
@@ -93,7 +93,7 @@ export default function CommentList({
 
   const refresh = useCallback(async () => {
     try {
-      const fresh = await getBlogCommentTree(
+      const fresh = await apiPublicCommentTree(
         id !== undefined ? { id } : { slug: slug! },
       );
       setComments(fresh);
@@ -105,7 +105,7 @@ export default function CommentList({
     }
   }, [slug, id]);
 
-  const handleNewComment = useCallback((comment: BlogComment) => {
+  const handleNewComment = useCallback((comment: NoteCommentVO) => {
     setPendingComments((prev) => [comment, ...prev]);
     refresh();
   }, [refresh]);
