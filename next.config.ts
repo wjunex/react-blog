@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    if (process.env.NEXT_PUBLIC_API_BASE !== "http://localhost:3000") return [];
+    return [
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:3000/api/:path*",
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.svg": {

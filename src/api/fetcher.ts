@@ -1,6 +1,13 @@
 import { getAccessToken } from "@/lib/token";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
+const BASE = process.env.NEXT_PUBLIC_API_BASE!;
+
+const API_BASE =
+  typeof window === "undefined"
+    ? BASE
+    : BASE === "http://localhost:3000"
+      ? ""
+      : BASE;
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 
