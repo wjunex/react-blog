@@ -2,12 +2,16 @@
 
 import { apiPublicFriendLinkApply } from "@/api/generated";
 import type { FriendLink } from "@/api/generated/models";
-import { useState, useTransition, type FormEvent } from "react";
+import { useState, useTransition, useCallback, type FormEvent } from "react";
+import Tooltip from "@/components/Tooltip";
+import { HelpCircleIcon } from "@/components/Icons";
+import type { UserVO } from "@/api/generated/models";
 
 // ---------- types ----------
 
 type FriendLinkFormProps = {
   onSuccess?: (link: FriendLink) => void;
+  bloggerInfo?: UserVO | null;
 };
 
 // ---------- helpers ----------
@@ -18,10 +22,27 @@ function isUrl(value: string) {
 
 // ---------- component ----------
 
-export default function FriendLinkForm({ onSuccess }: FriendLinkFormProps) {
+export default function FriendLinkForm({ onSuccess, bloggerInfo }: FriendLinkFormProps) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(() => {
+    if (!bloggerInfo) return;
+    const origin = window.location.origin;
+    const text = [
+      `站点名称：${bloggerInfo.username} blog`,
+      `站点地址：${origin}`,
+      `Logo：${bloggerInfo.avatar}`,
+      `站点描述：${bloggerInfo.signature || ""}`,
+    ].join("\n");
+
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [bloggerInfo]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,10 +97,19 @@ export default function FriendLinkForm({ onSuccess }: FriendLinkFormProps) {
     });
   }
 
+  const rules = `<p>1. 申请提交后需经过审核，审核通过后才会公开展示，请确保站点昵称和Logo合法。</p>
+               <p>2. 请确保你的站点内容健康、可正常访问</p>
+               <p>3.博主会不定期进行回访，若站点长时间无法访问将被移除</p>`;
+
   return (
     <form onSubmit={handleSubmit} className="mt-4 comment-form">
       <div className="flex items-center gap-1 comment-form__title">
         <h3 className="">申请友链</h3>
+        <Tooltip text={rules} position="right">
+          <span className="inline-flex text-(--text-muted) cursor-pointer">
+            <HelpCircleIcon />
+          </span>
+        </Tooltip>
       </div>
 
       <div className="comment-form__fields">
@@ -168,9 +198,20 @@ export default function FriendLinkForm({ onSuccess }: FriendLinkFormProps) {
         </p>
       )}
 
-      <button type="submit" className="comment-form__submit" disabled={pending}>
-        {pending ? "提交中…" : "提交申请"}
-      </button>
+      <div className="flex items-center gap-3">
+        <button type="submit" className="comment-form__submit" disabled={pending}>
+          {pending ? "提交中…" : "提交申请"}
+        </button>
+        {bloggerInfo && (
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="comment-form__submit rounded-md border! border-(--border-strong)! bg-(--surface)! px-4 py-2 text-sm font-medium text-(--text-soft)! transition-colors! hover:border-(--accent)! hover:text-(--accent)!"
+          >
+            {copied ? "已复制" : "本站信息"}
+          </button>
+        )}
+      </div>
     </form>
   );
 }

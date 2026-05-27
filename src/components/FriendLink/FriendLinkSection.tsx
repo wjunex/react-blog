@@ -1,14 +1,17 @@
-import { apiPublicFriendLinkList } from "@/api/generated";
-import type { FriendLink } from "@/api/generated/models";
+import { apiPublicFriendLinkList, apiPublicUserInfo } from "@/api/generated";
+import type { FriendLink, UserVO } from "@/api/generated/models";
 import FriendLinkForm from "./FriendLinkForm";
 
 export default async function FriendLinkSection() {
-  let links: FriendLink[];
-  try {
-    links = await apiPublicFriendLinkList();
-  } catch {
-    links = [];
-  }
+  const [linksResult, bloggerInfo] = await Promise.allSettled([
+    apiPublicFriendLinkList(),
+    apiPublicUserInfo(),
+  ]);
+
+  const links: FriendLink[] =
+    linksResult.status === "fulfilled" ? linksResult.value : [];
+  const blogger: UserVO | null =
+    bloggerInfo.status === "fulfilled" ? bloggerInfo.value : null;
 
   const approved = (links || []).filter((l) => l.status === 1);
 
@@ -53,7 +56,7 @@ export default async function FriendLinkSection() {
         <p className="text-xs text-(--text-muted)">暂无友链</p>
       )}
 
-      <FriendLinkForm />
+      <FriendLinkForm bloggerInfo={blogger} />
     </div>
   );
 }

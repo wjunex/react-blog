@@ -61,7 +61,7 @@ export default async function AboutPage() {
           <h2 className="text-2xl font-semibold text-(--text)">
             {blogger.username}
           </h2>
-          <p className="mt-1 text-sm text-(--text-muted)">@WangJun</p>
+          <p className="mt-1 text-sm text-(--text-muted)">@wjunex</p>
           {blogger.signature && (
             <p className="mt-3 text-sm leading-7 text-(--text-soft)">
               {blogger.signature}
