@@ -13,6 +13,7 @@ const NAV_LIST = [
   { title: "文章", path: "/blog" },
   { title: "动态", path: "/moments" },
   { title: "归档", path: "/archives" },
+  { title: "友链", path: "/friend-links" },
   { title: "关于", path: "/about" },
 ] as const;
 
