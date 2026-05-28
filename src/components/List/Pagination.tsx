@@ -6,14 +6,16 @@ type PaginationProps = {
   total: number;
   pages: number;
   basePath?: string;
+  extraParams?: Record<string, string>;
 };
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;
 
-function getPageHref(pageNum: number, pageSize: number, basePath: string) {
+function getPageHref(pageNum: number, pageSize: number, basePath: string, extraParams?: Record<string, string>) {
   const query = new URLSearchParams({
     pageNum: String(pageNum),
     pageSize: String(pageSize),
+    ...extraParams,
   });
 
   return `${basePath}?${query.toString()}`;
@@ -50,6 +52,7 @@ export default function Pagination({
   total,
   pages,
   basePath = "/",
+  extraParams,
 }: PaginationProps) {
   if (pages <= 1 && total <= pageSize) {
     return null;
@@ -71,7 +74,7 @@ export default function Pagination({
       <div className="flex flex-col gap-3 sm:items-end">
         <div className="flex flex-wrap items-center gap-1">
           <Link
-            href={getPageHref(Math.max(safeCurrent - 1, 1), pageSize, basePath)}
+            href={getPageHref(Math.max(safeCurrent - 1, 1), pageSize, basePath, extraParams)}
             aria-disabled={safeCurrent === 1}
             className="rounded-md border border-(--border-strong) px-3 py-1.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
@@ -94,7 +97,7 @@ export default function Pagination({
             return (
               <Link
                 key={item}
-                href={getPageHref(item, pageSize, basePath)}
+                href={getPageHref(item, pageSize, basePath, extraParams)}
                 aria-current={isCurrent ? "page" : undefined}
                 className="rounded-md border border-(--border-strong) px-3 py-1.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-current:border-(--accent) aria-current:bg-(--accent) aria-current:text-white"
               >
@@ -103,7 +106,7 @@ export default function Pagination({
             );
           })}
           <Link
-            href={getPageHref(Math.min(safeCurrent + 1, pages), pageSize, basePath)}
+            href={getPageHref(Math.min(safeCurrent + 1, pages), pageSize, basePath, extraParams)}
             aria-disabled={safeCurrent === pages}
             className="rounded-md border border-(--border-strong) px-3 py-1.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-disabled:pointer-events-none aria-disabled:opacity-50"
           >
@@ -115,7 +118,7 @@ export default function Pagination({
           {PAGE_SIZE_OPTIONS.map((option) => (
             <Link
               key={option}
-              href={getPageHref(1, option, basePath)}
+              href={getPageHref(1, option, basePath, extraParams)}
               aria-current={option === pageSize ? "true" : undefined}
               className="rounded-md px-2 py-1 text-(--text-soft) transition-colors hover:bg-(--surface-muted) aria-current:bg-(--surface-muted) aria-current:text-(--accent)"
             >

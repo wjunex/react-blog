@@ -61,12 +61,13 @@ export default async function Archives() {
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {group.items.map((cat) => (
-                    <span
+                    <Link
                       key={cat.id}
+                      href={`/search?categoryId=${cat.id}`}
                       className="inline-flex items-center rounded-full border border-(--border) px-2.5 py-0.5 text-xs text-(--text-soft) transition-colors hover:border-(--accent) hover:text-(--accent)"
                     >
                       {cat.name}
-                    </span>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -79,12 +80,13 @@ export default async function Archives() {
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {tagList?.map((tag) => (
-                  <span
+                  <Link
                     key={tag.id}
+                    href={`/search?tagId=${tag.id}`}
                     className="inline-flex items-center rounded-full border border-(--border) px-2.5 py-0.5 text-xs text-(--text-soft) transition-colors hover:border-(--accent) hover:text-(--accent)"
                   >
                     #{tag.name}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>

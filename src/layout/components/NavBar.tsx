@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
-import { HamburgerIcon, CloseIcon } from "@/components/Icons";
+import { HamburgerIcon, CloseIcon, SearchIcon } from "@/components/Icons";
 import { logout } from "@/lib/auth";
 import { getRefreshToken, clearTokens } from "@/lib/token";
 
@@ -83,6 +83,15 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
           })}
         </nav>
 
+        {/* 搜索图标 */}
+        <Link
+          href="/search"
+          className="hidden mr-3 rounded-md p-2 text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent) md:inline-flex"
+          aria-label="搜索"
+        >
+          <SearchIcon />
+        </Link>
+
         {/* 右侧：登出 + 主题切换 + 汉堡按钮 */}
         <div className="flex items-center gap-2">
           {isLoggedIn && (
@@ -131,6 +140,19 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 </Link>
               );
             })}
+            {isActive("/search", pathname) ? (
+              <span className="pointer-events-none rounded-md px-3 py-2.5 text-sm font-medium text-(--accent)">
+                搜索
+              </span>
+            ) : (
+              <Link
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
+                href="/search"
+                onClick={closeMenu}
+              >
+                搜索
+              </Link>
+            )}
           </nav>
         </div>
       )}

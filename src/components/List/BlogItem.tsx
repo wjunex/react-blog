@@ -12,11 +12,23 @@ export default function BlogItem({ item }: { item: BlogItemType }) {
     <article className="group py-6 first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-(--text-muted)">
         {date ? <time dateTime={item.createdTime}>{date}</time> : null}
-        {item.categoryName ? (
-          <span className="rounded-full border border-(--border-strong) bg-(--surface-muted) px-2 py-0.5 text-(--text-soft)">
+        {item.categoryName && item.categoryId ? (
+          <Link
+            href={`/search?categoryId=${item.categoryId}`}
+            className="rounded-full border border-(--border-strong) bg-(--surface-muted) px-2 py-0.5 text-(--text-soft) transition-colors hover:border-(--accent) hover:text-(--accent)"
+          >
             {item.categoryName}
-          </span>
+          </Link>
         ) : null}
+        {item.tags?.map((tag) => (
+          <Link
+            key={tag.id}
+            href={`/search?tagId=${tag.id}`}
+            className="rounded-full border border-(--border) px-2 py-0.5 text-(--text-muted) transition-colors hover:border-(--accent) hover:text-(--accent)"
+          >
+            #{tag.name}
+          </Link>
+        ))}
         {item.textCount ? <span>{item.textCount} 字</span> : null}
         {item.views ? <span>{item.views} 阅读</span> : null}
         {item.commentCount != null && item.commentCount > 0 && (
