@@ -8,7 +8,7 @@ import Image from "next/image";
 
 export default async function MomentItem({ item }: { item: BlogItemType }) {
   const blogger = await apiPublicUserInfo();
-  const date = formatDate(item.createdTime, DATE_TIME_WEEKDAY);
+  const date = formatDate(item.createdAt, DATE_TIME_WEEKDAY);
   const href = `/moments/${item.id}`;
 
   return (
@@ -32,7 +32,7 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
               {item.content}
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-(--text-muted)">
-              {date ? <time dateTime={item.createdTime}>{date}</time> : null}
+              {date ? <time dateTime={item.createdAt}>{date}</time> : null}
               {item.categoryName ? (
                 <span className="rounded-full border border-(--border-strong) bg-(--surface-muted) px-2 py-0.5 text-(--text-soft)">
                   {item.categoryName}

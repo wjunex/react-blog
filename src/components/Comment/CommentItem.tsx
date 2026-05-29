@@ -152,9 +152,9 @@ export default function CommentItem({
 
               <time
                 className="comment-item__time"
-                dateTime={comment.createdTime}
+                dateTime={comment.createdAt}
               >
-                {formatDate(comment.createdTime, DATE_TIME)}
+                {formatDate(comment.createdAt, DATE_TIME)}
               </time>
 
               {isPending && (

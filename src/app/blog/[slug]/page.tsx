@@ -48,9 +48,9 @@ export default async function BlogDetail({ params }: Props) {
                 {data.categoryName}
               </span>
             )}
-            {data.createdTime && (
-              <time dateTime={data.createdTime}>
-                {formatDate(data.createdTime)}
+            {data.createdAt && (
+              <time dateTime={data.createdAt}>
+                {formatDate(data.createdAt)}
               </time>
             )}
             {data.textCount != null && <span>{data.textCount} 字</span>}

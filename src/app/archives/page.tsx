@@ -119,10 +119,10 @@ export default async function Archives() {
                     item.children.map((blog) => (
                       <li key={blog.id} className="flex items-baseline gap-3">
                         <time
-                          dateTime={blog.createdTime?.slice(0, 10)}
+                          dateTime={blog.createdAt?.slice(0, 10)}
                           className="shrink-0 tabular-nums text-(--text-muted)"
                         >
-                          {blog.createdTime?.slice(5, 10)}
+                          {blog.createdAt?.slice(5, 10)}
                         </time>
                         <Link
                           href={`/blog/${blog.slug}`}

@@ -57,9 +57,9 @@ export default async function MomentDetail({ params }: Props) {
                 {blogger.username}
               </span>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-(--text-muted)">
-                {data.createdTime && (
-                  <time dateTime={data.createdTime}>
-                    {formatDate(data.createdTime, DATE_TIME_WEEKDAY)}
+                {data.createdAt && (
+                  <time dateTime={data.createdAt}>
+                    {formatDate(data.createdAt, DATE_TIME_WEEKDAY)}
                   </time>
                 )}
                 {data.categoryName && (

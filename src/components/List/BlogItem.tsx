@@ -5,13 +5,13 @@ import { formatDate } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";
 
 export default function BlogItem({ item }: { item: BlogItemType }) {
-  const date = formatDate(item.createdTime);
+  const date = formatDate(item.createdAt);
   const href = `/blog/${item.slug}`;
 
   return (
     <article className="group py-6 first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-(--text-muted)">
-        {date ? <time dateTime={item.createdTime}>{date}</time> : null}
+        {date ? <time dateTime={item.createdAt}>{date}</time> : null}
         {item.categoryName && item.categoryId ? (
           <Link
             href={`/search?categoryId=${item.categoryId}`}
