@@ -66,19 +66,6 @@ export default function RootLayout({
         <Script id="theme-init" strategy="beforeInteractive">
           {themeScript}
         </Script>
-        <Script
-          id="baidu-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `var _hmt = _hmt || [];
-                    (function() {
-                      var hm = document.createElement("script");
-                      hm.src = "https://hm.baidu.com/hm.js?947029a7f30f3f565abaafca23a90358";
-                      var s = document.getElementsByTagName("script")[0];
-                      s.parentNode.insertBefore(hm, s);
-                    })();`,
-          }}
-        />
       </head>
       <body className="min-h-full flex flex-col">
         <NextTopLoader color="var(--accent)" showSpinner={false} />
