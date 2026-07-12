@@ -20,9 +20,9 @@ export default async function Home() {
     <section className="space-y-12">
       {/* ── Hero ── */}
       <div className="border-b border-(--border) pb-8">
-        <p className="text-sm font-medium text-(--accent)">Welcome</p>
+        <p className="text-sm font-medium text-(--accent)">Hello，welcome to my blog</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight text-(--text)">
-          你好，我是 <span className="text-(--accent)">{blogger.username}</span>
+         <span className="text-(--accent)">{blogger.username}</span>的网络日志
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-(--text-soft)">
           这里是我的个人博客，记录技术笔记、生活思考和阶段性的想法。

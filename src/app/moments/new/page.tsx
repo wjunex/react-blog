@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import { getToken } from "@/lib/auth";
+import { getServerToken } from "@/lib/token-server";
 import PublishForm from "./PublishForm";
 
 export default async function NewMomentPage() {
-  if (!(await getToken())) {
+  if (!(await getServerToken())) {
     redirect("/login");
   }
 

@@ -1,14 +1,14 @@
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import BackToTop from "@/components/BackToTop";
-import { getToken } from "@/lib/auth";
+import { getServerToken } from "@/lib/token-server";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const isLoggedIn = !!(await getToken());
+  const isLoggedIn = !!(await getServerToken());
 
   return (
     <div className="sm:min-h-screen sm:px-6 sm:py-5 lg:py-10">

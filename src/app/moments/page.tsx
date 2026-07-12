@@ -1,7 +1,7 @@
 import Link from "next/link";
 import List from "@/components/List/List";
 import { getQueryNumber } from "@/utils";
-import { getToken } from "@/lib/auth";
+import { getServerToken } from "@/lib/token-server";
 
 type MomentsProps = {
   searchParams: Promise<{
@@ -14,7 +14,7 @@ export default async function Moments({ searchParams }: MomentsProps) {
   const query = await searchParams;
   const pageNum = getQueryNumber(query.pageNum, 1);
   const pageSize = getQueryNumber(query.pageSize, 10);
-  const isLoggedIn = !!(await getToken());
+  const isLoggedIn = !!(await getServerToken());
 
   return (
     <section className="space-y-6">

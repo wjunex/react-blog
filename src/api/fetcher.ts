@@ -22,21 +22,20 @@ export interface RequestOptions {
 // ── auth header ──
 
 async function getAuthHeader(): Promise<Record<string, string>> {
-  // Server-side: read from cookie
-  try {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const token = cookieStore.get("accessToken")?.value;
-    if (token) return { Authorization: `Bearer ${token}` };
-  } catch {
-    // cookies() unavailable outside server context
+  if (typeof window === "undefined") {
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const token = cookieStore.get("accessToken")?.value;
+      if (token) return { Authorization: `Bearer ${token}` };
+    } catch {
+      // cookies() unavailable (e.g., build time or client context)
+    }
+    return {};
   }
 
-  // Client-side: read from localStorage
   const token = getAccessToken();
-  if (token) return { Authorization: `Bearer ${token}` };
-
-  return {};
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 // ── refresh logic (client only) ──
@@ -81,7 +80,7 @@ export async function request<T>(
   url: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const { method = "GET", headers = {}, body = {}, cache, next } = options;
+  const { method = "GET", headers = {}, body, cache, next } = options;
 
   async function doFetch() {
     const authHeader = await getAuthHeader();

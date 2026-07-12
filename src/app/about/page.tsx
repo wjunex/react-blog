@@ -61,7 +61,7 @@ export default async function AboutPage() {
           <h2 className="text-2xl font-semibold text-(--text)">
             {blogger.username}
           </h2>
-          <p className="mt-1 text-sm text-(--text-muted)">@wjunex</p>
+          <p className="mt-1 text-sm text-(--text-muted)">@wjun.me</p>
           {blogger.signature && (
             <p className="mt-3 text-sm leading-7 text-(--text-soft)">
               {blogger.signature}
@@ -134,7 +134,7 @@ export default async function AboutPage() {
         </div>
 
         <div className="rounded-xl border border-(--border) p-5">
-          <h3 className="text-sm font-semibold text-(--text)">站点信息</h3>
+          <h3 className="text-sm font-semibold text-(--text)">我的网站</h3>
           <ul className="mt-3 space-y-2 text-sm text-(--text-soft)">
             <li className="flex items-center gap-2">
               <span className="text-(--text-muted)">⚡</span>

@@ -69,11 +69,6 @@ export async function logout(refreshToken?: string) {
   return { success: true };
 }
 
-export async function getToken() {
-  const cookieStore = await cookies();
-  return cookieStore.get("accessToken")?.value;
-}
-
 type PublishState = { success?: boolean; error?: string } | null;
 
 export async function publishMoment(prevState: PublishState, formData: FormData) {
