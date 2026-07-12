@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: HomeProps) {
     <section className="space-y-6">
       <div className="border-b border-(--border) pb-6">
         <p className="text-sm font-medium text-(--accent)">Latest Posts</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-(--text)">
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           文章
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-(--text-muted)">

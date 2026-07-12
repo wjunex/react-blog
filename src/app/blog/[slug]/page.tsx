@@ -50,7 +50,7 @@ export default async function BlogDetail({ params }: Props) {
     <>
       <article>
         <header className="border-b border-(--border) pb-6 mb-8">
-          <h1 className="text-4xl font-semibold tracking-tight text-(--text)">
+          <h1 className="text-2xl font-semibold tracking-tight text-(--text)">
             {data.title}
           </h1>
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-(--text-muted)">

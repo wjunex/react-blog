@@ -23,7 +23,7 @@ export default async function Home() {
         <p className="text-sm font-medium text-(--accent)">
           Hello，welcome to my blog
         </p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-(--text)">
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           <span className="text-(--accent)">W君</span>
           的网络日志
         </h1>
@@ -34,13 +34,13 @@ export default async function Home() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/blog"
-            className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
+            className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
           >
             浏览文章
           </Link>
           <Link
             href="/about"
-            className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
+            className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
           >
             关于我
           </Link>

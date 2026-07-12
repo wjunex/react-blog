@@ -23,7 +23,7 @@ export default async function Moments({ searchParams }: MomentsProps) {
     <section className="space-y-6">
       <div className="border-b border-(--border) pb-6">
         <p className="text-sm font-medium text-(--accent)">Moments</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-(--text)">
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           动态
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-(--text-muted)">

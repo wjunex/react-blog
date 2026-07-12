@@ -21,7 +21,7 @@ export default function LoginPage() {
     <section className="mx-auto max-w-sm space-y-8 py-12">
       <div className="border-b border-(--border) pb-6">
         <p className="text-sm font-medium text-(--accent)">Admin</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-(--text)">
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           登录
         </h1>
       </div>

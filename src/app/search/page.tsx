@@ -82,7 +82,7 @@ export default async function SearchPage({ searchParams }: Props) {
     <section className="space-y-8">
       <div className="border-b border-(--border) pb-6">
         <p className="text-sm font-medium text-(--accent)">{subTitle}</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-(--text)">
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           {pageTitle}
         </h1>
         {pageDesc && (

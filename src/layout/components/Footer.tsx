@@ -17,6 +17,7 @@ export default function Footer() {
               width={14}
               height={14}
               alt="beian"
+              style={{ width: 14, height: 14 }}
             />
             <span>贵公网安备52230102000488号</span>
           </a>
