@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "file.zost.cn",
       },
+       {
+        protocol: "http",
+        hostname: "yangliuyiyi.oss-cn-chengdu.aliyuncs.com",
+      },
     ],
   },
   async rewrites() {

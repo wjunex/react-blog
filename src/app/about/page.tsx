@@ -154,7 +154,7 @@ export default async function AboutPage() {
             </li>
             <li>
               <a
-                href="https://tab.zost.cn"
+                href="https://zost.cn/tab"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-start gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-(--surface-muted)"
@@ -178,7 +178,7 @@ export default async function AboutPage() {
                 <div className="min-w-0">
                   <span className="font-medium text-(--text)">标签页</span>
                   <span className="ml-2 hidden text-xs text-(--text-muted) group-hover:inline">
-                    tab.zost.cn
+                    zost.cn/tab
                   </span>
                   <p className="text-xs text-(--text-muted)">
                     一款好用的浏览器书签管理插件

@@ -4,24 +4,29 @@ import BlogItem from "@/components/List/BlogItem";
 import MomentItem from "@/components/List/MomentItem";
 
 export default async function Home() {
-  const [blogResult, momentResult] = await Promise.allSettled([
-    apiPublicList({ pageNum: 1, pageSize: 5 }),
-    apiPublicMomentList({ pageNum: 1, pageSize: 5 }),
+  const [blogResult, hotResult, momentResult] = await Promise.allSettled([
+    apiPublicList({ pageNum: 1, pageSize: 2 }),
+    apiPublicList({ pageNum: 1, pageSize: 3, sortBy: "views", sortOrder: "desc" }),
+    apiPublicMomentList({ pageNum: 1, pageSize: 3 }),
   ]);
 
   const recentPosts =
     blogResult.status === "fulfilled" ? (blogResult.value.records ?? []) : [];
+  const hotPosts =
+    hotResult.status === "fulfilled" ? (hotResult.value.records ?? []) : [];
   const recentMoments =
     momentResult.status === "fulfilled"
       ? (momentResult.value.records ?? [])
       : [];
+
+  console.log("recentPosts", recentPosts);
 
   return (
     <section className="space-y-12">
       {/* ── Hero ── */}
       <div className="border-b border-(--border) pb-8">
         <p className="text-sm font-medium text-(--accent)">
-          Hello，welcome to my blog
+          Hello, welcome to my blog
         </p>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           <span className="text-(--accent)">W君</span>
@@ -50,12 +55,12 @@ export default async function Home() {
       {/* ── Recent Posts ── */}
       <div>
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-(--text)">最新文章</h2>
+          <h2 className="text-lg font-semibold text-(--text)">最新发布</h2>
           <Link
             href="/blog"
             className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)"
           >
-            查看全部 →
+            查看更多 →
           </Link>
         </div>
         {recentPosts.length > 0 ? (
@@ -71,6 +76,26 @@ export default async function Home() {
         )}
       </div>
 
+      {/* ── Hot Posts ── */}
+      {hotPosts.length > 0 && (
+        <div>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-(--text)">热门文章</h2>
+            <Link
+              href="/blog"
+              className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)"
+            >
+              查看更多 →
+            </Link>
+          </div>
+          <div className="divide-y divide-(--border)">
+            {hotPosts.map((item) => (
+              <BlogItem key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Recent Moments ── */}
       {recentMoments.length > 0 && (
         <div>
@@ -80,7 +105,7 @@ export default async function Home() {
               href="/moments"
               className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)"
             >
-              查看全部 →
+              查看更多 →
             </Link>
           </div>
           <div className="divide-y divide-(--border)">

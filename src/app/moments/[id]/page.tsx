@@ -84,6 +84,21 @@ export default async function MomentDetail({ params }: Props) {
           </div>
         </header>
         <div className="leading-7 text-(--text-soft)">{data.content}</div>
+        {data.images && data.images.length > 0 && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {data.images.map((img, i) => (
+              <Image
+                key={i}
+                src={img}
+                alt=""
+                width={200}
+                height={200}
+                className="rounded-lg object-cover"
+                style={{ width: 200, height: 200 }}
+              />
+            ))}
+          </div>
+        )}
       </article>
       <CommentSection id={id} />
     </>

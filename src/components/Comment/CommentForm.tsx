@@ -3,8 +3,7 @@
 import { apiPublicCommentSave } from "@/api/generated";
 import type { NoteCommentVO, UserVO, PublicCommentAddDTO } from "@/api/generated/models";
 import { useState, useTransition, type FormEvent } from "react";
-import Tooltip from "@/components/Tooltip";
-import { HelpCircleIcon } from "@/components/Icons";
+import RulesDialog from "@/components/RulesDialog";
 
 // ---------- types ----------
 
@@ -52,9 +51,10 @@ export default function CommentForm({
 
   const isReply = !!parent;
 
-  const rules = `<p>1. 评论提交后需经过审核，审核通过后才会公开显示，请遵守相关法律法规。</p>
-               <p>2. 邮箱不会对外公开，仅用于接收回复通知；如需收到博主回复，请填写有效邮箱。</p>
-               <p>3. 如需展示个人网站链接，请填写有效的网址，方便他人访问。</p>`;
+  const rules = `<p>1. 评论提交后需经博主审核，通过后才会公开展示。请友善发言，遵守相关法律法规，禁止发布违法、辱骂、广告或恶意灌水内容。</p>
+               <p>2. 邮箱仅用于接收博主的回复通知，不会公开显示或用于其他用途。如需第一时间收到回复，请填写真实有效的邮箱地址。</p>
+               <p>3. 如需展示个人网站，请填写完整有效的网址（以 https:// 开头），方便博主和其他读者了解你。</p>
+               <p>4. 博主保留删除不当评论的权利，违规评论将被移除且不再另行通知。</p>`;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -150,11 +150,7 @@ export default function CommentForm({
       {!isReply && (
         <div className="flex items-center gap-1 comment-form__title">
           <h3 className="">发表评论</h3>
-          <Tooltip text={rules} position="right">
-            <span className="inline-flex text-(--text-muted) cursor-pointer">
-              <HelpCircleIcon />
-            </span>
-          </Tooltip>
+          <RulesDialog rules={rules} title="评论规则" />
         </div>
       )}
 

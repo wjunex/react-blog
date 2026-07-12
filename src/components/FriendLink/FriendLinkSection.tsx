@@ -16,8 +16,8 @@ export default async function FriendLinkSection() {
   const approved = (links || []).filter((l) => l.status === 1);
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-sm font-medium text-(--text-soft)">友链</h2>
+    <div>
+      <h2 className="mb-6 text-sm font-medium text-(--text-soft)">友链</h2>
 
       {approved.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -53,9 +53,10 @@ export default async function FriendLinkSection() {
           ))}
         </div>
       ) : (
-        <p className="text-xs text-(--text-muted)">暂无友链</p>
+        <p className="py-12 text-center text-xs text-(--text-muted)">暂无友链</p>
       )}
 
+      <hr className="my-12 border-(--border)" />
       <FriendLinkForm bloggerInfo={blogger} />
     </div>
   );

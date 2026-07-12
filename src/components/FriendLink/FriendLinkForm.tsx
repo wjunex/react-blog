@@ -3,8 +3,7 @@
 import { apiPublicFriendLinkApply } from "@/api/generated";
 import type { FriendLink } from "@/api/generated/models";
 import { useState, useTransition, useCallback, type FormEvent } from "react";
-import Tooltip from "@/components/Tooltip";
-import { HelpCircleIcon } from "@/components/Icons";
+import RulesDialog from "@/components/RulesDialog";
 import type { UserVO } from "@/api/generated/models";
 
 // ---------- types ----------
@@ -97,19 +96,16 @@ export default function FriendLinkForm({ onSuccess, bloggerInfo }: FriendLinkFor
     });
   }
 
-  const rules = `<p>1. 申请提交后需经过审核，审核通过后才会公开展示，请确保站点昵称和Logo合法。</p>
-               <p>2. 请确保你的站点内容健康、可正常访问</p>
-               <p>3.博主会不定期进行回访，若站点长时间无法访问将被移除</p>`;
+  const rules = `<p>1. 友链申请提交后需经博主人工审核，通过后才会在友链页面公开展示。请确保站点名称、Logo 等内容符合相关法律法规。</p>
+               <p>2. 你的站点应为个人博客、技术分享或原创内容类网站，内容健康，无违法或低俗信息。</p>
+               <p>3. 站点需可正常访问，若长期无法打开、停止维护或内容方向发生重大变化，博主有权移除友链。</p>
+               <p>4. 鼓励互相添加友链，但博主保留审核不通过的最终解释权。</p>`;
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 comment-form">
       <div className="flex items-center gap-1 comment-form__title">
         <h3 className="">申请友链</h3>
-        <Tooltip text={rules} position="right">
-          <span className="inline-flex text-(--text-muted) cursor-pointer">
-            <HelpCircleIcon />
-          </span>
-        </Tooltip>
+        <RulesDialog rules={rules} title="友链协议" />
       </div>
 
       <div className="comment-form__fields">

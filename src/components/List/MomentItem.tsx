@@ -31,6 +31,21 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
             <div className="mt-2 line-clamp-3 leading-7 text-(--text-soft)">
               {item.content}
             </div>
+            {item.images && item.images.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {item.images.map((img, i) => (
+                  <Image
+                    key={i}
+                    src={img}
+                    alt=""
+                    width={120}
+                    height={120}
+                    className="rounded-lg object-cover"
+                    style={{ width: 120, height: 120 }}
+                  />
+                ))}
+              </div>
+            )}
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-(--text-muted)">
               {date ? <time dateTime={item.createdAt}>{date}</time> : null}
               {item.categoryName ? (

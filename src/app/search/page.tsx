@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { apiPublicSearch, apiPublicCategoryList, apiPublicTagList } from "@/api/generated";
+import Link from "next/link";
+import { apiPublicSearch, apiPublicCategoryList, apiPublicTagList, apiPublicList } from "@/api/generated";
 import BlogItem from "@/components/List/BlogItem";
 import Pagination from "@/components/List/Pagination";
 import SearchForm from "./SearchForm";
@@ -54,9 +55,16 @@ export default async function SearchPage({ searchParams }: Props) {
   const pageTitle = isCategory || isTag ? filterName : "搜索";
   const pageDesc = isCategory || isTag
     ? filterDesc
-    : "输入关键词或点击分类/标签，搜索站内文章。";
+    : "输入关键词，搜索站内文章。";
 
   let records, total, current, size, pages: number | undefined;
+
+  const hotPostsPromise = apiPublicList({
+    pageNum: 1,
+    pageSize: 5,
+    sortBy: "views",
+    sortOrder: "desc",
+  });
 
   if (hasFilter) {
     const result = await apiPublicSearch({
@@ -72,6 +80,8 @@ export default async function SearchPage({ searchParams }: Props) {
     size = result.size ?? pageSize;
     pages = Math.ceil(total / size);
   }
+
+  const hotPosts = (await hotPostsPromise).records ?? [];
 
   const extraParams: Record<string, string> = {};
   if (keyword) extraParams.keyword = keyword;
@@ -102,9 +112,22 @@ export default async function SearchPage({ searchParams }: Props) {
       )}
 
       {!hasFilter ? (
-        <p className="py-16 text-center text-sm text-(--text-muted)">
-          输入关键词开始搜索。
-        </p>
+        hotPosts.length > 0 ? (
+          <div>
+            <p className="mb-4 text-sm text-(--text-muted)">
+              热门文章
+            </p>
+            <div className="divide-y divide-(--border)">
+              {hotPosts.map((item) => (
+                <BlogItem key={item.id} item={item} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="py-16 text-center text-sm text-(--text-muted)">
+            暂无文章。
+          </p>
+        )
       ) : (
         <>
           <p className="text-sm text-(--text-muted)">
@@ -127,9 +150,16 @@ export default async function SearchPage({ searchParams }: Props) {
               />
             </>
           ) : (
-            <p className="py-16 text-center text-sm text-(--text-muted)">
-              没有找到相关文章。
-            </p>
+            <div className="mt-12">
+              <p className="mb-4 text-sm text-(--text-muted)">
+                未找到相关文章，看看这些热门文章吧
+              </p>
+              <div className="divide-y divide-(--border)">
+                {hotPosts.map((item) => (
+                  <BlogItem key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
           )}
         </>
       )}
