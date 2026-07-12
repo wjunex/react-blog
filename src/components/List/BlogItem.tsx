@@ -11,7 +11,7 @@ export default function BlogItem({ item }: { item: BlogItemType }) {
 
   return (
     <article className="group py-6 first:pt-0 last:pb-0">
-      <div className="flex gap-6">
+      <div className="flex items-center gap-6">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-(--text-muted)">
             {date ? <time dateTime={item.createdAt}>{date}</time> : null}
