@@ -13,7 +13,7 @@ export default function Footer() {
             className="inline-flex items-center gap-1 transition-colors hover:text-(--accent)"
           >
             <Image
-              src="https://img.wjun.me/upload-1747114767780-1336.png"
+              src="https://file.zost.cn/my/beian.png"
               width={14}
               height={14}
               alt="beian"

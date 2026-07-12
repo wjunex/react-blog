@@ -443,12 +443,24 @@ html[data-theme="dark"] .theme-toggle__thumb {
 .comment-form__fields {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   margin-bottom: 12px;
 }
 
+@media (min-width: 480px) {
+  .comment-form__fields {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .comment-form--reply .comment-form__fields {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+  .comment-form--reply .comment-form__fields {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .comment-form__field {

@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { apiPublicSearch, apiPublicCategoryList, apiPublicTagList } from "@/api/generated";
 import BlogItem from "@/components/List/BlogItem";
 import Pagination from "@/components/List/Pagination";
 import SearchForm from "./SearchForm";
 import { getQueryNumber } from "@/utils";
+
+export const metadata: Metadata = { title: "搜索" };
 
 type Props = {
   searchParams: Promise<{

@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getServerToken } from "@/lib/token-server";
 import PublishForm from "./PublishForm";
+
+export const metadata: Metadata = { title: "发布动态" };
 
 export default async function NewMomentPage() {
   if (!(await getServerToken())) {

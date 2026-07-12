@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { apiPublicDetail, apiPublicListByYear } from "@/api/generated";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
@@ -9,6 +10,16 @@ type Props = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const data = await apiPublicDetail({ slug });
+    return { title: data.title || "" };
+  } catch {
+    return { title: "文章详情" };
+  }
+}
 
 /** 预生成所有已发布文章的静态页面 */
 export async function generateStaticParams() {

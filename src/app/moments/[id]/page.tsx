@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { apiPublicDetail, apiPublicMomentList, apiPublicUserInfo } from "@/api/generated";
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
@@ -31,6 +32,16 @@ export async function generateStaticParams() {
 
 /** 增量静态再生成：新动态发布后最多 10 分钟自动更新 */
 export const revalidate = 600;
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const data = await apiPublicDetail({ id });
+    return { title: data.title?.slice(0, 30) || "动态详情" };
+  } catch {
+    return { title: "动态详情" };
+  }
+}
 
 export default async function MomentDetail({ params }: Props) {
   const { id } = await params;

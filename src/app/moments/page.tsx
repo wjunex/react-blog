@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import List from "@/components/List/List";
 import { getQueryNumber } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
+
+export const metadata: Metadata = { title: "动态" };
 
 type MomentsProps = {
   searchParams: Promise<{

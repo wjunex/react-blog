@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.wjun.me",
       },
+      {
+        protocol: "https",
+        hostname: "file.zost.cn",
+      },
     ],
   },
   async rewrites() {

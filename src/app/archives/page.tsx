@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { apiPublicListByYear, apiPublicCategoryList, apiPublicTagList } from "@/api/generated";
 import { formatDate } from "@/utils";
 import type { NoteListVO, Category, Tag } from "@/api/generated/models";
+
+export const metadata: Metadata = { title: "归档" };
 
 // ── helpers ──────────────────────────────────────────────
 const CATEGORY_TYPES = [

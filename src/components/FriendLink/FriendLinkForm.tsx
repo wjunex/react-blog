@@ -32,7 +32,7 @@ export default function FriendLinkForm({ onSuccess, bloggerInfo }: FriendLinkFor
     if (!bloggerInfo) return;
     const origin = window.location.origin;
     const text = [
-      `站点名称：${bloggerInfo.username} BLOG`,
+      `站点名称：${bloggerInfo.username}的网络日志`,
       `站点地址：${origin}`,
       `Logo：${bloggerInfo.avatar}`,
       `站点描述：${bloggerInfo.signature || ""}`,

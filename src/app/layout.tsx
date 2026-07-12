@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "wjun · blog",
-    template: "%s | wjun · blog",
+    default: "W君的网络日志",
+    template: "%s | W君的网络日志",
   },
   description: "个人博客，记录技术笔记、生活思考和阶段性想法",
   openGraph: {

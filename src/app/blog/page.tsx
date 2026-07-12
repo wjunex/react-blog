@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import List from "@/components/List/List";
 import { getQueryNumber } from "@/utils";
+
+export const metadata: Metadata = { title: "文章" };
 
 type HomeProps = {
   searchParams: Promise<{
