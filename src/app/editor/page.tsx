@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MilkdownEditor from "@/components/MilkdownEditor";
+import { formatDate } from "@/utils";
+import { apiCategoryDelete, apiCategoryList, apiCategorySave, apiTagDelete, apiTagList, apiTagSave } from "@/api/generated";
+import type { Category, Tag } from "@/api/generated/models";
 
 const defaultContent = `> 当一个人又写接口又写前端的时候，最大的痛苦莫过于接口改动后还要修改前端项目并重新部署。
 
@@ -165,12 +168,154 @@ Swagger不是唯一的解法，Orval也不是最终的答案。本文只是分�
 
 export default function EditorPage() {
   const [content, setContent] = useState(defaultContent);
-  const [readonly, setReadonly] = useState(false);
   const [title, setTitle] = useState("集成Ovral，解决前端手抄API的痛点");
-  const [slug, setSlug] = useState("orval-guide");
+
+  // 分类 & 标签 — 从 API 获取
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [tagList, setTagList] = useState<Tag[]>([]);
+  const [categoryId, setCategoryId] = useState<string>("");
+  const [tagIds, setTagIds] = useState<string[]>([]);
+  const [showCatDropdown, setShowCatDropdown] = useState(false);
+  const [newTagName, setNewTagName] = useState("");
+  const [savingTag, setSavingTag] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [catModal, setCatModal] = useState<{
+    open: boolean;
+    id?: string;
+    name: string;
+    description: string;
+    type: "tech" | "life";
+    isSeries: boolean;
+  }>({ open: false, name: "", description: "", type: "tech", isSeries: false });
+  const [savingCat, setSavingCat] = useState(false);
+  const [confirmDeleteCatId, setConfirmDeleteCatId] = useState<string | null>(null);
+
+  const openNewCat = () =>
+    setCatModal({ open: true, name: "", description: "", type: "tech", isSeries: false });
+  const openEditCat = (c: Category) =>
+    setCatModal({ open: true, id: c.id, name: c.name || "", description: c.description || "", type: (c.type || "tech") as "tech" | "life", isSeries: c.isSeries ?? false });
+
+  const saveCategory = async () => {
+    const { id, name, description, type, isSeries } = catModal;
+    const trimmed = name.trim();
+    if (!trimmed || savingCat) return;
+    setSavingCat(true);
+    try {
+      await apiCategorySave({ id, name: trimmed, description, type, isSeries });
+      const cats = await apiCategoryList() || [];
+      setCategoryList(cats);
+      const match = id
+        ? cats.find((c) => c.id === id)
+        : cats.find((c) => c.name === trimmed);
+      if (match?.id) setCategoryId(match.id);
+      setCatModal((p) => ({ ...p, open: false }));
+    } catch { /* ignore */ }
+    setSavingCat(false);
+  };
+
+  const deleteCategory = async (id: string) => {
+    try { await apiCategoryDelete({ id }); } catch { /* ignore */ }
+    setCategoryList((prev) => prev.filter((c) => c.id !== id));
+    if (categoryId === id) setCategoryId("");
+    setConfirmDeleteCatId(null);
+  };
+  const [editingTagId, setEditingTagId] = useState<string | null>(null);
+  const [editingTagName, setEditingTagName] = useState("");
+
+  const saveTagName = async () => {
+    const id = editingTagId;
+    const name = editingTagName.trim();
+    if (!id || !name) { setEditingTagId(null); return; }
+    const original = tagList.find((t) => t.id === id)?.name;
+    if (name === original) { setEditingTagId(null); return; }
+    try {
+      await apiTagSave({ id, name });
+      setTagList((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, name } : t)).sort((a, b) => {
+          const na = a.name || "", nb = b.name || "";
+          const aLatin = /^[a-zA-Z]/.test(na);
+          const bLatin = /^[a-zA-Z]/.test(nb);
+          if (aLatin && !bLatin) return -1;
+          if (!aLatin && bLatin) return 1;
+          return na.localeCompare(nb);
+        }),
+      );
+    } catch { /* ignore */ }
+    setEditingTagId(null);
+  };
+
+  const deleteTag = async (id: string) => {
+    try {
+      await apiTagDelete({ id });
+    } catch { /* ignore */ }
+    setTagList((prev) => prev.filter((t) => t.id !== id));
+    setTagIds((prev) => prev.filter((tid) => tid !== id));
+    setConfirmDeleteId(null);
+  };
+
+  const handleDeleteClick = (id: string) => {
+    const tag = tagList.find((t) => t.id === id);
+    if (tag?.noteCount && Number(tag.noteCount) > 0) return;
+    setConfirmDeleteId(id);
+  };
+
+  const createTag = async () => {
+    const name = newTagName.trim();
+    if (!name || savingTag) return;
+    setSavingTag(true);
+    try {
+      const tag = await apiTagSave({ name });
+      setTagList((prev) =>
+        [...prev, tag].sort((a, b) => {
+          const na = a.name || "", nb = b.name || "";
+          const aLatin = /^[a-zA-Z]/.test(na);
+          const bLatin = /^[a-zA-Z]/.test(nb);
+          if (aLatin && !bLatin) return -1;
+          if (!aLatin && bLatin) return 1;
+          return na.localeCompare(nb);
+        }),
+      );
+      if (tag.id) setTagIds((prev) => [...prev, tag.id!]);
+      setNewTagName("");
+    } finally {
+      setSavingTag(false);
+    }
+  };
+
+  const selectedCategoryName =
+    categoryList.find((c) => c.id === categoryId)?.name || "";
+
+  useEffect(() => {
+    Promise.all([apiCategoryList(), apiTagList()]).then(([cats, tags]) => {
+      setCategoryList(cats || []);
+      setTagList((tags || []).sort((a, b) => {
+        const na = a.name || "", nb = b.name || "";
+        const aLatin = /^[a-zA-Z]/.test(na);
+        const bLatin = /^[a-zA-Z]/.test(nb);
+        if (aLatin && !bLatin) return -1;
+        if (!aLatin && bLatin) return 1;
+        return na.localeCompare(nb);
+      }));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!showCatDropdown) return;
+    const close = () => setShowCatDropdown(false);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [showCatDropdown]);
+
+  const toggleTag = (id: string) => {
+    setTagIds((prev) =>
+      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id],
+    );
+  };
 
   return (
-    <article>
+    <>
+      <style>{`@media (max-width: 640px){body{background:var(--surface)!important;background-attachment:scroll!important;}}`}</style>
+      <article>
       {/* 文章头部 — 与博客详情页 header 一致 */}
       <header className="border-b border-(--border) pb-6 mb-8">
         <input
@@ -181,23 +326,89 @@ export default function EditorPage() {
           className="w-full text-2xl font-semibold tracking-tight bg-transparent text-(--text) outline-none placeholder:text-(--text-muted)"
         />
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-(--text-muted)">
-          <input
-            type="text"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            placeholder="article-slug"
-            className="bg-transparent outline-none text-(--text-muted) placeholder:text-(--text-muted) font-mono text-xs min-w-[120px]"
-          />
+          <div className="relative">
+            <span
+              className={`group/cat relative rounded-full border px-2 py-0.5 text-xs cursor-pointer select-none transition-colors ${
+                selectedCategoryName
+                  ? "border-(--border-strong) bg-(--surface-muted) hover:border-(--accent) hover:text-(--accent)"
+                  : "border-(--border-strong) bg-(--surface-muted)"
+              }`}
+            >
+              <span
+                onClick={(e) => { e.stopPropagation(); setShowCatDropdown(!showCatDropdown); }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  const cat = categoryList.find((c) => c.id === categoryId);
+                  if (cat) openEditCat(cat);
+                }}
+              >
+                {selectedCategoryName || "未分类"}
+              </span>
+              {selectedCategoryName && !categoryList.find((c) => c.id === categoryId)?.noteCount && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmDeleteCatId(categoryId);
+                  }}
+                  className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-(--text-muted) text-(--surface) text-[9px] flex items-center justify-center leading-none opacity-0 group-hover/cat:opacity-100 transition-opacity hover:bg-(--syntax-red)"
+                >
+                  &times;
+                </span>
+              )}
+            </span>
+            {showCatDropdown && (
+              <div className="absolute top-full left-0 mt-1 bg-(--surface) border border-(--border) rounded-lg shadow-(--shadow) z-10 min-w-[100px] overflow-hidden">
+                <div
+                  className="cat-dropdown max-h-48 overflow-y-auto py-1"
+                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                >
+                  <div
+                    onClick={(e) => { e.stopPropagation(); setCategoryId(""); setShowCatDropdown(false); }}
+                    className="px-3 py-1.5 text-xs text-(--text-muted) cursor-pointer hover:bg-(--surface-muted)"
+                  >
+                    未分类
+                  </div>
+                  {categoryList.map((c) => {
+                    const hasNotes = c.noteCount && Number(c.noteCount) > 0;
+                    return (
+                      <div
+                        key={c.id}
+                        className="flex items-center justify-between px-3 py-1.5 hover:bg-(--surface-muted) group/cat"
+                      >
+                        <span
+                          onClick={(e) => { e.stopPropagation(); setCategoryId(c.id!); setShowCatDropdown(false); }}
+                          onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setShowCatDropdown(false); openEditCat(c); }}
+                          className="text-xs text-(--text) cursor-pointer flex-1"
+                        >
+                          {c.name}
+                        </span>
+                        <span className="flex items-center gap-0.5 opacity-0 group-hover/cat:opacity-100 transition-opacity">
+                          {!hasNotes && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setShowCatDropdown(false); setConfirmDeleteCatId(c.id!); }}
+                              className="w-3.5 h-3.5 rounded-full bg-(--text-muted) text-(--surface) text-[9px] flex items-center justify-center leading-none hover:bg-(--syntax-red) cursor-pointer"
+                            >
+                              &times;
+                            </button>
+                          )}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="border-t border-(--border) px-3 py-1.5">
+                  <div
+                    onClick={(e) => { e.stopPropagation(); setShowCatDropdown(false); openNewCat(); }}
+                    className="text-xs text-(--accent) cursor-pointer hover:opacity-80"
+                  >
+                    + 新增分类
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <time>{formatDate(new Date().toISOString())}</time>
           <span>{content.length} 字</span>
-          <label className="flex items-center gap-1.5 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={readonly}
-              onChange={(e) => setReadonly(e.target.checked)}
-              className="accent-(--accent)"
-            />
-            只读
-          </label>
         </div>
       </header>
 
@@ -206,9 +417,241 @@ export default function EditorPage() {
         key="test"
         defaultValue={defaultContent}
         onChange={setContent}
-        readonly={readonly}
         placeholder="开始写作..."
       />
+
+      {/* 标签选择器 */}
+      <div className="mt-10">
+        <div className="flex flex-wrap items-center gap-2">
+          {tagList.map((tag) => {
+            const selected = tagIds.includes(tag.id!);
+            const hasNotes = tag.noteCount && Number(tag.noteCount) > 0;
+            return (
+              <span
+                key={tag.id}
+                className={`group relative rounded-full border px-2 py-0.5 text-xs select-none transition-colors ${
+                  selected
+                    ? "border-(--accent) text-(--accent)"
+                    : "border-(--border) text-(--text-muted) hover:border-(--accent) hover:text-(--accent)"
+                }`}
+              >
+                {editingTagId === tag.id ? (
+                  <input
+                    type="text"
+                    value={editingTagName}
+                    onChange={(e) => setEditingTagName(e.target.value)}
+                    onBlur={saveTagName}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") saveTagName();
+                      if (e.key === "Escape") { setEditingTagId(null); }
+                    }}
+                    className="bg-transparent outline-none text-(--text) text-center"
+                    autoFocus
+                    size={editingTagName.length || 3}
+                  />
+                ) : (
+                  <span
+                    onClick={() => toggleTag(tag.id!)}
+                    onDoubleClick={() => { setEditingTagId(tag.id!); setEditingTagName(tag.name || ""); }}
+                    className="cursor-pointer"
+                  >
+                    #{tag.name}
+                  </span>
+                )}
+                {!hasNotes && !editingTagId && (
+                  <span
+                    onClick={(e) => { e.stopPropagation(); handleDeleteClick(tag.id!); }}
+                    className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-(--text-muted) text-(--surface) text-[9px] flex items-center justify-center leading-none opacity-0 group-hover:opacity-100 transition-opacity hover:bg-(--syntax-red)"
+                  >
+                    &times;
+                  </span>
+                )}
+              </span>
+            );
+          })}
+          <input
+            type="text"
+            size={newTagName.length || 5}
+            value={newTagName}
+            onChange={(e) => setNewTagName(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") createTag(); }}
+            onBlur={createTag}
+            placeholder="+ 新标签"
+            disabled={savingTag}
+            className="rounded-full border border-dashed border-(--border) px-2 py-0.5 text-xs bg-transparent text-(--text-muted) outline-none placeholder:text-(--text-muted) text-center"
+          />
+        </div>
+      </div>
+
+      {/* 新增/编辑分类弹窗 */}
+      {catModal.open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          onClick={() => setCatModal((p) => ({ ...p, open: false }))}
+        >
+          <div className="absolute inset-0 bg-black/30" />
+          <div
+            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-base font-semibold text-(--text) mb-5">
+              {catModal.id ? "编辑分类" : "新增分类"}
+            </h3>
+
+            <div className="space-y-3">
+              {/* 名称 */}
+              <div>
+                <label className="block text-xs font-medium text-(--text-soft) mb-1.5">名称</label>
+                <input
+                  type="text"
+                  value={catModal.name}
+                  onChange={(e) => setCatModal((p) => ({ ...p, name: e.target.value }))}
+                  className="w-full rounded-lg border border-(--border) bg-(--surface-muted) px-3 py-2 text-sm text-(--text) outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-colors"
+                  placeholder="分类名称"
+                  maxLength={50}
+                  autoFocus
+                />
+              </div>
+
+              {/* 描述 */}
+              <div>
+                <label className="block text-xs font-medium text-(--text-soft) mb-1.5">描述</label>
+                <input
+                  type="text"
+                  value={catModal.description}
+                  onChange={(e) => setCatModal((p) => ({ ...p, description: e.target.value }))}
+                  className="w-full rounded-lg border border-(--border) bg-(--surface-muted) px-3 py-2 text-sm text-(--text) outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-colors"
+                  placeholder="可选"
+                  maxLength={200}
+                />
+              </div>
+
+              {/* 类型 + 系列 */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-(--text-soft)">类型</span>
+                  <div className="flex rounded-lg border border-(--border) overflow-hidden">
+                    {(["tech", "life"] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setCatModal((p) => ({ ...p, type: t }))}
+                        className={`px-3 py-1.5 text-xs transition-colors cursor-pointer ${
+                          catModal.type === t
+                            ? "bg-(--accent) text-white"
+                            : "bg-(--surface) text-(--text-soft) hover:bg-(--surface-muted)"
+                        }`}
+                      >
+                        {t === "tech" ? "技术" : "生活"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-2 text-xs text-(--text) cursor-pointer select-none">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={catModal.isSeries}
+                    onClick={() => setCatModal((p) => ({ ...p, isSeries: !p.isSeries }))}
+                    className={`relative w-9 h-5 rounded-full transition-colors ${
+                      catModal.isSeries ? "bg-(--accent)" : "bg-(--border-strong)"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
+                        catModal.isSeries ? "translate-x-4" : ""
+                      }`}
+                    />
+                  </button>
+                  系列文章
+                </label>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-(--border)">
+              <button
+                onClick={() => setCatModal((p) => ({ ...p, open: false }))}
+                className="px-4 py-2 text-xs rounded-lg text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={saveCategory}
+                disabled={!catModal.name.trim() || savingCat}
+                className="px-4 py-2 text-xs rounded-lg bg-(--accent) text-white font-medium hover:opacity-85 transition-opacity disabled:opacity-50"
+              >
+                {savingCat ? "保存中..." : "保存"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 删除分类确认弹窗 */}
+      {confirmDeleteCatId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          onClick={() => setConfirmDeleteCatId(null)}
+        >
+          <div className="absolute inset-0 bg-black/30" />
+          <div
+            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm text-(--text)">
+              确定删除分类 <span className="font-semibold">#{categoryList.find((c) => c.id === confirmDeleteCatId)?.name}</span> ？
+            </p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => setConfirmDeleteCatId(null)}
+                className="px-3 py-1.5 text-xs rounded-lg border border-(--border) text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => deleteCategory(confirmDeleteCatId)}
+                className="px-3 py-1.5 text-xs rounded-lg bg-(--syntax-red) text-white hover:opacity-85 transition-opacity"
+              >
+                删除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 删除标签确认弹窗 */}
+      {confirmDeleteId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          onClick={() => setConfirmDeleteId(null)}
+        >
+          <div className="absolute inset-0 bg-black/30" />
+          <div
+            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-sm text-(--text)">
+              确定删除标签 <span className="font-semibold">#{tagList.find((t) => t.id === confirmDeleteId)?.name}</span> ？
+            </p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                className="px-3 py-1.5 text-xs rounded-lg border border-(--border) text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => deleteTag(confirmDeleteId)}
+                className="px-3 py-1.5 text-xs rounded-lg bg-(--syntax-red) text-white hover:opacity-85 transition-opacity"
+              >
+                删除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
+    </>
   );
 }
