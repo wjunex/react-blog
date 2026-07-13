@@ -4,7 +4,7 @@ import "@milkdown/crepe/theme/common/style.css";
 import "./editor.css";
 
 import { Crepe } from "@milkdown/crepe";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { blogCodeTheme } from "./cm-theme";
 
 const THEME_LINK_ID = "milkdown-frame-theme";
@@ -12,6 +12,7 @@ const THEME_LINK_ID = "milkdown-frame-theme";
 interface MilkdownEditorProps {
   defaultValue?: string;
   onChange?: (markdown: string) => void;
+  onSave?: () => void;
   readonly?: boolean;
   placeholder?: string;
   padding?: string;
@@ -49,50 +50,70 @@ function loadThemeCSS(theme: string) {
 export default function MilkdownEditor({
   defaultValue = "",
   onChange,
+  onSave,
   readonly = false,
   placeholder = "开始写作...",
   padding = "0",
 }: MilkdownEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const crepeRef = useRef<Crepe | null>(null);
+  const mountedRef = useRef(true);
   const defaultValueRef = useRef(defaultValue);
+  const onSaveRef = useRef(onSave);
   defaultValueRef.current = defaultValue;
-
-  const initEditor = useCallback(async () => {
-    if (!containerRef.current) return;
-
-    const crepe = new Crepe({
-      root: containerRef.current,
-      defaultValue: defaultValueRef.current,
-      features: {},
-      featureConfigs: {
-        [Crepe.Feature.Placeholder]: {
-          text: placeholder,
-          mode: "block",
-        },
-        [Crepe.Feature.CodeMirror]: {
-          theme: blogCodeTheme,
-        },
-      },
-    });
-
-    await crepe.create();
-    crepeRef.current = crepe;
-    crepe.setReadonly(readonly);
-    loadThemeCSS(getTheme());
-    setPadding(padding);
-
-    crepe.on((listener: any) => {
-      listener.updated(() => {
-        const content = crepe.getMarkdown();
-        onChange?.(content);
-      });
-    });
-  }, []);
+  onSaveRef.current = onSave;
 
   useEffect(() => {
-    initEditor();
+    let cancelled = false;
+    mountedRef.current = true;
+    const init = async () => {
+      if (!containerRef.current) return;
+      const crepe = new Crepe({
+        root: containerRef.current,
+        defaultValue: defaultValueRef.current,
+        features: {},
+        featureConfigs: {
+          [Crepe.Feature.Placeholder]: {
+            text: placeholder,
+            mode: "block",
+          },
+          [Crepe.Feature.CodeMirror]: {
+            theme: blogCodeTheme,
+          },
+        },
+      });
+      await crepe.create();
+      if (cancelled || !mountedRef.current) {
+        crepe.destroy();
+        return;
+      }
+      crepeRef.current = crepe;
+      crepe.setReadonly(readonly);
+      loadThemeCSS(getTheme());
+      setPadding(padding);
+      crepe.on((listener: any) => {
+        listener.updated(() => {
+          const content = crepe.getMarkdown();
+          onChange?.(content);
+        });
+
+        const handleKeydown = (e: KeyboardEvent) => {
+          if ((e.key === "s" || e.key === "S") && e.ctrlKey) {
+            e.preventDefault();
+            onSaveRef.current?.();
+          }
+        };
+        listener.focus(() => window.addEventListener("keydown", handleKeydown));
+        listener.blur(() => {
+          window.removeEventListener("keydown", handleKeydown);
+          onSaveRef.current?.();
+        });
+      });
+    };
+    init();
     return () => {
+      cancelled = true;
+      mountedRef.current = false;
       crepeRef.current?.destroy();
       crepeRef.current = null;
     };

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { apiPublicDetail, apiPublicListByYear } from "@/api/generated";
 import MDXContent from "@/components/MDXContent";
 import CommentSection from "@/components/Comment/CommentSection";
 import { CommentIcon } from "@/components/Icons";
 import { formatDate, removeFirstH1 } from "@/utils";
+import { getServerToken } from "@/lib/token-server";
 
 type Props = {
   params: Promise<{
@@ -43,6 +45,7 @@ export const revalidate = 600;
 export default async function BlogDetail({ params }: Props) {
   const { slug } = await params;
   const data = await apiPublicDetail({ slug });
+  const isLoggedIn = !!(await getServerToken());
 
   data.content = removeFirstH1(data.content!);
 
@@ -74,6 +77,14 @@ export default async function BlogDetail({ params }: Props) {
                 <CommentIcon />
                 <span>{data.commentCount}</span>
               </a>
+            )}
+            {isLoggedIn && (
+              <Link
+                href={`/editor?slug=${slug}`}
+                className="text-xs text-(--text-muted) hover:text-(--accent) transition-colors"
+              >
+                编辑
+              </Link>
             )}
           </div>
         </header>
