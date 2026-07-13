@@ -232,13 +232,14 @@
 
 /* ---- 分割线 ---- */
 .milkdown-editor-wrapper .ProseMirror hr {
-  background: var(--border);
   border: 0;
-  height: 0.25em;
+  height: 1px;
+  width: 60%;
   padding: 0;
-  margin: 24px 0;
+  margin: 40px auto;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  background-clip: border-box;
 }
-
 /* ---- 图片 ---- */
 .milkdown-editor-wrapper .ProseMirror img {
   height: auto;

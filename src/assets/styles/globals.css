@@ -242,10 +242,11 @@ a {
 }
 
 .mdx-content hr {
-  background: var(--border);
   border: 0;
-  height: 0.25em;
-  padding: 0;
+  height: 1px;
+  margin: 40px auto;
+  width: 60%;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
 }
 
 .mdx-content img {

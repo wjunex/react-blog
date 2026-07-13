@@ -78,6 +78,18 @@ export default async function BlogDetail({ params }: Props) {
           </div>
         </header>
         <MDXContent source={data.content} />
+        {data.tags && data.tags.length > 0 && (
+          <div className="mt-10 flex flex-wrap items-center gap-2">
+            {data.tags.map((tag) => (
+              <span
+                key={tag.id}
+                className="rounded-full border border-(--border) px-2 py-0.5 text-xs text-(--text-muted)"
+              >
+                #{tag.name}
+              </span>
+            ))}
+          </div>
+        )}
       </article>
 
       {/* 评论区锚点 */}
