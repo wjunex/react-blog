@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import MilkdownEditor from "@/components/MilkdownEditor";
-import { formatDate } from "@/utils";
+import Badge from "@/components/Badge";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import ToggleSwitch from "@/components/ToggleSwitch";
+import { formatDate, getFirstImage, getPlainText, getSummary, sortTagsByName } from "@/utils";
 import { pinyinSlug } from "pinyin-slug";
 import type { NoteVO } from "@/api/generated/models";
 import { apiCategoryDelete, apiCategoryList, apiCategorySave, apiNoteSave, apiTagDelete, apiTagList, apiTagSave } from "@/api/generated";
@@ -80,36 +83,9 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
     if (name === original) { setEditingTagId(null); return; }
     try {
       await apiTagSave({ id, name });
-      setTagList((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, name } : t)).sort((a, b) => {
-          const na = a.name || "", nb = b.name || "";
-          const aLatin = /^[a-zA-Z]/.test(na);
-          const bLatin = /^[a-zA-Z]/.test(nb);
-          if (aLatin && !bLatin) return -1;
-          if (!aLatin && bLatin) return 1;
-          return na.localeCompare(nb);
-        }),
-      );
+      setTagList((prev) => sortTagsByName(prev.map((t) => (t.id === id ? { ...t, name } : t))));
     } catch { /* ignore */ }
     setEditingTagId(null);
-  };
-
-  // 从 Markdown 提取信息
-  const getPlainText = (md: string) =>
-    md.replace(/!\[.*?\]\(.*?\)/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-      .replace(/`{1,3}[^`]+`{1,3}/g, "").replace(/```[\s\S]*?```/g, "")
-      .replace(/[*_~#>]+/g, "").replace(/^\s+/gm, "").replace(/\n+/g, " ")
-      .replace(/\s{2,}/g, " ").trim();
-
-  const getSummary = (md: string, max = 200) => {
-    const text = md.split("\n").filter((l) => !/^#{1,6}\s/.test(l.trim())).join(" ");
-    const plain = getPlainText(text);
-    return plain.length <= max ? plain : `${plain.slice(0, max).trimEnd()}…`;
-  };
-
-  const getFirstImage = (md: string) => {
-    const m = md.match(/!\[.*?\]\((.*?)\)/);
-    return m?.[1] || "";
   };
 
   // 保存
@@ -207,16 +183,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
     setSavingTag(true);
     try {
       const tag = await apiTagSave({ name });
-      setTagList((prev) =>
-        [...prev, tag].sort((a, b) => {
-          const na = a.name || "", nb = b.name || "";
-          const aLatin = /^[a-zA-Z]/.test(na);
-          const bLatin = /^[a-zA-Z]/.test(nb);
-          if (aLatin && !bLatin) return -1;
-          if (!aLatin && bLatin) return 1;
-          return na.localeCompare(nb);
-        }),
-      );
+      setTagList((prev) => sortTagsByName([...prev, tag]));
       if (tag.id) setTagIds((prev) => [...prev, tag.id!]);
       setNewTagName("");
     } finally {
@@ -230,14 +197,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
   useEffect(() => {
     Promise.all([apiCategoryList(), apiTagList()]).then(([cats, tags]) => {
       setCategoryList(cats || []);
-      setTagList((tags || []).sort((a, b) => {
-        const na = a.name || "", nb = b.name || "";
-        const aLatin = /^[a-zA-Z]/.test(na);
-        const bLatin = /^[a-zA-Z]/.test(nb);
-        if (aLatin && !bLatin) return -1;
-        if (!aLatin && bLatin) return 1;
-        return na.localeCompare(nb);
-      }));
+      setTagList(sortTagsByName(tags || []));
     });
   }, []);
 
@@ -479,24 +439,11 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
                   required
                 />
               </div>
-              <label className="flex items-center gap-2 text-sm text-(--text) cursor-pointer select-none">
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={saveForm.isPublish}
-                  onClick={() => setSaveForm((p) => ({ ...p, isPublish: !p.isPublish }))}
-                  className={`relative w-9 h-5 rounded-full transition-colors ${
-                    saveForm.isPublish ? "bg-(--accent)" : "bg-(--border-strong)"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-                      saveForm.isPublish ? "translate-x-4" : ""
-                    }`}
-                  />
-                </button>
-                公开发布
-              </label>
+              <ToggleSwitch
+                checked={saveForm.isPublish}
+                onChange={(v) => setSaveForm((p) => ({ ...p, isPublish: v }))}
+                label="公开发布"
+              />
             </div>
 
             <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-(--border)">
@@ -583,24 +530,11 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
                   </div>
                 </div>
 
-                <label className="flex items-center gap-2 text-xs text-(--text) cursor-pointer select-none">
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={catModal.isSeries}
-                    onClick={() => setCatModal((p) => ({ ...p, isSeries: !p.isSeries }))}
-                    className={`relative w-9 h-5 rounded-full transition-colors ${
-                      catModal.isSeries ? "bg-(--accent)" : "bg-(--border-strong)"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-                        catModal.isSeries ? "translate-x-4" : ""
-                      }`}
-                    />
-                  </button>
-                  系列文章
-                </label>
+                <ToggleSwitch
+                  checked={catModal.isSeries}
+                  onChange={(v) => setCatModal((p) => ({ ...p, isSeries: v }))}
+                  label="系列文章"
+                />
               </div>
             </div>
 
@@ -623,69 +557,23 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
         </div>
       )}
 
-      {/* 删除分类确认弹窗 */}
-      {confirmDeleteCatId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={() => setConfirmDeleteCatId(null)}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div
-            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-sm text-(--text)">
-              确定删除分类 <span className="font-semibold">#{categoryList.find((c) => c.id === confirmDeleteCatId)?.name}</span> ？
-            </p>
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setConfirmDeleteCatId(null)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-(--border) text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
-              >
-                取消
-              </button>
-              <button
-                onClick={() => deleteCategory(confirmDeleteCatId)}
-                className="px-3 py-1.5 text-xs rounded-lg bg-(--syntax-red) text-white hover:opacity-85 transition-opacity"
-              >
-                删除
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={!!confirmDeleteCatId}
+        onClose={() => setConfirmDeleteCatId(null)}
+        onConfirm={() => deleteCategory(confirmDeleteCatId!)}
+        confirmLabel="删除"
+      >
+        确定删除分类 <span className="font-semibold">#{categoryList.find((c) => c.id === confirmDeleteCatId)?.name}</span> ？
+      </ConfirmDialog>
 
-      {/* 删除标签确认弹窗 */}
-      {confirmDeleteId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={() => setConfirmDeleteId(null)}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div
-            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-sm text-(--text)">
-              确定删除标签 <span className="font-semibold">#{tagList.find((t) => t.id === confirmDeleteId)?.name}</span> ？
-            </p>
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setConfirmDeleteId(null)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-(--border) text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
-              >
-                取消
-              </button>
-              <button
-                onClick={() => deleteTag(confirmDeleteId)}
-                className="px-3 py-1.5 text-xs rounded-lg bg-(--syntax-red) text-white hover:opacity-85 transition-opacity"
-              >
-                删除
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={() => deleteTag(confirmDeleteId!)}
+        confirmLabel="删除"
+      >
+        确定删除标签 <span className="font-semibold">#{tagList.find((t) => t.id === confirmDeleteId)?.name}</span> ？
+      </ConfirmDialog>
     </article>
     </>
   );

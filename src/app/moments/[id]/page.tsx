@@ -4,6 +4,7 @@ import { apiPublicDetail, apiPublicMomentList, apiPublicUserInfo } from "@/api/g
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
+import Badge from "@/components/Badge";
 import DeleteArticleButton from "@/components/DeleteArticleButton";
 import Image from "next/image";
 
@@ -78,9 +79,7 @@ export default async function MomentDetail({ params }: Props) {
                   </time>
                 )}
                 {data.categoryName && (
-                  <span className="rounded-full border border-(--border-strong) bg-(--surface-muted) px-2 py-0.5 text-xs">
-                    {data.categoryName}
-                  </span>
+                  <Badge variant="category">{data.categoryName}</Badge>
                 )}
                 {/* {data.views != null && <span>{data.views} 阅读</span>} */}
                 {isLoggedIn && (
@@ -91,7 +90,7 @@ export default async function MomentDetail({ params }: Props) {
                     >
                       编辑
                     </Link>
-                    {data.id && <DeleteArticleButton id={data.id} redirectTo="/moments" />}
+                    {data.id && <DeleteArticleButton id={data.id} redirectTo="/moments" message="确定删除这条动态？此操作不可撤销。" />}
                   </>
                 )}
               </div>

@@ -36,10 +36,6 @@
   scrollbar-width: none;
 }
 
-/* 分类下拉隐藏滚动条 */
-.cat-dropdown::-webkit-scrollbar {
-  display: none;
-}
 
 /* ---- placeholder widget ---- */
 .milkdown-editor-wrapper .ProseMirror-widget {

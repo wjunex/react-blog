@@ -6,6 +6,7 @@ import CommentSection from "@/components/Comment/CommentSection";
 import { CommentIcon } from "@/components/Icons";
 import { formatDate, removeFirstH1 } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
+import Badge from "@/components/Badge";
 import DeleteArticleButton from "@/components/DeleteArticleButton";
 
 type Props = {
@@ -59,9 +60,7 @@ export default async function BlogDetail({ params }: Props) {
           </h1>
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-(--text-muted)">
             {data.categoryName && (
-              <span className="rounded-full border border-(--border-strong) bg-(--surface-muted) px-2 py-0.5 text-xs">
-                {data.categoryName}
-              </span>
+              <Badge variant="category">{data.categoryName}</Badge>
             )}
             {data.createdAt && (
               <time dateTime={data.createdAt}>
@@ -96,12 +95,7 @@ export default async function BlogDetail({ params }: Props) {
         {data.tags && data.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap items-center gap-2">
             {data.tags.map((tag) => (
-              <span
-                key={tag.id}
-                className="rounded-full border border-(--border) px-2 py-0.5 text-xs text-(--text-muted)"
-              >
-                #{tag.name}
-              </span>
+              <Badge key={tag.id}>#{tag.name}</Badge>
             ))}
           </div>
         )}

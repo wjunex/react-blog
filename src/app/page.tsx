@@ -2,8 +2,10 @@ import Link from "next/link";
 import { apiPublicList, apiPublicMomentList } from "@/api/generated";
 import BlogItem from "@/components/List/BlogItem";
 import MomentItem from "@/components/List/MomentItem";
+import { getServerToken } from "@/lib/token-server";
 
 export default async function Home() {
+  const isLoggedIn = !!(await getServerToken());
   const [blogResult, hotResult, momentResult] = await Promise.allSettled([
     apiPublicList({ pageNum: 1, pageSize: 2 }),
     apiPublicList({ pageNum: 1, pageSize: 3, sortBy: "views", sortOrder: "desc" }),
@@ -37,6 +39,14 @@ export default async function Home() {
           希望通过文字，把学到的东西沉淀下来，也分享给需要的朋友。
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
+          {isLoggedIn && (
+            <Link
+              href="/editor"
+              className="rounded-md bg-(--accent) px-3 py-1.5 text-xs font-medium text-white transition-colors hover:opacity-85"
+            >
+              写文章
+            </Link>
+          )}
           <Link
             href="/blog"
             className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"

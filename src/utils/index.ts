@@ -69,3 +69,44 @@ export function removeFirstH1(markdown?: string | null) {
 
   return markdown.replace(/^\s*#\s+.+\n?/, "");
 }
+
+/** 提取 Markdown 纯文本（去除所有格式化符号） */
+export function getPlainText(md: string) {
+  return md
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/`{1,3}[^`]+`{1,3}/g, "")
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/[*_~#>]+/g, "")
+    .replace(/^\s+/gm, "")
+    .replace(/\n+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+/** 从 Markdown 提取摘要（前 max 字，跳过标题行） */
+export function getSummary(md: string, max = 200) {
+  const text = md.split("\n").filter((l) => !/^#{1,6}\s/.test(l.trim())).join(" ");
+  const plain = getPlainText(text);
+  return plain.length <= max ? plain : `${plain.slice(0, max).trimEnd()}…`;
+}
+
+/** 提取 Markdown 中第一张图片 URL */
+export function getFirstImage(md: string) {
+  const m = md.match(/!\[.*?\]\((.*?)\)/);
+  return m?.[1] || "";
+}
+
+import type { Tag } from "@/api/generated/models";
+
+/** 按首字母排序标签（英文优先，中文拼音序） */
+export function sortTagsByName(tags: Tag[]): Tag[] {
+  return [...tags].sort((a, b) => {
+    const na = a.name || "", nb = b.name || "";
+    const aLatin = /^[a-zA-Z]/.test(na);
+    const bLatin = /^[a-zA-Z]/.test(nb);
+    if (aLatin && !bLatin) return -1;
+    if (!aLatin && bLatin) return 1;
+    return na.localeCompare(nb);
+  });
+}

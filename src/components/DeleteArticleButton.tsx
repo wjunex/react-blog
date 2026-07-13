@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiNoteDelete } from "@/api/generated";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface Props {
   id: string;
-  redirectTo: string;
+  redirectTo?: string;
+  message?: string;
+  onDeleted?: () => void;
 }
 
-export default function DeleteArticleButton({ id, redirectTo }: Props) {
+export default function DeleteArticleButton({ id, redirectTo, message = "确定删除这篇文章？此操作不可撤销。", onDeleted }: Props) {
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -18,8 +21,11 @@ export default function DeleteArticleButton({ id, redirectTo }: Props) {
     setDeleting(true);
     try {
       await apiNoteDelete({ id });
-      router.push(redirectTo);
-      router.refresh();
+      onDeleted?.();
+      if (redirectTo) {
+        router.push(redirectTo);
+        router.refresh();
+      }
     } catch {
       setDeleting(false);
     }
@@ -33,36 +39,15 @@ export default function DeleteArticleButton({ id, redirectTo }: Props) {
       >
         删除
       </button>
-
-      {show && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={() => setShow(false)}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div
-            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-sm text-(--text)">确定删除这篇文章？此操作不可撤销。</p>
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setShow(false)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-(--border) text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
-              >
-                取消
-              </button>
-              <button
-                onClick={doDelete}
-                disabled={deleting}
-                className="px-3 py-1.5 text-xs rounded-lg bg-(--syntax-red) text-white hover:opacity-85 transition-opacity disabled:opacity-50"
-              >
-                {deleting ? "删除中..." : "删除"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={show}
+        onClose={() => setShow(false)}
+        onConfirm={doDelete}
+        confirmLabel="删除"
+        loading={deleting}
+      >
+        {message}
+      </ConfirmDialog>
     </>
   );
 }
