@@ -4,7 +4,12 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { publishMoment } from "@/lib/auth";
 
-export default function PublishForm() {
+interface Props {
+  initialContent?: string;
+  id?: string;
+}
+
+export default function PublishForm({ initialContent = "", id }: Props) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(publishMoment, null);
 
@@ -17,6 +22,7 @@ export default function PublishForm() {
 
   return (
     <form action={formAction} className="space-y-5">
+      {id && <input type="hidden" name="id" value={id} />}
       <div>
         <label
           htmlFor="content"
@@ -29,6 +35,7 @@ export default function PublishForm() {
           name="content"
           required
           rows={6}
+          defaultValue={initialContent}
           placeholder="写点什么..."
           className="mt-1.5 block w-full rounded-lg border border-(--border-strong) bg-(--surface) px-3 py-2.5 text-sm text-(--text) placeholder:text-(--text-muted) focus:border-(--accent) focus:outline-none resize-y"
         />
@@ -44,7 +51,7 @@ export default function PublishForm() {
           disabled={isPending}
           className="rounded-lg bg-(--accent) px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {isPending ? "发布中..." : "发布"}
+          {isPending ? "发布中..." : id ? "保存" : "发布"}
         </button>
         <button
           type="button"

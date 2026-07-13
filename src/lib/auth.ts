@@ -73,13 +73,14 @@ type PublishState = { success?: boolean; error?: string } | null;
 
 export async function publishMoment(prevState: PublishState, formData: FormData) {
   const content = formData.get("content") as string;
+  const id = formData.get("id") as string;
 
   if (!content || !content.trim()) {
     return { success: false, error: "请输入内容" };
   }
 
   try {
-    await apiNoteSave({ content: content.trim(), type: 2, isPublish: true });
+    await apiNoteSave({ id: id || undefined, content: content.trim(), type: 2, isPublish: true });
     return { success: true };
   } catch (e) {
     const message = e instanceof Error ? e.message : "发布失败";

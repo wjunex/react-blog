@@ -10,9 +10,11 @@ import type { Category, Tag } from "@/api/generated/models";
 
 interface Props {
   initialArticle?: NoteVO | null;
+  initialType?: number;
 }
 
-function EditorPageInner({ initialArticle }: Props) {
+function EditorPageInner({ initialArticle, initialType }: Props) {
+  const articleType = initialType ?? 1;
   const [content, setContent] = useState(initialArticle?.content || "");
   const [title, setTitle] = useState(initialArticle?.title || "");
   const [noteId, setNoteId] = useState<string | undefined>(initialArticle?.id);
@@ -147,7 +149,7 @@ function EditorPageInner({ initialArticle }: Props) {
         textCount: getPlainText(content).length,
         image: getFirstImage(content) || undefined,
         isPublish: false,
-        type: 1,
+        type: articleType,
       });
       if (result?.id) setNoteId(result.id);
       if (!slug) { setSlug(saveSlug); }
@@ -174,7 +176,7 @@ function EditorPageInner({ initialArticle }: Props) {
         textCount: getPlainText(content).length,
         image: getFirstImage(content) || undefined,
         isPublish: saveForm.isPublish,
-        type: 1,
+        type: articleType,
       });
       if (result?.id) setNoteId(result.id);
       setLastSaved({ title: saveForm.title.trim(), content });

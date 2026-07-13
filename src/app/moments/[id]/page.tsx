@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { apiPublicDetail, apiPublicMomentList, apiPublicUserInfo } from "@/api/generated";
 import CommentSection from "@/components/Comment/CommentSection";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
+import { getServerToken } from "@/lib/token-server";
+import DeleteArticleButton from "@/components/DeleteArticleButton";
 import Image from "next/image";
 
 type Props = {
@@ -45,9 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MomentDetail({ params }: Props) {
   const { id } = await params;
-  const [data, blogger] = await Promise.all([
+  const [data, blogger, isLoggedIn] = await Promise.all([
     apiPublicDetail({ id }),
     apiPublicUserInfo(),
+    getServerToken().then((t) => !!t),
   ]);
 
   return (
@@ -79,6 +83,17 @@ export default async function MomentDetail({ params }: Props) {
                   </span>
                 )}
                 {/* {data.views != null && <span>{data.views} 阅读</span>} */}
+                {isLoggedIn && (
+                  <>
+                    <Link
+                      href={`/moments/editor?id=${id}`}
+                      className="text-xs text-(--text-muted) hover:text-(--accent) transition-colors"
+                    >
+                      编辑
+                    </Link>
+                    {data.id && <DeleteArticleButton id={data.id} redirectTo="/moments" />}
+                  </>
+                )}
               </div>
             </div>
           </div>

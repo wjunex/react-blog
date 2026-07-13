@@ -31,7 +31,7 @@ export default async function Moments({ searchParams }: MomentsProps) {
         </p>
         {isLoggedIn && (
           <Link
-            href="/moments/new"
+            href="/moments/editor"
             className="mt-4 inline-block rounded-lg bg-(--accent) px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
             发布动态

@@ -6,6 +6,7 @@ import CommentSection from "@/components/Comment/CommentSection";
 import { CommentIcon } from "@/components/Icons";
 import { formatDate, removeFirstH1 } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
+import DeleteArticleButton from "@/components/DeleteArticleButton";
 
 type Props = {
   params: Promise<{
@@ -79,12 +80,15 @@ export default async function BlogDetail({ params }: Props) {
               </a>
             )}
             {isLoggedIn && (
-              <Link
-                href={`/editor?slug=${slug}`}
-                className="text-xs text-(--text-muted) hover:text-(--accent) transition-colors"
-              >
-                编辑
-              </Link>
+              <>
+                <Link
+                  href={`/editor?slug=${slug}`}
+                  className="text-xs text-(--text-muted) hover:text-(--accent) transition-colors"
+                >
+                  编辑
+                </Link>
+                {data.id && <DeleteArticleButton id={data.id} redirectTo="/blog" />}
+              </>
             )}
           </div>
         </header>

@@ -1,21 +1,27 @@
+import { redirect } from "next/navigation";
 import { apiPublicDetail } from "@/api/generated";
+import { getServerToken } from "@/lib/token-server";
 import EditorPageInner from "./EditorPageClient";
 
 interface Props {
-  searchParams: Promise<{ slug?: string }>;
+  searchParams: Promise<{ slug?: string; id?: string; type?: string }>;
 }
 
 export default async function EditorPage({ searchParams }: Props) {
-  const { slug } = await searchParams;
+  if (!(await getServerToken())) {
+    redirect("/login");
+  }
+
+  const { slug, id, type } = await searchParams;
   let article = null;
 
-  if (slug) {
+  if (slug || id) {
     try {
-      article = await apiPublicDetail({ slug });
+      article = await apiPublicDetail(slug ? { slug } : { id });
     } catch {
-      // slug 对应的文章不存在，按新建处理
+      // 文章不存在，按新建处理
     }
   }
 
-  return <EditorPageInner initialArticle={article} />;
+  return <EditorPageInner initialArticle={article} initialType={Number(type) || undefined} />;
 }

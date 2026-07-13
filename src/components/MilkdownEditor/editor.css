@@ -83,6 +83,13 @@
   margin-top: 16px;
 }
 
+/* 第二个子元素才是实际第一个内容（首个是隐藏的 ProseMirror-widget），去掉上边距 */
+.milkdown-editor-wrapper .ProseMirror > :nth-child(2) {
+  margin-top: 0 !important;
+}
+
+
+
 /* ---- 段落 — 覆盖 reset.css 的 line-height: 24px / padding: 4px 0 ---- */
 .milkdown-editor-wrapper .ProseMirror p {
   font-size: 16px;
@@ -245,11 +252,18 @@
   background: linear-gradient(to right, transparent, var(--border), transparent);
   background-clip: border-box;
 }
-/* ---- 图片 ---- */
+/* ---- 图片 — 左对齐，覆盖 image-block.css 的居中 ---- */
 .milkdown-editor-wrapper .ProseMirror img {
   height: auto;
   max-width: 100%;
   vertical-align: bottom;
+}
+
+.milkdown-editor-wrapper .milkdown-image-block > .image-wrapper {
+  margin: 0;
+}
+.milkdown-editor-wrapper .milkdown-image-block .image-wrapper {
+  justify-content: flex-start;
 }
 
 /* ==============================
