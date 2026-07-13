@@ -1,0 +1,355 @@
+/* ==============================
+   Milkdown Crepe 编辑器样式 — 与博客 .mdx-content 保持一致
+   覆盖 reset.css 中 .ProseMirror 的硬编码行距/字号
+   ============================== */
+
+.milkdown-editor-wrapper {
+}
+
+/* 覆盖 frame.css 的字体变量 — 必须挂在 .milkdown 上才能覆盖 */
+.milkdown-editor-wrapper .milkdown {
+  --crepe-font-default:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif;
+  --crepe-font-title:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif;
+  --crepe-font-code: var(--font-geist-mono), monospace;
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- 隐藏块级拖拽手柄 ---- */
+.milkdown-editor-wrapper .milkdown-block-handle {
+  display: none;
+}
+
+/* ---- 占位符 ---- */
+.milkdown-editor-wrapper [data-placeholder]::before {
+  color: var(--text-muted);
+}
+
+/* ---- 工具栏滚动条 ---- */
+.milkdown-editor-wrapper .menu-groups {
+  scrollbar-width: none;
+}
+
+/* ---- placeholder widget ---- */
+.milkdown-editor-wrapper .ProseMirror-widget {
+  display: none;
+}
+
+/* ==============================
+   .editor 容器
+   ============================== */
+
+.milkdown-editor-wrapper .editor {
+  flex: 1;
+  background: var(--surface);
+  color: var(--text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ==============================
+   ProseMirror 内容区 — 完全对齐 .mdx-content
+   ============================== */
+
+/* ---- 基础 ---- */
+.milkdown-editor-wrapper .ProseMirror {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+/* 相邻块级元素间距 — 对齐 .mdx-content > * + * { margin-top: 16px } */
+.milkdown-editor-wrapper .ProseMirror > * + * {
+  margin-top: 16px;
+}
+
+/* ---- 段落 — 覆盖 reset.css 的 line-height: 24px / padding: 4px 0 ---- */
+.milkdown-editor-wrapper .ProseMirror p {
+  font-size: 16px;
+  line-height: 1.65;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+/* ---- 标题 — 覆盖 reset.css 的 font-family/font-size/line-height/font-weight ---- */
+.milkdown-editor-wrapper .ProseMirror h1,
+.milkdown-editor-wrapper .ProseMirror h2,
+.milkdown-editor-wrapper .ProseMirror h3,
+.milkdown-editor-wrapper .ProseMirror h4,
+.milkdown-editor-wrapper .ProseMirror h5,
+.milkdown-editor-wrapper .ProseMirror h6 {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif !important;
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 0;
+  color: var(--text);
+}
+
+.milkdown-editor-wrapper .ProseMirror h1 {
+  font-size: 2em !important;
+  border-bottom: 1px solid var(--border);
+  margin-top: 24px;
+  padding-bottom: 0.3em;
+}
+
+.milkdown-editor-wrapper .ProseMirror h2 {
+  font-size: 1.5em !important;
+  border-bottom: 1px solid var(--border);
+  margin-top: 24px;
+  padding-bottom: 0.3em;
+}
+
+.milkdown-editor-wrapper .ProseMirror h3 {
+  font-size: 1.25em !important;
+  margin-top: 24px;
+}
+
+.milkdown-editor-wrapper .ProseMirror h4 {
+  font-size: 1em !important;
+  margin-top: 24px;
+}
+
+.milkdown-editor-wrapper .ProseMirror h5 {
+  font-size: 0.875em !important;
+  margin-top: 24px;
+}
+
+.milkdown-editor-wrapper .ProseMirror h6 {
+  font-size: 0.85em !important;
+  margin-top: 24px;
+}
+
+/* ---- 链接 ---- */
+.milkdown-editor-wrapper .ProseMirror a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- 列表 ---- */
+.milkdown-editor-wrapper .ProseMirror ul,
+.milkdown-editor-wrapper .ProseMirror ol {
+  padding-left: 2em;
+}
+
+.milkdown-editor-wrapper .ProseMirror ul {
+  list-style: disc;
+}
+
+.milkdown-editor-wrapper .ProseMirror ol {
+  list-style: decimal;
+}
+
+/* ---- 引用 — 覆盖 reset.css 的 padding-left: 40px + ::before ---- */
+.milkdown-editor-wrapper .ProseMirror blockquote {
+  border-left: 0.25em solid var(--border-strong);
+  color: var(--text-muted);
+  padding: 0 1em;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.milkdown-editor-wrapper .ProseMirror blockquote::before {
+  display: none;
+}
+
+/* ---- 内联代码 — 覆盖 reset.css 的颜色 ---- */
+.milkdown-editor-wrapper .ProseMirror code {
+  background: var(--inline-code-bg);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-geist-mono), monospace !important;
+  font-size: 85%;
+  padding: 0.2em 0.4em;
+  display: inline;
+  line-height: inherit;
+}
+
+/* ---- 代码块(非 CodeMirror 模式) ---- */
+.milkdown-editor-wrapper .ProseMirror pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  color: var(--text);
+  line-height: 1.45;
+  overflow-x: auto;
+  padding: 16px;
+  tab-size: 2;
+  white-space: pre;
+}
+
+.milkdown-editor-wrapper .ProseMirror pre code {
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  display: block;
+  font-size: 85%;
+  line-height: inherit;
+  min-width: max-content;
+  padding: 0;
+  white-space: inherit;
+}
+
+/* ---- 表格 ---- */
+.milkdown-editor-wrapper .ProseMirror table {
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+  width: max-content;
+}
+
+.milkdown-editor-wrapper .ProseMirror th,
+.milkdown-editor-wrapper .ProseMirror td {
+  border: 1px solid var(--border-strong);
+  padding: 6px 13px;
+}
+
+.milkdown-editor-wrapper .ProseMirror tr {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.milkdown-editor-wrapper .ProseMirror tr:nth-child(2n) {
+  background: var(--surface-muted);
+}
+
+/* ---- 分割线 ---- */
+.milkdown-editor-wrapper .ProseMirror hr {
+  background: var(--border);
+  border: 0;
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+}
+
+/* ---- 图片 ---- */
+.milkdown-editor-wrapper .ProseMirror img {
+  height: auto;
+  max-width: 100%;
+  vertical-align: bottom;
+}
+
+/* ==============================
+   CodeMirror 代码块
+   ============================== */
+
+.milkdown-editor-wrapper .milkdown-code-block,
+.milkdown-editor-wrapper .milkdown-code-block-placeholder,
+.milkdown-editor-wrapper .cm-editor,
+.milkdown-editor-wrapper .cm-scroller,
+.milkdown-editor-wrapper .cm-content,
+.milkdown-editor-wrapper .cm-line,
+.milkdown-editor-wrapper .cm-gutters {
+  font-family: var(--font-geist-mono), monospace !important;
+}
+
+.milkdown-editor-wrapper .milkdown-code-block {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+}
+.milkdown-editor-wrapper .milkdown-code-block .cm-editor,
+.milkdown-editor-wrapper .milkdown-code-block .cm-gutters {
+  background: var(--code-bg);
+}
+
+/* CodeMirror 代码块字号 — 与 .mdx-content pre code { font-size: 85% } 一致 */
+.milkdown-editor-wrapper .cm-editor {
+  font-size: 0.85rem;
+}
+
+/* 隐藏代码块行号 */
+.milkdown-editor-wrapper .cm-gutters {
+  display: none;
+}
+
+/* ==============================
+   语法高亮 — 对齐 .mdx-content .hljs-*
+   ============================== */
+
+.milkdown-editor-wrapper .hljs-comment,
+.milkdown-editor-wrapper .hljs-quote {
+  color: var(--syntax-subtle);
+}
+
+.milkdown-editor-wrapper .hljs-doctag,
+.milkdown-editor-wrapper .hljs-keyword,
+.milkdown-editor-wrapper .hljs-meta .hljs-keyword,
+.milkdown-editor-wrapper .hljs-template-tag,
+.milkdown-editor-wrapper .hljs-template-variable,
+.milkdown-editor-wrapper .hljs-type,
+.milkdown-editor-wrapper .hljs-variable.language_ {
+  color: var(--syntax-red);
+}
+
+.milkdown-editor-wrapper .hljs-title,
+.milkdown-editor-wrapper .hljs-title.class_,
+.milkdown-editor-wrapper .hljs-title.class_.inherited__,
+.milkdown-editor-wrapper .hljs-title.function_ {
+  color: var(--syntax-purple);
+}
+
+.milkdown-editor-wrapper .hljs-attr,
+.milkdown-editor-wrapper .hljs-attribute,
+.milkdown-editor-wrapper .hljs-literal,
+.milkdown-editor-wrapper .hljs-meta,
+.milkdown-editor-wrapper .hljs-number,
+.milkdown-editor-wrapper .hljs-operator,
+.milkdown-editor-wrapper .hljs-selector-attr,
+.milkdown-editor-wrapper .hljs-selector-class,
+.milkdown-editor-wrapper .hljs-selector-id,
+.milkdown-editor-wrapper .hljs-variable {
+  color: var(--syntax-orange);
+}
+
+.milkdown-editor-wrapper .hljs-meta .hljs-string,
+.milkdown-editor-wrapper .hljs-regexp,
+.milkdown-editor-wrapper .hljs-string {
+  color: var(--syntax-blue);
+}
+
+.milkdown-editor-wrapper .hljs-built_in,
+.milkdown-editor-wrapper .hljs-symbol {
+  color: var(--syntax-purple);
+}
+
+.milkdown-editor-wrapper .hljs-code,
+.milkdown-editor-wrapper .hljs-formula,
+.milkdown-editor-wrapper .hljs-section,
+.milkdown-editor-wrapper .hljs-name,
+.milkdown-editor-wrapper .hljs-selector-tag,
+.milkdown-editor-wrapper .hljs-selector-pseudo {
+  color: var(--syntax-green);
+}
+
+.milkdown-editor-wrapper .hljs-subst {
+  color: var(--text);
+}
+
+.milkdown-editor-wrapper .hljs-deletion {
+  background: #ffebe9;
+  color: #82071e;
+}
+
+.milkdown-editor-wrapper .hljs-addition {
+  background: #dafbe1;
+  color: #116329;
+}
