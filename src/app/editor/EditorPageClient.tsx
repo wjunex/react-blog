@@ -111,8 +111,8 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
   const isDirty = lastSaved && (saveTitle !== lastSaved.title || content !== lastSaved.content);
 
   const quickSave = async () => {
+    if (!content.trim() || saving) return;
     const saveSlug = slug || pinyinSlug(saveTitle);
-    if (saving) return;
     setSaving(true);
     try {
       const result = await apiNoteSave({
@@ -139,7 +139,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
 
   const doSave = async () => {
     const trimmedTitle = saveForm.title.trim();
-    if (!trimmedTitle || saving) return;
+    if (!trimmedTitle || !content.trim() || saving) return;
     setSaving(true);
     try {
       const result = await apiNoteSave({
@@ -394,7 +394,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
 
       {/* 保存按钮 */}
       <div className="mt-6">
-        <Button onClick={openSaveModal} size="md">
+        <Button onClick={openSaveModal} size="md" disabled={!content.trim()}>
           {noteId ? "保存" : "保存文章"}
         </Button>
       </div>
@@ -450,7 +450,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
               </Button>
               <Button
                 onClick={doSave}
-                disabled={!saveForm.title.trim() || !saveForm.slug.trim() || saving}
+                disabled={!saveForm.title.trim() || !saveForm.slug.trim() || !content.trim() || saving}
                 size="sm"
               >
                 {saving ? "保存中..." : "保存"}

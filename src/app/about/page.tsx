@@ -2,8 +2,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { apiPublicUserInfo } from "@/api/generated";
 import { GitHubIcon, MailIcon, GlobeIcon } from "@/components/Icons";
-import LogoutButton from "@/components/LogoutButton";
-import { getServerToken } from "@/lib/token-server";
 
 export const metadata: Metadata = {
   title: "关于",
@@ -12,8 +10,6 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const blogger = await apiPublicUserInfo();
-  const isLoggedIn = !!(await getServerToken());
-
   return (
     <section className="space-y-8">
       {/* ── 页面头部 ── */}
@@ -42,7 +38,6 @@ export default async function AboutPage() {
         <div className="mt-5 min-w-0 text-center sm:mt-0 sm:text-left">
           <h2 className="inline-flex items-center gap-3 text-2xl font-semibold tracking-tight text-(--text)">
             {blogger.username}
-            {isLoggedIn && <LogoutButton />}
           </h2>
           {blogger.signature && (
             <p className="mt-2 text-sm leading-6 text-(--text-soft)">

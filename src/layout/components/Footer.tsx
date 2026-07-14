@@ -1,6 +1,7 @@
 import Image from "next/image";
+import LogoutButton from "@/components/LogoutButton";
 
-export default function Footer() {
+export default function Footer({ isLoggedIn }: { isLoggedIn: boolean }) {
   return (
     <footer className="border-t border-(--border) bg-(--surface-muted-alpha) px-5 py-6 text-xs text-(--text-muted) sm:px-8 lg:px-14">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 text-center sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:text-left">
@@ -29,6 +30,7 @@ export default function Footer() {
           >
             黔ICP备2024042286号-2
           </a>
+          {isLoggedIn && <LogoutButton />}
         </div>
       </div>
     </footer>

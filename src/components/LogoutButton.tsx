@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Button from "@/components/Button";
 import { logout } from "@/lib/auth";
 import { getRefreshToken, clearTokens } from "@/lib/token";
 
@@ -16,8 +15,11 @@ export default function LogoutButton() {
   }
 
   return (
-    <Button variant="secondary" size="sm" onClick={handleLogout}>
+    <button
+      onClick={handleLogout}
+      className="text-xs text-(--text-muted) transition-colors hover:text-(--accent)"
+    >
       退出登录
-    </Button>
+    </button>
   );
 }
