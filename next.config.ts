@@ -6,15 +6,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "file.zost.cn",
+      },
+      {
+        protocol: "https",
         hostname: "img.wjun.me",
       },
       {
         protocol: "https",
-        hostname: "file.zost.cn",
-      },
-       {
-        protocol: "http",
-        hostname: "yangliuyiyi.oss-cn-chengdu.aliyuncs.com",
+        hostname: "raw.githubusercontent.com",
       },
     ],
   },

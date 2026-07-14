@@ -4,8 +4,6 @@ import { apiPublicUserInfo } from "@/api/generated";
 import Link from "next/link";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";
-import Image from "next/image";
-
 export default async function MomentItem({ item }: { item: BlogItemType }) {
   const blogger = await apiPublicUserInfo();
   const date = formatDate(item.createdAt, DATE_TIME_WEEKDAY);
@@ -15,13 +13,12 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
     <article className="group py-6 first:pt-0 last:pb-0">
       <Link href={href}>
         <div className="flex items-start gap-3">
-          <Image
+          <img
             src={blogger.avatar!}
             alt={blogger.username!}
             width={40}
             height={40}
             className="shrink-0 rounded-full border-2 border-(--border-strong)"
-            priority
           />
 
           <div className="min-w-0">
@@ -34,12 +31,10 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
             {item.images && item.images.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {item.images.map((img, i) => (
-                  <Image
+                  <img
                     key={i}
                     src={img}
                     alt=""
-                    width={120}
-                    height={120}
                     className="rounded-lg object-cover"
                     style={{ width: 120, height: 120 }}
                   />

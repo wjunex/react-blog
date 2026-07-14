@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 import MilkdownEditor from "@/components/MilkdownEditor";
 import Badge from "@/components/Badge";
@@ -9,7 +10,7 @@ import ToggleSwitch from "@/components/ToggleSwitch";
 import { formatDate, getFirstImage, getPlainText, getSummary, sortTagsByName } from "@/utils";
 import { pinyinSlug } from "pinyin-slug";
 import type { NoteVO } from "@/api/generated/models";
-import { apiCategoryDelete, apiCategoryList, apiCategorySave, apiNoteSave, apiTagDelete, apiTagList, apiTagSave } from "@/api/generated";
+import { apiCategoryDelete, apiCategoryList, apiCategorySave, apiCommonUpload, apiNoteSave, apiTagDelete, apiTagList, apiTagSave } from "@/api/generated";
 import type { Category, Tag } from "@/api/generated/models";
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
 }
 
 function EditorPageInner({ initialArticle, initialType }: Props) {
+  const router = useRouter();
   const articleType = initialType ?? 1;
   const [content, setContent] = useState(initialArticle?.content || "");
   const [title, setTitle] = useState(initialArticle?.title || "");
@@ -129,7 +131,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
         type: articleType,
       });
       if (result?.id) setNoteId(result.id);
-      if (!slug) { setSlug(saveSlug); }
+      if (!slug) { setSlug(saveSlug); router.replace(`/editor?slug=${saveSlug}`); }
       if (!title.trim()) { setTitle(saveTitle); }
       setLastSaved({ title: saveTitle, content });
     } finally {
@@ -157,6 +159,8 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
       });
       if (result?.id) setNoteId(result.id);
       setLastSaved({ title: saveForm.title.trim(), content });
+      setSlug(saveForm.slug.trim());
+      router.replace(`/editor?slug=${saveForm.slug.trim()}`);
       setShowSaveModal(false);
     } finally {
       setSaving(false);
@@ -194,6 +198,13 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
 
   const selectedCategoryName =
     categoryList.find((c) => c.id === categoryId)?.name || initialArticle?.categoryName || "";
+
+  const handleImageUpload = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const url = await apiCommonUpload(formData as any, { path: "my/blog" });
+    return ((url as any) || "").replace("https://zost.oss-cn-chengdu.aliyuncs.com", "https://file.zost.cn");
+  };
 
   useEffect(() => {
     Promise.all([apiCategoryList(), apiTagList()]).then(([cats, tags]) => {
@@ -326,6 +337,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
         defaultValue={content}
         onChange={setContent}
         onSave={quickSave}
+        onUpload={handleImageUpload}
         placeholder="请输入..."
       />
 

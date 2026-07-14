@@ -6,7 +6,6 @@ import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
 import Badge from "@/components/Badge";
 import DeleteArticleButton from "@/components/DeleteArticleButton";
-import Image from "next/image";
 
 type Props = {
   params: Promise<{
@@ -60,13 +59,12 @@ export default async function MomentDetail({ params }: Props) {
       <article>
         <header className="border-b border-(--border) pb-8 mb-12">
           <div className="flex items-center gap-4">
-            <Image
+            <img
               src={blogger.avatar!}
               alt={blogger.username!}
               width={48}
               height={48}
               className="shrink-0 rounded-full border-2 border-(--border-strong)"
-              priority
             />
             <div className="min-w-0">
               <span className="text-lg font-semibold text-(--text)">
@@ -101,12 +99,10 @@ export default async function MomentDetail({ params }: Props) {
         {data.images && data.images.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-3">
             {data.images.map((img, i) => (
-              <Image
+              <img
                 key={i}
                 src={img}
                 alt=""
-                width={200}
-                height={200}
                 className="rounded-lg object-cover"
                 style={{ width: 200, height: 200 }}
               />

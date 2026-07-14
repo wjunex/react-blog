@@ -1,4 +1,3 @@
-import Image from "next/image";
 import LogoutButton from "@/components/LogoutButton";
 
 export default function Footer({ isLoggedIn }: { isLoggedIn: boolean }) {
@@ -13,12 +12,11 @@ export default function Footer({ isLoggedIn }: { isLoggedIn: boolean }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 transition-colors hover:text-(--accent)"
           >
-            <Image
+            <img
               src="https://file.zost.cn/my/beian.png"
               width={14}
               height={14}
               alt="beian"
-              style={{ width: 14, height: 14 }}
             />
             <span>贵公网安备52230102000488号</span>
           </a>

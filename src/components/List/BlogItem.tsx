@@ -1,7 +1,6 @@
 import type { NoteListVO } from "@/api/generated/models";
 type BlogItemType = NoteListVO;
 import Link from "next/link";
-import Image from "next/image";
 import { formatDate } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";
 
@@ -69,11 +68,9 @@ export default function BlogItem({ item }: { item: BlogItemType }) {
         </div>
         {item.image && (
           <Link href={href} className="hidden shrink-0 sm:block">
-            <Image
+            <img
               src={item.image}
               alt={item.title || ""}
-              width={160}
-              height={96}
               className="rounded-lg object-cover"
               style={{ width: 160, height: 96 }}
             />

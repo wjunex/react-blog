@@ -13,6 +13,7 @@ interface MilkdownEditorProps {
   defaultValue?: string;
   onChange?: (markdown: string) => void;
   onSave?: () => void;
+  onUpload?: (file: File) => Promise<string>;
   readonly?: boolean;
   placeholder?: string;
   padding?: string;
@@ -51,6 +52,7 @@ export default function MilkdownEditor({
   defaultValue = "",
   onChange,
   onSave,
+  onUpload,
   readonly = false,
   placeholder = "开始写作...",
   padding = "0",
@@ -60,8 +62,10 @@ export default function MilkdownEditor({
   const mountedRef = useRef(true);
   const defaultValueRef = useRef(defaultValue);
   const onSaveRef = useRef(onSave);
+  const onUploadRef = useRef(onUpload);
   defaultValueRef.current = defaultValue;
   onSaveRef.current = onSave;
+  onUploadRef.current = onUpload;
 
   useEffect(() => {
     let cancelled = false;
@@ -80,6 +84,16 @@ export default function MilkdownEditor({
           [Crepe.Feature.CodeMirror]: {
             theme: blogCodeTheme,
           },
+          ...(onUploadRef.current
+            ? {
+                [Crepe.Feature.ImageBlock]: {
+                  onUpload: async (file: File) => {
+                    const url = await onUploadRef.current!(file);
+                    return url;
+                  },
+                },
+              }
+            : {}),
         },
       });
       await crepe.create();

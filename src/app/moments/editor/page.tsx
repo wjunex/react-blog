@@ -17,12 +17,14 @@ export default async function NewMomentPage({ searchParams }: Props) {
 
   const { id } = await searchParams;
   let initialContent = "";
+  let initialImages: string[] = [];
   let editingId = "";
 
   if (id) {
     try {
       const data = await apiPublicDetail({ id });
       initialContent = data.content || "";
+      initialImages = data.images || [];
       editingId = data.id || "";
     } catch {
       // 不存在按新建处理
@@ -30,14 +32,8 @@ export default async function NewMomentPage({ searchParams }: Props) {
   }
 
   return (
-    <section className="mx-auto max-w-xl space-y-8 py-12">
-      <div className="border-b border-(--border) pb-6">
-        <p className="text-sm font-medium text-(--accent)">Moments</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
-          {editingId ? "编辑动态" : "发布动态"}
-        </h1>
-      </div>
-      <PublishForm initialContent={initialContent} id={editingId || undefined} />
+    <section className="mx-auto max-w-xl space-y-6">
+      <PublishForm initialContent={initialContent} initialImages={initialImages} id={editingId || undefined} />
     </section>
   );
 }

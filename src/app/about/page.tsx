@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import { apiPublicUserInfo } from "@/api/generated";
 import { GitHubIcon, MailIcon, GlobeIcon } from "@/components/Icons";
 
@@ -26,13 +25,12 @@ export default async function AboutPage() {
       <div className="relative overflow-hidden rounded-2xl border border-(--border) bg-linear-to-br from-(--surface) via-(--surface) to-(--accent)/5 p-8 shadow-sm sm:flex sm:flex-row sm:items-center sm:gap-6">
         <div className="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-transparent via-(--accent)/40 to-transparent" />
         <div className="flex shrink-0 justify-center">
-          <Image
+          <img
             src={blogger.avatar!}
             alt={blogger.username!}
             width={72}
             height={72}
             className="rounded-full ring-2 ring-(--border-strong) ring-offset-4 ring-offset-(--surface)"
-            priority
           />
         </div>
         <div className="mt-5 min-w-0 text-center sm:mt-0 sm:text-left">

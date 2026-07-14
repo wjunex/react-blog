@@ -95,14 +95,23 @@ export async function request<T>(
       cacheOption = { cache };
     }
 
+    const isFormData = body instanceof FormData;
+
+    const mergedHeaders: Record<string, string> = {
+      ...authHeader,
+      ...headers,
+    };
+    if (isFormData) {
+      delete mergedHeaders["Content-Type"];
+      delete mergedHeaders["content-type"];
+    } else {
+      mergedHeaders["Content-Type"] = "application/json";
+    }
+
     return fetch(`${API_BASE}${url}`, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeader,
-        ...headers,
-      } as Record<string, string>,
-      body: body ? JSON.stringify(body) : undefined,
+      headers: mergedHeaders,
+      body: isFormData ? (body as FormData) : (body ? JSON.stringify(body) : undefined),
       ...cacheOption,
     });
   }
