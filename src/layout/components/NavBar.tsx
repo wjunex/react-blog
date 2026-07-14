@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { HamburgerIcon, CloseIcon, SearchIcon } from "@/components/Icons";
-import { logout } from "@/lib/auth";
-import { getRefreshToken, clearTokens } from "@/lib/token";
 
 const NAV_LIST = [
   { title: "首页", path: "/" },
@@ -27,20 +25,12 @@ function isActive(path: string, currentPathname: string) {
   );
 }
 
-export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
+export default function NavBar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
   function closeMenu() {
     setMenuOpen(false);
-  }
-
-  async function handleLogout() {
-    const token = getRefreshToken();
-    await logout(token ?? undefined);
-    clearTokens();
-    router.refresh();
   }
 
   return (
@@ -92,17 +82,8 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
           <SearchIcon />
         </Link>
 
-        {/* 右侧：登出 + 主题切换 + 汉堡按钮 */}
+        {/* 右侧：主题切换 + 汉堡按钮 */}
         <div className="flex items-center gap-2">
-          {isLoggedIn && (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-md px-3 py-2 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
-            >
-              退出
-            </button>
-          )}
           <ThemeToggle />
           <button
             type="button"
