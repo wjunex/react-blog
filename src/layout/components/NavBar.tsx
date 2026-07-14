@@ -76,7 +76,7 @@ export default function NavBar() {
         {/* 搜索图标 */}
         <Link
           href="/search"
-          className="hidden mr-3 rounded-md p-2 text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent) md:inline-flex"
+          className="mr-3 rounded-md p-2 text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent) inline-flex"
           aria-label="搜索"
         >
           <SearchIcon />
