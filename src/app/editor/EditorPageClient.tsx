@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Button from "@/components/Button";
 import MilkdownEditor from "@/components/MilkdownEditor";
 import Badge from "@/components/Badge";
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -393,12 +394,9 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
 
       {/* 保存按钮 */}
       <div className="mt-6">
-        <button
-          onClick={openSaveModal}
-          className="px-6 py-2 text-sm rounded-lg bg-(--accent) text-white font-medium hover:opacity-85 transition-opacity cursor-pointer"
-        >
+        <Button onClick={openSaveModal} size="md">
           {noteId ? "保存" : "保存文章"}
-        </button>
+        </Button>
       </div>
 
       {/* 保存文章弹窗 */}
@@ -447,19 +445,16 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
             </div>
 
             <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-(--border)">
-              <button
-                onClick={() => setShowSaveModal(false)}
-                className="px-4 py-2 text-xs rounded-lg text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowSaveModal(false)}>
                 取消
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={doSave}
                 disabled={!saveForm.title.trim() || !saveForm.slug.trim() || saving}
-                className="px-4 py-2 text-xs rounded-lg bg-(--accent) text-white font-medium hover:opacity-85 transition-opacity disabled:opacity-50"
+                size="sm"
               >
                 {saving ? "保存中..." : "保存"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -539,19 +534,16 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
             </div>
 
             <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-(--border)">
-              <button
-                onClick={() => setCatModal((p) => ({ ...p, open: false }))}
-                className="px-4 py-2 text-xs rounded-lg text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setCatModal((p) => ({ ...p, open: false }))}>
                 取消
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={saveCategory}
                 disabled={!catModal.name.trim() || savingCat}
-                className="px-4 py-2 text-xs rounded-lg bg-(--accent) text-white font-medium hover:opacity-85 transition-opacity disabled:opacity-50"
+                size="sm"
               >
                 {savingCat ? "保存中..." : "保存"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

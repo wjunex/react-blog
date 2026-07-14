@@ -4,6 +4,7 @@ import { apiPublicFriendLinkApply } from "@/api/generated";
 import type { FriendLink } from "@/api/generated/models";
 import { useState, useTransition, useCallback, type FormEvent } from "react";
 import RulesDialog from "@/components/RulesDialog";
+import Button from "@/components/Button";
 import type { UserVO } from "@/api/generated/models";
 
 // ---------- types ----------
@@ -194,18 +195,14 @@ export default function FriendLinkForm({ onSuccess, bloggerInfo }: FriendLinkFor
         </p>
       )}
 
-      <div className="flex items-center gap-3">
-        <button type="submit" className="comment-form__submit" disabled={pending}>
+      <div className="flex items-center gap-3 mt-3">
+        <Button type="submit" size="md" disabled={pending}>
           {pending ? "提交中…" : "提交申请"}
-        </button>
+        </Button>
         {bloggerInfo && (
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="comment-form__submit rounded-md border! border-(--border-strong)! bg-(--surface)! px-4 py-2 text-sm font-medium text-(--text-soft)! transition-colors! hover:border-(--accent)! hover:text-(--accent)!"
-          >
+          <Button variant="secondary" size="md" onClick={handleCopy}>
             {copied ? "已复制" : "本站信息"}
-          </button>
+          </Button>
         )}
       </div>
     </form>

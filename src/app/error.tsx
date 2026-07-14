@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/Button";
+
 export default function Error({
   error,
   reset,
@@ -16,12 +18,11 @@ export default function Error({
       <p className="mt-3 text-sm text-(--text-muted)">
         {error.message || "页面加载时出现错误，请稍后重试。"}
       </p>
-      <button
-        onClick={reset}
-        className="mt-6 rounded-md border border-(--border-strong) bg-(--surface-muted) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
-      >
-        重新加载
-      </button>
+      <div className="mt-6">
+        <Button variant="secondary" size="md" onClick={reset}>
+          重新加载
+        </Button>
+      </div>
     </div>
   );
 }

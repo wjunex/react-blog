@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { publishMoment } from "@/lib/auth";
+import Button from "@/components/Button";
 
 interface Props {
   initialContent?: string;
@@ -46,20 +47,12 @@ export default function PublishForm({ initialContent = "", id }: Props) {
       )}
 
       <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="rounded-lg bg-(--accent) px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={isPending} size="md">
           {isPending ? "发布中..." : id ? "保存" : "发布"}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.push("/moments")}
-          className="rounded-lg border border-(--border-strong) bg-(--surface) px-4 py-2.5 text-sm font-medium text-(--text-soft) transition-colors hover:text-(--accent)"
-        >
+        </Button>
+        <Button variant="ghost" size="md" onClick={() => router.push("/moments")}>
           取消
-        </button>
+        </Button>
       </div>
     </form>
   );

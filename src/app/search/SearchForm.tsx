@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SearchIcon } from "@/components/Icons";
+import Button from "@/components/Button";
 
 type Props = {
   initialKeyword?: string;
@@ -50,14 +51,13 @@ export default function SearchForm({ initialKeyword = "", categoryId = "", tagId
           <SearchIcon />
         </span>
       </div>
-      <button
-        type="button"
+      <Button
         onClick={doSearch}
         disabled={!keyword.trim() && !categoryId && !tagId}
-        className="rounded-lg bg-(--accent) px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-(--accent-hover) disabled:cursor-not-allowed disabled:opacity-50"
+        size="md"
       >
         搜索
-      </button>
+      </Button>
     </div>
   );
 }

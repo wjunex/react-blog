@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Button from "@/components/Button";
 import { logout } from "@/lib/auth";
 import { getRefreshToken, clearTokens } from "@/lib/token";
 
@@ -15,12 +16,8 @@ export default function LogoutButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleLogout}
-      className="appearance-none rounded-md px-3 py-1.5 text-xs font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent) border border-(--border-strong)"
-    >
+    <Button variant="secondary" size="sm" onClick={handleLogout}>
       退出登录
-    </button>
+    </Button>
   );
 }

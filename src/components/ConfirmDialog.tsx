@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/Button";
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -33,21 +35,17 @@ export default function ConfirmDialog({
         {title && <p className="text-sm font-semibold text-(--text) mb-2">{title}</p>}
         <div className="text-sm text-(--text)">{children}</div>
         <div className="flex justify-end gap-2 mt-4">
-          <button
-            onClick={onClose}
-            className="px-3 py-1.5 text-xs rounded-lg border border-(--border) text-(--text-soft) hover:bg-(--surface-muted) transition-colors"
-          >
+          <Button variant="ghost" size="sm" onClick={onClose}>
             取消
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={danger ? "danger" : "primary"}
+            size="sm"
             onClick={onConfirm}
             disabled={loading}
-            className={`px-3 py-1.5 text-xs rounded-lg text-white transition-opacity disabled:opacity-50 ${
-              danger ? "bg-(--syntax-red) hover:opacity-85" : "bg-(--accent) hover:opacity-85"
-            }`}
           >
             {loading ? "处理中..." : confirmLabel}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

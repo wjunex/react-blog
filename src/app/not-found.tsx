@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/components/Button";
 
 export default function NotFound() {
   return (
@@ -10,12 +10,11 @@ export default function NotFound() {
       <p className="mt-3 text-sm text-(--text-muted)">
         这个地址可能已经移动，或者暂时没有公开。
       </p>
-      <Link
-        href="/"
-        className="mt-6 rounded-md border border-(--border-strong) bg-(--surface-muted) px-4 py-2 text-sm font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
-      >
-        返回首页
-      </Link>
+      <div className="mt-6">
+        <ButtonLink href="/" variant="secondary" size="md">
+          返回首页
+        </ButtonLink>
+      </div>
     </div>
   );
 }

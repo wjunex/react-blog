@@ -58,7 +58,7 @@ export default async function MomentDetail({ params }: Props) {
   return (
     <>
       <article>
-        <header className="border-b border-(--border) pb-8 mb-8">
+        <header className="border-b border-(--border) pb-8 mb-12">
           <div className="flex items-center gap-4">
             <Image
               src={blogger.avatar!}

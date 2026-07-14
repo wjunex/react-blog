@@ -3,6 +3,7 @@ import { apiPublicList, apiPublicMomentList } from "@/api/generated";
 import BlogItem from "@/components/List/BlogItem";
 import MomentItem from "@/components/List/MomentItem";
 import { getServerToken } from "@/lib/token-server";
+import { ButtonLink } from "@/components/Button";
 
 export default async function Home() {
   const isLoggedIn = !!(await getServerToken());
@@ -40,25 +41,16 @@ export default async function Home() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           {isLoggedIn && (
-            <Link
-              href="/editor"
-              className="rounded-md bg-(--accent) px-3 py-1.5 text-xs font-medium text-white transition-colors hover:opacity-85"
-            >
+            <ButtonLink href="/editor" variant="primary" size="sm">
               写文章
-            </Link>
+            </ButtonLink>
           )}
-          <Link
-            href="/blog"
-            className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
-          >
+          <ButtonLink href="/blog" variant="secondary" size="sm">
             浏览文章
-          </Link>
-          <Link
-            href="/about"
-            className="rounded-md border border-(--border-strong) bg-(--surface-muted) px-3 py-1.5 text-xs font-medium text-(--text) transition-colors hover:bg-(--surface) hover:text-(--accent)"
-          >
+          </ButtonLink>
+          <ButtonLink href="/about" variant="secondary" size="sm">
             关于我
-          </Link>
+          </ButtonLink>
         </div>
       </div>
 
@@ -66,10 +58,7 @@ export default async function Home() {
       <div>
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-(--text)">最新发布</h2>
-          <Link
-            href="/blog"
-            className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)"
-          >
+          <Link href="/blog" className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)">
             查看更多 →
           </Link>
         </div>
@@ -91,10 +80,7 @@ export default async function Home() {
         <div>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-(--text)">热门文章</h2>
-            <Link
-              href="/blog"
-              className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)"
-            >
+            <Link href="/blog" className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)">
               查看更多 →
             </Link>
           </div>

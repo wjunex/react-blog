@@ -4,6 +4,7 @@ import { apiPublicCommentSave } from "@/api/generated";
 import type { NoteCommentVO, UserVO, PublicCommentAddDTO } from "@/api/generated/models";
 import { useState, useTransition, type FormEvent } from "react";
 import RulesDialog from "@/components/RulesDialog";
+import Button from "@/components/Button";
 
 // ---------- types ----------
 
@@ -240,9 +241,9 @@ export default function CommentForm({
         </p>
       )}
 
-      <button type="submit" className="comment-form__submit" disabled={pending}>
+      <Button type="submit" size="md" disabled={pending} className="mt-3">
         {pending ? "提交中…" : isReply ? "提交回复" : "提交评论"}
-      </button>
+      </Button>
     </form>
   );
 }

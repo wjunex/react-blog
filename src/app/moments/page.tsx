@@ -3,6 +3,7 @@ import Link from "next/link";
 import List from "@/components/List/List";
 import { getQueryNumber } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
+import { ButtonLink } from "@/components/Button";
 
 export const metadata: Metadata = { title: "动态" };
 
@@ -30,12 +31,11 @@ export default async function Moments({ searchParams }: MomentsProps) {
           一些零碎的、即时的想法和记录。
         </p>
         {isLoggedIn && (
-          <Link
-            href="/moments/editor"
-            className="mt-4 inline-block rounded-lg bg-(--accent) px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            发布动态
-          </Link>
+          <div className="mt-4">
+            <ButtonLink href="/moments/editor" variant="primary" size="sm">
+              发布动态
+            </ButtonLink>
+          </div>
         )}
       </div>
       <List
