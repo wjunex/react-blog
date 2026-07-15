@@ -22,8 +22,6 @@ export default async function Home() {
       ? (momentResult.value.records ?? [])
       : [];
 
-  console.log("recentPosts", recentPosts);
-
   return (
     <section className="space-y-12">
       {/* ── Hero ── */}

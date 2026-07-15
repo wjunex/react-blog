@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { apiPublicUserInfo } from "@/api/generated";
 import { GitHubIcon, MailIcon, GlobeIcon } from "@/components/Icons";
+import { getServerToken } from "@/lib/token-server";
+import { ButtonLink } from "@/components/Button";
 
 export const metadata: Metadata = {
   title: "关于",
@@ -8,12 +10,17 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const blogger = await apiPublicUserInfo();
+  const [blogger, isLoggedIn] = await Promise.all([
+    apiPublicUserInfo(),
+    getServerToken().then((t) => !!t),
+  ]);
   return (
     <section className="space-y-8">
       {/* ── 页面头部 ── */}
       <div className="border-b border-(--border) pb-6">
-        <p className="text-sm font-medium text-(--accent)">About</p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-(--accent)">About</p>
+        </div>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight text-(--text)">
           关于
         </h1>
@@ -26,21 +33,37 @@ export default async function AboutPage() {
         <div className="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-transparent via-(--accent)/40 to-transparent" />
         <div className="flex shrink-0 justify-center">
           <img
-            src={blogger.avatar!}
+            src={blogger.avatar + "?x-oss-process=image/resize,m_lfit,w_200,h_200"}
             alt={blogger.username!}
             width={72}
             height={72}
             className="rounded-full ring-2 ring-(--border-strong) ring-offset-4 ring-offset-(--surface)"
           />
         </div>
-        <div className="mt-5 min-w-0 text-center sm:mt-0 sm:text-left">
-          <h2 className="inline-flex items-center gap-3 text-2xl font-semibold tracking-tight text-(--text)">
-            {blogger.username}
-          </h2>
+        <div className="w-full mt-5 min-w-0 text-center sm:mt-0 sm:text-left">
+          <div className="flex items-center justify-center gap-3 sm:justify-between">
+            <h2 className="text-2xl font-semibold tracking-tight text-(--text)">
+              {blogger.username}
+            </h2>
+            {isLoggedIn && (
+              <span className="hidden sm:inline-flex">
+                <ButtonLink href="/about/edit" variant="ghost" size="sm" className="border border-dashed border-(--border-strong)">
+                  编辑资料
+                </ButtonLink>
+              </span>
+            )}
+          </div>
           {blogger.signature && (
             <p className="mt-2 text-sm leading-6 text-(--text-soft)">
               {blogger.signature}
             </p>
+          )}
+          {isLoggedIn && (
+            <div className="mt-2 sm:hidden">
+              <ButtonLink href="/about/edit" variant="ghost" size="sm" className="border border-dashed border-(--border-strong)">
+                编辑资料
+              </ButtonLink>
+            </div>
           )}
         </div>
       </div>

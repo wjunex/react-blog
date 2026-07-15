@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { apiPublicDetail, apiPublicListByYear } from "@/api/generated";
 import MDXContent from "@/components/MDXContent";
+import ImageViewer from "@/components/ImageViewer";
 import CommentSection from "@/components/Comment/CommentSection";
 import { CommentIcon } from "@/components/Icons";
 import { formatDate, removeFirstH1 } from "@/utils";
@@ -91,7 +92,9 @@ export default async function BlogDetail({ params }: Props) {
             )}
           </div>
         </header>
-        <MDXContent source={data.content} />
+        <ImageViewer>
+          <MDXContent source={data.content} />
+        </ImageViewer>
         {data.tags && data.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap items-center gap-2">
             {data.tags.map((tag) => (

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { HamburgerIcon, CloseIcon, SearchIcon } from "@/components/Icons";
@@ -27,7 +27,9 @@ function isActive(path: string, currentPathname: string) {
 
 export default function NavBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isDetailPage = /^\/(?:moments|blog)\/[^/]+$/.test(pathname);
 
   function closeMenu() {
     setMenuOpen(false);
@@ -38,15 +40,27 @@ export default function NavBar() {
       <div className="mx-auto flex max-w-(--content) items-center px-5 py-4 sm:px-8 lg:px-14">
         {/* Logo */}
         <div className="mr-4 flex-1 select-none">
-          <Link
-            href="/"
-            className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-(--text) transition-colors hover:text-(--accent)"
-          >
-            <span>𝑾𝑱𝑼𝑵</span>
-            <span className="hidden text-sm font-normal text-(--text-muted) sm:inline">
-              blog
-            </span>
-          </Link>
+          {isDetailPage ? (
+            <button
+              onClick={() => router.back()}
+              className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-(--text) transition-colors hover:text-(--accent) cursor-pointer"
+            >
+              <span>𝑾𝑱𝑼𝑵</span>
+              <span className="hidden text-sm font-normal text-(--text-muted) sm:inline">
+                blog
+              </span>
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-(--text) transition-colors hover:text-(--accent)"
+            >
+              <span>𝑾𝑱𝑼𝑵</span>
+              <span className="hidden text-sm font-normal text-(--text-muted) sm:inline">
+                blog
+              </span>
+            </Link>
+          )}
         </div>
 
         {/* 桌面端导航 */}

@@ -6,6 +6,7 @@ import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { getServerToken } from "@/lib/token-server";
 import Badge from "@/components/Badge";
 import DeleteArticleButton from "@/components/DeleteArticleButton";
+import ImageGrid from "@/components/ImageGrid";
 
 type Props = {
   params: Promise<{
@@ -97,16 +98,8 @@ export default async function MomentDetail({ params }: Props) {
         </header>
         <div className="leading-7 text-(--text-soft)">{data.content}</div>
         {data.images && data.images.length > 0 && (
-          <div className="mt-6 flex flex-wrap gap-3">
-            {data.images.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt=""
-                className="rounded-lg object-cover"
-                style={{ width: 200, height: 200 }}
-              />
-            ))}
+          <div className="mt-6">
+            <ImageGrid images={data.images} preview />
           </div>
         )}
       </article>

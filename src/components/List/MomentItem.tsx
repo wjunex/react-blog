@@ -4,6 +4,7 @@ import { apiPublicUserInfo } from "@/api/generated";
 import Link from "next/link";
 import { formatDate, DATE_TIME_WEEKDAY } from "@/utils";
 import { CommentIcon, LikeIcon } from "@/components/Icons";
+import ImageGrid from "@/components/ImageGrid";
 export default async function MomentItem({ item }: { item: BlogItemType }) {
   const blogger = await apiPublicUserInfo();
   const date = formatDate(item.createdAt, DATE_TIME_WEEKDAY);
@@ -14,7 +15,7 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
       <Link href={href}>
         <div className="flex items-start gap-3">
           <img
-            src={blogger.avatar!}
+            src={blogger.avatar + "?x-oss-process=image/resize,m_lfit,w_100,h_100"}
             alt={blogger.username!}
             width={40}
             height={40}
@@ -29,16 +30,8 @@ export default async function MomentItem({ item }: { item: BlogItemType }) {
               {item.content}
             </div>
             {item.images && item.images.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {item.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt=""
-                    className="rounded-lg object-cover"
-                    style={{ width: 120, height: 120 }}
-                  />
-                ))}
+              <div className="mt-3">
+                <ImageGrid images={item.images} />
               </div>
             )}
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-(--text-muted)">
