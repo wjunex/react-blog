@@ -8,6 +8,8 @@ type ListProps = {
   pageSize: number;
   type?: number;
   basePath?: string;
+  sortBy?: string;
+  sortOrder?: string;
 };
 
 export default async function List({
@@ -15,11 +17,13 @@ export default async function List({
   pageSize,
   type,
   basePath = "/",
+  sortBy,
+  sortOrder,
 }: ListProps) {
   const result =
     type === 2
       ? await apiPublicMomentList({ pageNum, pageSize })
-      : await apiPublicList({ pageNum, pageSize });
+      : await apiPublicList({ pageNum, pageSize, sortBy, sortOrder });
 
   const { records, total, current = pageNum, size = pageSize } = result;
   const pages = result.pages ?? Math.ceil(total! / size);

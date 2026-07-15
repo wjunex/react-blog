@@ -33,7 +33,7 @@ export default function LoginPage() {
             htmlFor="phone"
             className="block text-sm font-medium text-(--text)"
           >
-            手机号
+            账号
           </label>
           <input
             id="phone"
@@ -41,7 +41,7 @@ export default function LoginPage() {
             type="tel"
             required
             autoComplete="tel"
-            placeholder="请输入手机号"
+            placeholder="请输入管理员账号"
             className="mt-1.5 block w-full rounded-lg border border-(--border-strong) bg-(--surface) px-3 py-2.5 text-sm text-(--text) placeholder:text-(--text-muted) focus:border-(--accent) focus:outline-none"
           />
         </div>
@@ -59,7 +59,7 @@ export default function LoginPage() {
             type="password"
             required
             autoComplete="current-password"
-            placeholder="请输入密码"
+            placeholder="请输入管理员密码"
             className="mt-1.5 block w-full rounded-lg border border-(--border-strong) bg-(--surface) px-3 py-2.5 text-sm text-(--text) placeholder:text-(--text-muted) focus:border-(--accent) focus:outline-none"
           />
         </div>

@@ -1,10 +1,16 @@
+import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 
 export default function Footer({ isLoggedIn }: { isLoggedIn: boolean }) {
   return (
     <footer className="border-t border-(--border) bg-(--surface-muted-alpha) px-5 py-6 text-xs text-(--text-muted) sm:px-8 lg:px-14">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-2 text-center sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:text-left">
-        <span>© 2024-2026 wjun.me · Built by Jun Wang</span>
+        <span>
+          © 2024-2026 wjun.me · Built by{" "}
+          <Link href="/login" className="transition-colors hover:text-(--accent)">
+            Jun Wang
+          </Link>
+        </span>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
           <a
             href="https://beian.mps.gov.cn/#/query/webSearch?code=52230102000488"

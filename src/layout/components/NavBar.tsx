@@ -121,19 +121,6 @@ export default function NavBar() {
                 </Link>
               );
             })}
-            {isActive("/search", pathname) ? (
-              <span className="pointer-events-none rounded-md px-3 py-2.5 text-sm font-medium text-(--accent)">
-                搜索
-              </span>
-            ) : (
-              <Link
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
-                href="/search"
-                onClick={closeMenu}
-              >
-                搜索
-              </Link>
-            )}
           </nav>
         </div>
       )}

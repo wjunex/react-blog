@@ -15,7 +15,7 @@ export async function login(prevState: LoginState, formData: FormData) {
   const password = formData.get("password") as string;
 
   if (!phone || !password) {
-    return { success: false, error: "请输入手机号和密码" };
+    return { success: false, error: "请输入账号和密码" };
   }
 
   try {

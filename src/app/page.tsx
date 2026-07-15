@@ -80,7 +80,7 @@ export default async function Home() {
         <div>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-(--text)">热门文章</h2>
-            <Link href="/blog" className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)">
+            <Link href="/blog?sort=hot" className="text-sm font-medium text-(--accent) transition-colors hover:text-(--accent-hover)">
               查看更多 →
             </Link>
           </div>
