@@ -30,7 +30,7 @@ export default async function List({
 
   return (
     <>
-      <div className="divide-y divide-(--border)">
+      <div className={type === 2 ? "" : "divide-y divide-(--border)"}>
         {records!.map((item) => {
           if (type === 2) {
             return <MomentItem key={item.id} item={item} />;

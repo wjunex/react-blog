@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 import MilkdownEditor from "@/components/MilkdownEditor";
@@ -25,6 +25,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
   const [title, setTitle] = useState(initialArticle?.title || "");
   const [noteId, setNoteId] = useState<string | undefined>(initialArticle?.id);
   const [slug, setSlug] = useState(initialArticle?.slug || "");
+  const [isPublish, setIsPublish] = useState(initialArticle?.isPublish ?? false);
 
   // 分类 & 标签 — 从 API 获取
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -92,30 +93,36 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
   };
 
   // 保存
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [saveForm, setSaveForm] = useState({ title: "", slug: "", isPublish: false });
-
-  const openSaveModal = () => {
-    const autoTitle = title || getPlainText(content).split(" ").slice(0, 8).join(" ") || "无标题";
-    setSaveForm({
-      title: autoTitle,
-      slug: slug || pinyinSlug(autoTitle),
-      isPublish: false,
-    });
-    setShowSaveModal(true);
-  };
-
   const [saving, setSaving] = useState(false);
+  const lastSaveTime = useRef(0);
   const [lastSaved, setLastSaved] = useState<{ title: string; content: string } | null>(
     initialArticle ? { title: initialArticle.title || "", content: initialArticle.content || "" } : null,
   );
   const saveTitle = title.trim() || getPlainText(content).split(" ").slice(0, 8).join(" ") || "无标题";
   const isDirty = lastSaved && (saveTitle !== lastSaved.title || content !== lastSaved.content);
 
-  const quickSave = async () => {
+  const titleRef = useRef<HTMLTextAreaElement>(null);
+
+  // 内联保存表单
+  const [slugInput, setSlugInput] = useState(slug || "");
+  const slugSuggestion = pinyinSlug(saveTitle);
+
+  // 标题 textarea 初始高度 & 内容变化时自适应
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [title]);
+
+  const doSave = async (publish?: boolean) => {
+    const now = Date.now();
+    if (now - lastSaveTime.current < 800) return;
+    lastSaveTime.current = now;
+    const saveSlug = slugInput.trim() || slugSuggestion;
     if (!content.trim() || saving) return;
-    const saveSlug = slug || pinyinSlug(saveTitle);
     setSaving(true);
+    const pub = publish ?? isPublish;
     try {
       const result = await apiNoteSave({
         id: noteId,
@@ -127,45 +134,25 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
         summary: getSummary(content),
         textCount: getPlainText(content).length,
         image: getFirstImage(content) || undefined,
-        isPublish: false,
+        isPublish: pub,
         type: articleType,
       });
       if (result?.id) setNoteId(result.id);
-      if (!slug) { setSlug(saveSlug); router.replace(`/editor?slug=${saveSlug}`); }
+      if (!slug) { setSlug(saveSlug); setSlugInput(saveSlug); router.replace(`/editor?slug=${saveSlug}`); }
       if (!title.trim()) { setTitle(saveTitle); }
+      setIsPublish(pub);
       setLastSaved({ title: saveTitle, content });
+      return saveSlug;
     } finally {
       setSaving(false);
     }
   };
 
-  const doSave = async () => {
-    const trimmedTitle = saveForm.title.trim();
-    if (!trimmedTitle || !content.trim() || saving) return;
-    setSaving(true);
-    try {
-      const result = await apiNoteSave({
-        id: noteId,
-        title: trimmedTitle,
-        slug: saveForm.slug.trim(),
-        content,
-        categoryId: categoryId || undefined,
-        tagIds: tagIds.length > 0 ? tagIds : undefined,
-        summary: getSummary(content),
-        textCount: getPlainText(content).length,
-        image: getFirstImage(content) || undefined,
-        isPublish: saveForm.isPublish,
-        type: articleType,
-      });
-      if (result?.id) setNoteId(result.id);
-      setLastSaved({ title: saveForm.title.trim(), content });
-      setSlug(saveForm.slug.trim());
-      router.replace(`/editor?slug=${saveForm.slug.trim()}`);
-      setShowSaveModal(false);
-    } finally {
-      setSaving(false);
-    }
+  const saveAndGo = async () => {
+    await doSave();
+    router.back();
   };
+
 
   const deleteTag = async (id: string) => {
     try {
@@ -232,12 +219,14 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
       <article>
       {/* 文章头部 — 与博客详情页 header 一致 */}
       <header className="border-b border-(--border) pb-6 mb-8">
-        <input
-          type="text"
+        <textarea
+          ref={titleRef}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => { setTitle(e.target.value); e.target.style.height = "auto"; e.target.style.height = `${e.target.scrollHeight}px`; }}
           placeholder="文章标题"
-          className="w-full text-2xl font-semibold tracking-tight bg-transparent text-(--text) outline-none placeholder:text-(--text-muted)"
+          onBlur={() => setSlugInput(pinyinSlug(saveTitle))}
+          rows={1}
+          className="w-full text-2xl font-semibold tracking-tight bg-transparent text-(--text) outline-none placeholder:text-(--text-muted) resize-none overflow-hidden"
         />
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-(--text-muted)">
           <div className="relative">
@@ -336,7 +325,7 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
         key={noteId || "new"}
         defaultValue={content}
         onChange={setContent}
-        onSave={quickSave}
+        onSave={doSave}
         onUpload={handleImageUpload}
         placeholder="请输入..."
       />
@@ -404,73 +393,39 @@ function EditorPageInner({ initialArticle, initialType }: Props) {
         </div>
       </div>
 
-      {/* 保存按钮 */}
-      <div className="mt-6">
-        <Button onClick={openSaveModal} size="md" disabled={!content.trim()}>
-          {noteId ? "保存" : "保存文章"}
-        </Button>
-      </div>
-
-      {/* 保存文章弹窗 */}
-      {showSaveModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={() => setShowSaveModal(false)}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div
-            className="relative bg-(--surface) border border-(--border) rounded-xl p-6 shadow-lg max-w-sm w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-base font-semibold text-(--text) mb-5">
-              {noteId ? "编辑文章" : "保存文章"}
-            </h3>
-
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-(--text-soft) mb-1.5">标题</label>
-                <input
-                  type="text"
-                  value={saveForm.title}
-                  onChange={(e) => setSaveForm((p) => ({ ...p, title: e.target.value }))}
-                  className="w-full rounded-lg border border-(--border) bg-(--surface-muted) px-3 py-2 text-sm text-(--text) outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-colors"
-                  maxLength={200}
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-(--text-soft) mb-1.5">Slug</label>
-                <input
-                  type="text"
-                  value={saveForm.slug}
-                  onChange={(e) => setSaveForm((p) => ({ ...p, slug: e.target.value }))}
-                  className="w-full rounded-lg border border-(--border) bg-(--surface-muted) px-3 py-2 text-sm text-(--text) outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-colors font-mono"
-                  placeholder="自动生成，可手动修改"
-                  required
-                />
-              </div>
-              <ToggleSwitch
-                checked={saveForm.isPublish}
-                onChange={(v) => setSaveForm((p) => ({ ...p, isPublish: v }))}
-                label="公开发布"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-(--border)">
-              <Button variant="ghost" size="sm" onClick={() => setShowSaveModal(false)}>
-                取消
-              </Button>
-              <Button
-                onClick={doSave}
-                disabled={!saveForm.title.trim() || !saveForm.slug.trim() || !content.trim() || saving}
-                size="sm"
-              >
-                {saving ? "保存中..." : "保存"}
-              </Button>
-            </div>
-          </div>
+      {/* 保存区域 */}
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-2 flex-1">
+          <input
+            type="text"
+            value={slugInput}
+            onChange={(e) => setSlugInput(e.target.value)}
+            size={slugInput.length || (slug || pinyinSlug(saveTitle)).length || 20}
+            className="border-b border-dashed border-(--border) bg-transparent px-1 py-1 text-sm text-(--text) outline-none focus:border-(--accent) transition-colors font-mono w-full sm:max-w-[320px]"
+            placeholder={slug || pinyinSlug(saveTitle)}
+            required
+          />
+          {slugSuggestion && slugInput !== slugSuggestion && (
+            <button
+              type="button"
+              onClick={() => setSlugInput(slugSuggestion)}
+              className="text-xs text-(--accent) hover:opacity-80 cursor-pointer shrink-0"
+            >
+              填入
+            </button>
+          )}
         </div>
-      )}
+        <div className="flex items-center gap-3 justify-end shrink-0">
+          <ToggleSwitch
+            checked={isPublish}
+            onChange={setIsPublish}
+            label="公开发布"
+          />
+          <Button onClick={saveAndGo} size="md" disabled={!content.trim() || saving}>
+            {saving ? "保存中..." : noteId ? "保存" : "保存文章"}
+          </Button>
+        </div>
+      </div>
 
       {/* 新增/编辑分类弹窗 */}
       {catModal.open && (

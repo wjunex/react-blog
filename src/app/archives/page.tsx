@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { apiPublicListByYear, apiPublicCategoryList, apiPublicTagList } from "@/api/generated";
 import { formatDate } from "@/utils";
+import { getServerToken } from "@/lib/token-server";
 import type { NoteListVO } from "@/api/generated/models";
 
 export const metadata: Metadata = { title: "归档" };
@@ -14,10 +15,11 @@ const CATEGORY_TYPES = [
 
 // ── page ─────────────────────────────────────────────────
 export default async function Archives() {
-  const [archives, categoryList, tagList] = await Promise.all([
+  const [archives, categoryList, tagList, isLoggedIn] = await Promise.all([
     apiPublicListByYear({}),
     apiPublicCategoryList(),
     apiPublicTagList(),
+    getServerToken().then((t) => !!t),
   ]);
 
 
@@ -204,6 +206,9 @@ export default async function Archives() {
                         >
                           {entry.data.title}
                         </Link>
+                        {isLoggedIn && entry.data.isPublish && (
+                          <span className="shrink-0 text-xs text-(--accent)">&#10003;</span>
+                        )}
                       </li>
                     ) : (
                       <li key={entry.data.id} className="flex items-baseline gap-3">

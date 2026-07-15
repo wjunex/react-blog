@@ -25,7 +25,7 @@ function isActive(path: string, currentPathname: string) {
   );
 }
 
-export default function NavBar() {
+export default function NavBar({ isLoggedIn, avatar, unreadCount }: { isLoggedIn?: boolean; avatar?: string; unreadCount?: number }) {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -56,9 +56,6 @@ export default function NavBar() {
               className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-(--text) transition-colors hover:text-(--accent)"
             >
               <span>𝑾𝑱𝑼𝑵</span>
-              <span className="hidden text-sm font-normal text-(--text-muted) sm:inline">
-                blog
-              </span>
             </Link>
           )}
         </div>
@@ -87,18 +84,33 @@ export default function NavBar() {
           })}
         </nav>
 
-        {/* 搜索图标 */}
-        <Link
-          href="/search"
-          className="mr-3 rounded-md p-2 text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent) inline-flex"
-          aria-label="搜索"
-        >
-          <SearchIcon />
-        </Link>
-
-        {/* 右侧：主题切换 + 汉堡按钮 */}
-        <div className="flex items-center gap-2">
+        {/* 右侧：搜索 + 主题切换 + 头像 + 汉堡按钮 */}
+        <div className="flex items-center">
+          <Link
+            href="/search"
+            className="rounded-md p-2 text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent) inline-flex"
+            aria-label="搜索"
+          >
+            <SearchIcon />
+          </Link>
           <ThemeToggle />
+          {isLoggedIn && avatar && (
+            unreadCount && unreadCount > 0 ? (
+              <Link href="/about" className="p-2 inline-flex items-center">
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-(--syntax-red) text-white text-[11px] font-semibold flex items-center justify-center leading-none">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              </Link>
+            ) : (
+              <Link href="/about" className="p-2 inline-flex items-center">
+                <img
+                  src={avatar + "?x-oss-process=image/resize,m_lfit,w_80,h_80"}
+                  alt="avatar"
+                  className="w-5 h-5 rounded-full"
+                />
+              </Link>
+            )
+          )}
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
