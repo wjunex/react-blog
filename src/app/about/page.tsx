@@ -71,7 +71,7 @@ export default async function AboutPage() {
       {/* ── 博客介绍 ── */}
       {blogger.intro && (
         <div
-          className="rounded-2xl border border-(--border) bg-(--surface-muted) p-6 text-sm leading-7 text-(--text-soft) flex flex-col gap-4 shadow-sm"
+          className="intro-content rounded-2xl border border-(--border) bg-(--surface-muted) p-6 shadow-sm"
           dangerouslySetInnerHTML={{ __html: blogger.intro }}
         />
       )}

@@ -674,3 +674,97 @@ a.comment-item__nickname:hover {
 .cat-dropdown::-webkit-scrollbar {
   display: none;
 }
+
+/* 关于页面 intro 排版 — 对齐 .mdx-content */
+.intro-content {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-soft);
+}
+
+.intro-content > * + * {
+  margin-top: 12px;
+}
+
+.intro-content h1,
+.intro-content h2,
+.intro-content h3,
+.intro-content h4 {
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.intro-content h2 {
+  font-size: 1.15em;
+  margin-top: 20px;
+}
+
+.intro-content h3 {
+  font-size: 1.05em;
+  margin-top: 16px;
+}
+
+.intro-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.intro-content p {
+  margin-bottom: 0;
+}
+
+.intro-content ul,
+.intro-content ol {
+  padding-left: 1.5em;
+}
+
+.intro-content ul {
+  list-style: disc;
+}
+
+.intro-content ol {
+  list-style: decimal;
+}
+
+.intro-content blockquote {
+  border-left: 0.25em solid var(--border-strong);
+  color: var(--text-muted);
+  padding: 0 1em;
+}
+
+.intro-content code {
+  background: var(--inline-code-bg);
+  border-radius: 4px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 85%;
+  padding: 0.15em 0.35em;
+}
+
+.intro-content pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.intro-content pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 85%;
+}
+
+.intro-content img {
+  height: auto;
+  max-width: 100%;
+  border-radius: 6px;
+}
+
+.intro-content hr {
+  border: 0;
+  height: 1px;
+  width: 60%;
+  margin: 24px auto;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
