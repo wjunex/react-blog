@@ -46,9 +46,6 @@ export default function NavBar({ isLoggedIn, avatar, unreadCount }: { isLoggedIn
               className="inline-flex items-baseline gap-2 text-[24px] font-semibold tracking-tight text-(--text) transition-colors hover:text-(--accent) cursor-pointer"
             >
               <span>𝑾𝑱𝑼𝑵</span>
-              <span className="hidden text-sm font-normal text-(--text-muted) sm:inline">
-                blog
-              </span>
             </button>
           ) : (
             <Link

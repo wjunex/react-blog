@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { apiPublicList, apiPublicMomentList } from "@/api/generated";
 import BlogItem from "@/components/List/BlogItem";
 import MomentItem from "@/components/List/MomentItem";
 import { getServerToken } from "@/lib/token-server";
 import { ButtonLink } from "@/components/Button";
+
+export const metadata: Metadata = { title: { absolute: "W君的网络日志" } };
 
 export default async function Home() {
   const isLoggedIn = !!(await getServerToken());

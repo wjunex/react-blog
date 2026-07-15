@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { apiPublicDetail } from "@/api/generated";
 import { getServerToken } from "@/lib/token-server";
 import EditorPageInner from "./EditorPageClient";
+
+export const metadata: Metadata = { title: "编辑文章" };
 
 interface Props {
   searchParams: Promise<{ slug?: string; id?: string; type?: string }>;
