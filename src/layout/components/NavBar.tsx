@@ -82,6 +82,14 @@ export default function NavBar({ isLoggedIn, avatar, unreadCount }: { isLoggedIn
               </Link>
             );
           })}
+          {isLoggedIn && (
+            <Link
+              href="/todos"
+              className="rounded-md px-3 py-2 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
+            >
+              待办
+            </Link>
+          )}
         </nav>
 
         {/* 右侧：搜索 + 主题切换 + 头像 + 汉堡按钮 */}
@@ -147,6 +155,15 @@ export default function NavBar({ isLoggedIn, avatar, unreadCount }: { isLoggedIn
                 </Link>
               );
             })}
+            {isLoggedIn && (
+              <Link
+                href="/todos"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-(--text-soft) transition-colors hover:bg-(--surface) hover:text-(--accent)"
+                onClick={closeMenu}
+              >
+                待办
+              </Link>
+            )}
           </nav>
         </div>
       )}
