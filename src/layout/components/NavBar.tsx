@@ -96,7 +96,7 @@ export default function NavBar({ isLoggedIn, avatar, unreadCount }: { isLoggedIn
           <ThemeToggle />
           {isLoggedIn && avatar && (
             unreadCount && unreadCount > 0 ? (
-              <Link href="/about" className="p-2 inline-flex items-center">
+              <Link href="/notifications" className="p-2 inline-flex items-center">
                 <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-(--syntax-red) text-white text-[11px] font-semibold flex items-center justify-center leading-none">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
