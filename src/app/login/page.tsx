@@ -1,12 +1,20 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { Suspense, useActionState, useEffect } from "react";
 import { login } from "@/lib/auth";
 import Button from "@/components/Button";
 import { setTokens } from "@/lib/token";
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [state, formAction, isPending] = useActionState(login, null);
