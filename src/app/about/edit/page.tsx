@@ -19,7 +19,7 @@ export default function EditProfilePage() {
 
   useEffect(() => {
     if (!getAccessToken()) {
-      router.replace("/login");
+      router.replace("/login?redirectTo=/about/edit");
       return;
     }
 

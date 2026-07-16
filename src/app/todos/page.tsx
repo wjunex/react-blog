@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "待办" };
 
 export default async function TodosPage() {
   if (!(await getServerToken())) {
-    redirect("/login");
+    redirect("/login?redirectTo=/todos");
   }
 
   const todos = (await apiTodoTree()) || [];

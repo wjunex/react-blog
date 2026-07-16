@@ -12,7 +12,7 @@ interface Props {
 
 export default async function EditorPage({ searchParams }: Props) {
   if (!(await getServerToken())) {
-    redirect("/login");
+    redirect("/login?redirectTo=/editor");
   }
 
   const { slug, id, type } = await searchParams;

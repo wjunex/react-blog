@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "通知" };
 
 export default async function NotificationsPage() {
   if (!(await getServerToken())) {
-    redirect("/login");
+    redirect("/login?redirectTo=/notifications");
   }
 
   const list = (await apiNotifyList()) || [];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { login } from "@/lib/auth";
 import Button from "@/components/Button";
@@ -8,15 +8,17 @@ import { setTokens } from "@/lib/token";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [state, formAction, isPending] = useActionState(login, null);
 
   useEffect(() => {
     if (state?.success && state.accessToken && state.refreshToken) {
       setTokens(state.accessToken, state.refreshToken);
-      router.push("/");
+      const redirectTo = searchParams.get("redirectTo") || "/";
+      router.push(redirectTo);
       router.refresh();
     }
-  }, [state, router]);
+  }, [state, router, searchParams]);
 
   return (
     <section className="mx-auto max-w-sm space-y-8 py-12">
